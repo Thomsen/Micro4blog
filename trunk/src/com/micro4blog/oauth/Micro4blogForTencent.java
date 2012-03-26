@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
 
 public class Micro4blogForTencent extends Micro4blog {
 
@@ -48,7 +49,9 @@ public class Micro4blogForTencent extends Micro4blog {
 	protected void startDialogAuth(Activity activity, String[] permissions) {
 
 		Micro4blogParameters params = new Micro4blogParameters();
-
+		
+		
+		
 		CookieSyncManager.createInstance(activity);
 
 		dialog(activity, params, new Micro4blogDialogListener() {
@@ -112,35 +115,64 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 这里不该初始化
 		// HttpHeaderFactory hhp = new AccessTokenHeader();
 		HttpHeaderFactory hhp = new RequestTokenHeader();
-
-		String header = "";
-
-		Log.i("thom", "hader " + "1");
-
+		
+		String result = "";
+		
 		try {
-			header = hhp.getMicro4blogAuthHeader(
-					Micro4blog.getInstance(SERVER_TENCENT), "GET",
-					getUrlRequestToken(), parameters, getAppKey(),
-					getAppSecret(), accessToken);
+			
+			hhp.getMicro4blogAuthHeader(this, "POST", getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
+		
+			Micro4blogParameters params = hhp.getAuthParams();
+			
+			result = request(context, getUrlRequestToken(), params, "POST", accessToken);
 		} catch (Micro4blogException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		Log.i("thom", "result " + result);
+//		
+//		parameters = hhp.getAuthParams();
+		
+		
+		OauthToken requestToken = new OauthToken(result);
+		
+		
+//		try {
+//			hhp.getMicro4blogAuthHeader(this, "POST", getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
+//		} catch (Micro4blogException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		String header = "";
+//
+//		Log.i("thom", "hader " + "1");
 
-		Log.i("thom", "header " + header);
+//		try {
+//			header = hhp.getMicro4blogAuthHeader(
+//					Micro4blog.getInstance(SERVER_TENCENT), "GET",
+//					getUrlRequestToken(), parameters, getAppKey(),
+//					getAppSecret(), accessToken);
+//		} catch (Micro4blogException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
+//		Log.i("thom", "header " + header);
 
 		// String url = getUrlRequestToken() + "?" + header;
 
-		RequestToken rt;
-		String url = "";
-		try {
-			rt = this.getRequestToken(context, getAppKey(), getAppSecret(), "");
-			url = getUrlAccessAuthorize() + "?oauth_token="
-					+ this.generateAccessToken(context, rt);
-		} catch (Micro4blogException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		RequestToken rt;
+//		String url = "";
+//		try {
+//			rt = this.getRequestToken(context, getAppKey(), getAppSecret(), "");
+//			url = getUrlAccessAuthorize() + "?oauth_token="
+//					+ this.generateAccessToken(context, rt);
+//		} catch (Micro4blogException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		// TODO: 1、通过request url和请求参数得到request token
 		// 2、通过request token和oauthorize url得到回调url，从中得到verifier code
@@ -157,7 +189,11 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 需要研究一下sina的parameters的获取
 		// 较之1.0，2.0的请求参数比较少，sina是在请求前传入的
 		
-		url = getUrlAccessAuthorize() + Utility.encodeUrl(parameters);
+		
+		// TODO： 解决多次注册的encode问题
+		parameters.add("oauth_token", requestToken.getTokenOauthOrAccess());
+		
+		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
 		
 		// TODO： 如何理解在何时进行的url通信
 		// 以我看应该是在Micro4blogDialog中
@@ -166,13 +202,13 @@ public class Micro4blogForTencent extends Micro4blog {
 
 		Log.i("thom", "url " + url);
 
-		// new Micro4blogDialog(this, context, url, listener).show();
+		new Micro4blogDialog(this, context, url, listener).show();
 		// show方法执行了整个dialog的该实现的部分
-		WebView wv = new WebView(context);
-		wv.loadUrl(url);
-
-		((Activity) context).addContentView(wv, new LayoutParams(
-				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+		
+//		WebView wv = new WebView(context);
+//		wv.loadUrl(url);
+//		((Activity) context).addContentView(wv, new LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 
+//								LinearLayout.LayoutParams.FILL_PARENT));
 
 	}
 

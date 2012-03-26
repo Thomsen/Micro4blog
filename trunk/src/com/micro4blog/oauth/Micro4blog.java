@@ -33,7 +33,7 @@ public abstract class Micro4blog {
 	private static String appKey;
 	private static String appSecret;
 	
-	private static String redirectUrl;
+	private static String redirectUrl = "http://www.google.com.hk";
 	
 	private static Micro4blog micro4blogInstance;
 	

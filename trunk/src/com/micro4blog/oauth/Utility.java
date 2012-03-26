@@ -294,10 +294,20 @@ public class Utility {
 			ByteArrayOutputStream bos = null;
 			if (method.equals("GET")) {
 				url = url + "?" + encodeUrl(params);
+
+				Log.i("thom", "utility url " + url);
+				
 				HttpGet get = new HttpGet(url);
 				request = get;
 			} else if (method.equals("POST")) {
+				
+				// thom TODO: 
+				url = url + "?" + encodeUrl(params);
+				
 				HttpPost post = new HttpPost(url);
+				
+				Log.i("thom", "utility url " + url);
+				
 				byte[] data = null;
 				bos = new ByteArrayOutputStream(1024 * 50);
 				if (!TextUtils.isEmpty(file)) {

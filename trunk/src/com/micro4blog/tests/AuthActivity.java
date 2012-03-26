@@ -30,8 +30,8 @@ public class AuthActivity extends Activity {
 			
 			public void onClick(View v) {
 				
-				m4b = Micro4blog.getInstance(Micro4blog.SERVER_SINA);
-//				m4b = Micro4blog.getInstance(Micro4blog.SERVER_TENCENT);
+//				m4b = Micro4blog.getInstance(Micro4blog.SERVER_SINA);
+				m4b = Micro4blog.getInstance(Micro4blog.SERVER_TENCENT);
 
 				m4b.authorize(AuthActivity.this, new AuthDialogListener());
 				
