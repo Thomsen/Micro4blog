@@ -3,7 +3,7 @@ package com.micro4blog.oauth;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Oauth2AccessToken extends Token {
+public class Oauth2AccessToken extends OauthToken {
 
 	public Oauth2AccessToken(String resultStr) {
 		if (resultStr != null) {

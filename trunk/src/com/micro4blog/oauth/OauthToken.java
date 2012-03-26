@@ -2,7 +2,7 @@ package com.micro4blog.oauth;
 
 import javax.crypto.spec.SecretKeySpec;
 
-public class Token {
+public class OauthToken {
 	
 	private String tokenOauthOrAccess;
 	private String tokenRefresh;
@@ -13,17 +13,17 @@ public class Token {
 	
 	protected SecretKeySpec secretKeySpec;
 	
-	public Token() {
+	public OauthToken() {
 		
 	}
 	
-	public Token(String resultStr) {
+	public OauthToken(String resultStr) {
 		responseStr = resultStr.split("&");
 		oauthTokenSecret = getParameter("oauth_token_secret");
 		tokenOauthOrAccess = getParameter("oauth_token");
 	}
 	
-	public Token(String token, String secret) {
+	public OauthToken(String token, String secret) {
 		oauthTokenSecret = secret;
 		tokenOauthOrAccess = token;
 	}

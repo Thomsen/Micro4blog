@@ -72,7 +72,7 @@ public class Micro4blogForSina extends Micro4blog {
                 // ensure any cookies set by the dialog are saved
                 CookieSyncManager.getInstance().sync();
                 if (null == accessToken) {
-                	accessToken = new Token();
+                	accessToken = new OauthToken();
                 }
                 accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
                 accessToken.setExpiresIn(values.getString(EXPIRES));

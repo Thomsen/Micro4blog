@@ -82,7 +82,7 @@ public class Utility {
 
 	private static Micro4blogParameters mRequestHeader = new Micro4blogParameters();
 	private static HttpHeaderFactory httpHeader;
-	private static Token mToken = null;
+	private static OauthToken mToken = null;
 
 	public static final String BOUNDARY = "7cd4a6d158c";
 	public static final String MP_BOUNDARY = "--" + BOUNDARY;
@@ -97,7 +97,7 @@ public class Utility {
 	private static final int SET_SOCKET_TIMEOUT = 200000;
 
 	// 设置Token
-	public static void setTokenObject(Token token) {
+	public static void setTokenObject(OauthToken token) {
 		mToken = token;
 	}
 
@@ -107,7 +107,7 @@ public class Utility {
 
 	// 设置http头,如果authParam不为空，则表示当前有token认证信息需要加入到头中
 	public static void setHeader(Micro4blog micro4blog, String httpMethod, HttpUriRequest request,
-			Micro4blogParameters authParam, String url, Token token)
+			Micro4blogParameters authParam, String url, OauthToken token)
 			throws Micro4blogException {
 		if (!isBundleEmpty(mRequestHeader)) {
 			for (int loc = 0; loc < mRequestHeader.size(); loc++) {
@@ -258,13 +258,13 @@ public class Utility {
 	 *            : HTTP METHOD.GET, POST, DELETE
 	 * @param params
 	 *            : Http params , query or postparameters
-	 * @param Token
+	 * @param OauthToken
 	 *            : oauth token or accesstoken
 	 * @return UrlEncodedFormEntity: encoed entity
 	 */
 
 	public static String openUrl(Micro4blog micro4blog, Context context, String url, String method,
-			Micro4blogParameters params, Token token)
+			Micro4blogParameters params, OauthToken token)
 			throws Micro4blogException {
 		String rlt = "";
 		String file = "";
@@ -284,7 +284,7 @@ public class Utility {
 	}
 
 	public static String openUrl(Micro4blog micro4blog, Context context, String url, String method,
-			Micro4blogParameters params, String file, Token token)
+			Micro4blogParameters params, String file, OauthToken token)
 			throws Micro4blogException {
 		String result = "";
 		try {

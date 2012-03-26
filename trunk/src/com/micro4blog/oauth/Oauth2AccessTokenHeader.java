@@ -5,7 +5,7 @@ public class Oauth2AccessTokenHeader extends HttpHeaderFactory {
 	@Override
 	public String getMicro4blogAuthHeader(Micro4blog micro4blog, String method, String url,
 			Micro4blogParameters params, String app_key, String app_secret,
-			Token token) throws Micro4blogException {
+			OauthToken token) throws Micro4blogException {
 		if (token == null) {
 			return null;
 		}
@@ -27,7 +27,7 @@ public class Oauth2AccessTokenHeader extends HttpHeaderFactory {
 	}
 
 	@Override
-	public String generateSignature(Micro4blog micro4blog, String data, Token token)
+	public String generateSignature(Micro4blog micro4blog, String data, OauthToken token)
 			throws Micro4blogException {
 		return "";
 	}
