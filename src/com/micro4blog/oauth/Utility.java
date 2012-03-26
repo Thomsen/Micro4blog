@@ -275,6 +275,7 @@ public class Utility {
 				params.remove(key);
 			}
 		}
+		// TODO: 有图片和没有图片的通信方式
 		if (TextUtils.isEmpty(file)) {
 			rlt = openUrl(micro4blog, context, url, method, params, null, token);
 		} else {

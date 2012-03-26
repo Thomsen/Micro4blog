@@ -30,6 +30,13 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 中间出现的一切关于token错误，都是因为这里的头设置错误
 		// Utility.setAuthorization(new AccessTokenHeader());
 
+		// TODO: 通过Utility中的setHeader可以设置头部，即得到parameters
+		// generateSignatureList的使用
+		// setHeader中调用getMicro4blogAuthHeader，
+		// generateMicro4blogAuthHeader中会使用到generateSignatureList
+		// 那么setHeader在哪里调用了呢？
+		// openUrl通信中
+		
 		Utility.setAuthorization(new RequestTokenHeader());
 
 		mAuthDialogListener = listener;
@@ -94,6 +101,7 @@ public class Micro4blogForTencent extends Micro4blog {
 			Micro4blogDialogListener listener) {
 		
 		// TODO： listener该如何使用
+		// listener.onComplete，可以使用在调用该方法时必须实现的接口方法
 
 		// parameters.add("aouth_callback", null);
 		// parameters.add("oauth_consumer_key", getAppKey());
@@ -141,10 +149,25 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 中间传递的token都是以oauth_token传递
 		
 		// 通信的过程都在Utility的openUrl中
+		
+		// 是通过这个方法来得到正确的url请求
+		// 通过generateAccessToken只是设置parameters， 返回的结果用于测试
+		// 到了这里全局主要的问题就是得到该有的parameters
+		
+		// 需要研究一下sina的parameters的获取
+		// 较之1.0，2.0的请求参数比较少，sina是在请求前传入的
+		
+		url = getUrlAccessAuthorize() + Utility.encodeUrl(parameters);
+		
+		// TODO： 如何理解在何时进行的url通信
+		// 以我看应该是在Micro4blogDialog中
+		
+		// 别忘了，1.0中callback url的使用
 
 		Log.i("thom", "url " + url);
 
 		// new Micro4blogDialog(this, context, url, listener).show();
+		// show方法执行了整个dialog的该实现的部分
 		WebView wv = new WebView(context);
 		wv.loadUrl(url);
 
