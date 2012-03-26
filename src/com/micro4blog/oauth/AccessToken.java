@@ -1,6 +1,6 @@
 package com.micro4blog.oauth;
 
-public class AccessToken extends Token {
+public class AccessToken extends OauthToken {
 	
 	public AccessToken(String resultStr) {
 		super(resultStr);

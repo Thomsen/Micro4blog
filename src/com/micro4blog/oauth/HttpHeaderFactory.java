@@ -38,7 +38,7 @@ public abstract class HttpHeaderFactory {
     }
 
     public String getMicro4blogAuthHeader(Micro4blog micro4blog, String method, String url, Micro4blogParameters params,
-            String app_key, String app_secret, Token token) throws Micro4blogException {
+            String app_key, String app_secret, OauthToken token) throws Micro4blogException {
         // step 1: generate timestamp and nonce
         final long timestamp = System.currentTimeMillis() / 1000;
 //        final long nonce = timestamp + (new Random()).nextInt();
@@ -62,7 +62,7 @@ public abstract class HttpHeaderFactory {
     }
 
     private String generateAuthSignature(final String method, Micro4blogParameters signatureParams,
-            final String url, Token token) {
+            final String url, OauthToken token) {
         StringBuffer base = new StringBuffer(method).append("&")
                 .append(encode(constructRequestURL(url))).append("&");
         base.append(encode(encodeParameters(signatureParams, "&", false)));
@@ -81,7 +81,7 @@ public abstract class HttpHeaderFactory {
         return lsp;
     }
 
-    private Micro4blogParameters generateAuthParameters(Micro4blog micro4blog, long nonce, long timestamp, Token token) {
+    private Micro4blogParameters generateAuthParameters(Micro4blog micro4blog, long nonce, long timestamp, OauthToken token) {
     	Micro4blogParameters authParams = new Micro4blogParameters();
         authParams.add("oauth_callback", "null");
     	authParams.add("oauth_consumer_key", micro4blog.getAppKey());
@@ -130,7 +130,7 @@ public abstract class HttpHeaderFactory {
 
     }
 
-    public abstract String generateSignature(Micro4blog micro4blog, String data, Token token) throws Micro4blogException;
+    public abstract String generateSignature(Micro4blog micro4blog, String data, OauthToken token) throws Micro4blogException;
 
     public static String encodeParameters(Micro4blogParameters postParams, String splitter, boolean quot) {
         StringBuffer buf = new StringBuffer();

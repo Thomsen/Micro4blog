@@ -41,7 +41,7 @@ public abstract class Micro4blog {
 //	public static String urlOauth2AccessAuthorize = null;
 	
 	private RequestToken requestToken;
-	protected static Token accessToken;
+	protected static OauthToken accessToken;
 	
 	protected Micro4blogDialogListener mAuthDialogListener;
 	
@@ -69,7 +69,7 @@ public abstract class Micro4blog {
 	}
 
 	public String request(Context context, String url, Micro4blogParameters params, String httpMethod,
-            Token token) throws Micro4blogException {
+            OauthToken token) throws Micro4blogException {
         String rlt = Utility.openUrl(micro4blogInstance, context, url, httpMethod, params, this.accessToken);
         return rlt;
     }
@@ -80,6 +80,7 @@ public abstract class Micro4blog {
         Micro4blogParameters postParams = new Micro4blogParameters();
         postParams.add("oauth_callback", callback_url);
         String rlt;
+        // TODO：待检查
         rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.urlAccessToken, "POST", postParams, null);
         RequestToken request = new RequestToken(rlt);
         this.requestToken = request;
@@ -190,11 +191,11 @@ public abstract class Micro4blog {
 		this.requestToken = requestToken;
 	}
 
-	public static Token getAccessToken() {
+	public static OauthToken getAccessToken() {
 		return accessToken;
 	}
 
-	public void setAccessToken(Token accessToken) {
+	public void setAccessToken(OauthToken accessToken) {
 		Micro4blog.accessToken = accessToken;
 	}
 

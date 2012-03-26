@@ -40,7 +40,7 @@ public class RequestTokenHeader extends HttpHeaderFactory {
 	}
 
 	@Override
-	public String generateSignature(Micro4blog micro4blog, String data, Token token)
+	public String generateSignature(Micro4blog micro4blog, String data, OauthToken token)
 			throws Micro4blogException {
 		byte[] byteHMAC = null;
         try {
