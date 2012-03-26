@@ -68,6 +68,7 @@ public abstract class Micro4blog {
 		return micro4blogInstance;
 	}
 
+	// TODO: 使用request是得到通信的结果
 	public String request(Context context, String url, Micro4blogParameters params, String httpMethod,
             OauthToken token) throws Micro4blogException {
         String rlt = Utility.openUrl(micro4blogInstance, context, url, httpMethod, params, this.accessToken);
