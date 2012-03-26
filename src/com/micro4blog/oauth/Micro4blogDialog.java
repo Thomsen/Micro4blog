@@ -136,7 +136,7 @@ public class Micro4blogDialog extends Dialog {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d("thom", "Redirect URL: " + url);
             // 待后台增加对默认重定向地址的支持后修改下面的逻辑
-            if (url.startsWith(mMicro4blog.getRedirectUrl())) {
+            if (url.startsWith(mMicro4blog.getRedirectUrl())) { // TODO 为什么这里执行了
                 handleRedirectUrl(view, url);
                 Micro4blogDialog.this.dismiss();
                 return true;
@@ -159,7 +159,7 @@ public class Micro4blogDialog extends Dialog {
             Log.d("thom", "onPageStarted URL: " + url);
             // google issue. shouldOverrideUrlLoading not executed
             if (url.startsWith(mMicro4blog.getRedirectUrl())) {
-            	Log.d("thom", "is google");
+            	Log.d("thom", "is google issue");
                 handleRedirectUrl(view, url);
                 view.stopLoading();
                 Micro4blogDialog.this.dismiss();

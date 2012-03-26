@@ -33,6 +33,9 @@ public abstract class HttpHeaderFactory {
     public static final String CONST_HMAC_SHA1 = "HmacSHA1";
     public static final String CONST_SIGNATURE_METHOD = "HMAC-SHA1";
     public static final String CONST_OAUTH_VERSION = "1.0";
+    
+    private Micro4blogParameters authParams;
+    private Micro4blogParameters signatureParams;
 
     public HttpHeaderFactory() {
     }
@@ -45,10 +48,10 @@ public abstract class HttpHeaderFactory {
         Random random = new Random();
         long nonce = (random.nextInt(9876599) + 123400);
         // step 2: authParams有两个用处：1.加密串一部分 2.生成最后Authorization头域
-        Micro4blogParameters authParams = this.generateAuthParameters(micro4blog, nonce, timestamp, token);
+        authParams = this.generateAuthParameters(micro4blog, nonce, timestamp, token);
         // 生成用于计算signature的，参数串  thom 如果外面传过来参数的话，那params即可覆盖authparams，不过现在处理的是内部，不需要params，注释掉方法中的这个处理
         // 真正的原因是没有实现addAll方法
-        Micro4blogParameters signatureParams = this.generateSignatureParameters(micro4blog, authParams, params, url);
+        signatureParams = this.generateSignatureParameters(micro4blog, authParams, params, url);
         // step 3: 生成用于签名的base String
         String oauthBaseString = this.generateAuthSignature(method, signatureParams, url, token);
         // step 4: 生成oauth_signature
@@ -235,6 +238,24 @@ public abstract class HttpHeaderFactory {
         }
         return buf.toString();
     }
+
+	public Micro4blogParameters getAuthParams() {
+		return authParams;
+	}
+
+	public void setAuthParams(Micro4blogParameters authParams) {
+		this.authParams = authParams;
+	}
+
+	public Micro4blogParameters getSignatureParams() {
+		return signatureParams;
+	}
+
+	public void setSignatureParams(Micro4blogParameters signatureParams) {
+		this.signatureParams = signatureParams;
+	}
+    
+    
 
 
 }
