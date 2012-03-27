@@ -17,6 +17,9 @@ public class Micro4blogForTencent extends Micro4blog {
 
 		setAppKey("801111016");
 		setAppSecret("77f11f15151a8b85b15044bca6c2d2ed");
+		
+		// TODO： 要设置callback url，并在manifest中配置
+		setRedirectUrl("micro4blog://TimelineActivity");
 
 		setUrlRequestToken("https://open.t.qq.com/cgi-bin/request_token");
 		setUrlAccessToken("https://open.t.qq.com/cgi-bin/access_token");

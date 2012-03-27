@@ -11,5 +11,6 @@ public class TimelineActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.main);
+		
 	}
 }
