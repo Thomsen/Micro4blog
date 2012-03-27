@@ -10,6 +10,7 @@ import com.micro4blog.oauth.Micro4blogException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -50,6 +51,9 @@ public class AuthActivity extends Activity {
 			AccessToken accessToken = new AccessToken(token, m4b.getAppSecret());
 			accessToken.setExpiresIn(expires_in);
 //			Micro4blog.getInstance(Micro4blog.SERVER_SINA).setAccessToken(accessToken);
+			
+			Log.i("thom", System.currentTimeMillis() + " token is " + token);
+			
 			m4b.setAccessToken(accessToken);
 			Intent intent = new Intent();
 			intent.setClass(AuthActivity.this, TimelineActivity.class);

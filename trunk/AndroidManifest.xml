@@ -24,7 +24,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".tests.TimelineActivity"></activity>
+        <activity android:name=".tests.TimelineActivity">
+            <intent-filter>
+                  <data android:scheme="micro4blog" android:host="TimelineActivity" /> 
+            </intent-filter>
+        </activity>
         <!-- end -->
     </application>
     
