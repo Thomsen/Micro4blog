@@ -49,7 +49,8 @@ public abstract class HttpHeaderFactory {
         long nonce = (random.nextInt(9876599) + 123400);
         // step 2: authParams有两个用处：1.加密串一部分 2.生成最后Authorization头域
         authParams = this.generateAuthParameters(micro4blog, nonce, timestamp, token);
-        // 生成用于计算signature的，参数串  thom 如果外面传过来参数的话，那params即可覆盖authparams，不过现在处理的是内部，不需要params，注释掉方法中的这个处理
+        // 生成用于计算signature的
+        // 如果外面传过来参数的话，那params即可覆盖authparams，不过现在处理的是内部，不需要params，注释掉方法中的这个处理
         // 真正的原因是没有实现addAll方法
         signatureParams = this.generateSignatureParameters(micro4blog, authParams, params, url);
         // step 3: 生成用于签名的base String
@@ -86,7 +87,7 @@ public abstract class HttpHeaderFactory {
 
     private Micro4blogParameters generateAuthParameters(Micro4blog micro4blog, long nonce, long timestamp, OauthToken token) {
     	Micro4blogParameters authParams = new Micro4blogParameters();
-        authParams.add("oauth_callback", "null");
+        authParams.add("oauth_callback", micro4blog.getRedirectUrl());
     	authParams.add("oauth_consumer_key", micro4blog.getAppKey());
         authParams.add("oauth_nonce", String.valueOf(nonce));
         authParams.add("oauth_signature_method", HttpHeaderFactory.CONST_SIGNATURE_METHOD);
@@ -214,8 +215,6 @@ public abstract class HttpHeaderFactory {
     public static String encode(String value) {
         String encoded = null;
                       
-        Log.i("thom", "value " + value);
-        
         try {
             encoded = URLEncoder.encode(value, "UTF-8");
         } catch (UnsupportedEncodingException ignore) {

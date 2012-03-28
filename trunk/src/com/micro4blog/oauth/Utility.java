@@ -172,9 +172,8 @@ public class Utility {
 		if (parameters == null) {
 			return "";
 		}
-
 		StringBuilder sb = new StringBuilder();
-		boolean first = true;
+		boolean first = true;  // TODO 针对多服务的第一次encode，需要考虑， 不对，是针对一次解析的过程
 		for (int loc = 0; loc < parameters.size(); loc++) {
 			if (first)
 				first = false;
@@ -183,8 +182,6 @@ public class Utility {
 			sb.append(URLEncoder.encode(parameters.getKey(loc)) + "="
 					+ URLEncoder.encode(parameters.getValue(loc)));
 		}
-		
-		Log.i("thom", "Utility encodeUrl " + sb.toString());
 		
 		return sb.toString();
 	}
@@ -295,18 +292,13 @@ public class Utility {
 			if (method.equals("GET")) {
 				url = url + "?" + encodeUrl(params);
 
-				Log.i("thom", "utility url " + url);
-				
 				HttpGet get = new HttpGet(url);
 				request = get;
 			} else if (method.equals("POST")) {
 				
-				// thom TODO: 
 				url = url + "?" + encodeUrl(params);
 				
 				HttpPost post = new HttpPost(url);
-				
-				Log.i("thom", "utility url " + url);
 				
 				byte[] data = null;
 				bos = new ByteArrayOutputStream(1024 * 50);
@@ -335,7 +327,7 @@ public class Utility {
 				request = new HttpDelete(url);
 			}
 			setHeader(micro4blog, method, request, params, url, token);
-			HttpResponse response = client.execute(request);
+			HttpResponse response = client.execute(request); //TODO　在这里执行请求，打开了url，没有
 			StatusLine status = response.getStatusLine();
 			int statusCode = status.getStatusCode();
 

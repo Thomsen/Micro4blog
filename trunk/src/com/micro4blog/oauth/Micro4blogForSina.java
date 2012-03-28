@@ -37,23 +37,17 @@ public class Micro4blogForSina extends Micro4blog {
         
         mAuthDialogListener = listener;
         
-        Log.i("thom", "Micro4blog:authorize activityCode " + activityCode);
-
         // Prefer single sign-on, where available.
         if (activityCode >= 0) {
             singleSignOnStarted = startSingleSignOn(activity, getAppKey(), permissions, activityCode);
-            Log.i("thom", "Micro4blog:authorize appKey " + getAppKey());
             
         }
         // Otherwise fall back to traditional dialog.
         if (!singleSignOnStarted) {
             startDialogAuth(activity, permissions);
-            
-            Log.i("thom", "singleSignOnStarted");
-            for (String s : permissions) {
-            	Log.i("thom", "Micro4blog:authorize " + s);
-            }
         }
+        
+        // TODO sina multiple add problem
 
     }
     
@@ -62,8 +56,6 @@ public class Micro4blogForSina extends Micro4blog {
         if (permissions.length > 0) {
             params.add("scope", TextUtils.join(",", permissions));
         }
-        
-        Log.i("thom", "start Dialog Auth");
         
         CookieSyncManager.createInstance(activity);
         dialog(activity, params, new Micro4blogDialogListener() {
@@ -116,14 +108,12 @@ public class Micro4blogForSina extends Micro4blog {
 
         if (isSessionValid()) {
             parameters.add(TOKEN, accessToken.getTokenOauthOrAccess());
-            Log.i("thom", "isSessionValid is success");
         }
         String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
         if (context.checkCallingOrSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             Utility.showAlert(context, "Error",
                     "Application requires permission to access the Internet");
         } else {
-        	Log.i("thom", "dialog show");
             new Micro4blogDialog(this, context, url, listener).show();
         }
     }
@@ -133,16 +123,7 @@ public class Micro4blogForSina extends Micro4blog {
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {
 		// TODO Auto-generated method stub
-		
 	}
 
-//    public boolean isSessionValid() {
-//        if (accessToken != null) {
-//        	Log.i("thom", "accessToken " + accessToken);
-//            return (!TextUtils.isEmpty(accessToken.getTokenOauthOrAccess()) && (accessToken.getExpiresIn() == 0 || (System
-//                    .currentTimeMillis() < accessToken.getExpiresIn())));
-//        }
-//        return false;
-//    }
 
 }

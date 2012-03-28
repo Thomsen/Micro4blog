@@ -6,6 +6,7 @@ import com.micro4blog.oauth.DialogError;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.Micro4blogDialogListener;
 import com.micro4blog.oauth.Micro4blogException;
+import com.micro4blog.oauth.Utility;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,21 +26,61 @@ public class AuthActivity extends Activity {
 		
 		setContentView(R.layout.main_test);
 		
-		Button b = (Button) findViewById(R.id.auth);
+		Button sina = (Button) findViewById(R.id.sina);
+		Button tencent = (Button) findViewById(R.id.tencent);
+		Button netease = (Button) findViewById(R.id.netease);
+		Button sohu = (Button) findViewById(R.id.sohu);
 		
-		b.setOnClickListener(new View.OnClickListener() {
+		
+		
+		sina.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
 				
-//				m4b = Micro4blog.getInstance(Micro4blog.SERVER_SINA);
-				m4b = Micro4blog.getInstance(Micro4blog.SERVER_TENCENT);
+				m4b = Micro4blog.getInstance(Micro4blog.SERVER_SINA);
 
 				m4b.authorize(AuthActivity.this, new AuthDialogListener());
 				
-//				Toast.makeText(AuthActivity.this, m4b.getUrlOauth2AccessToken() + "", Toast.LENGTH_SHORT).show();
 			}
 		});
 		
+		tencent.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				m4b = Micro4blog.getInstance(Micro4blog.SERVER_TENCENT);
+				
+				m4b.authorize(AuthActivity.this, new AuthDialogListener());
+				
+			}
+		});
+		
+		netease.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		sohu.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
+		
+	}
+	
+	protected void onDestory() {
+		super.onDestroy();
+		
+		Utility.clearCookies(this);
 	}
 	
 	public class AuthDialogListener implements Micro4blogDialogListener {
@@ -51,9 +92,6 @@ public class AuthActivity extends Activity {
 			AccessToken accessToken = new AccessToken(token, m4b.getAppSecret());
 			accessToken.setExpiresIn(expires_in);
 //			Micro4blog.getInstance(Micro4blog.SERVER_SINA).setAccessToken(accessToken);
-			
-			Log.i("thom", System.currentTimeMillis() + " token is " + token);
-			
 			m4b.setAccessToken(accessToken);
 			Intent intent = new Intent();
 			intent.setClass(AuthActivity.this, TimelineActivity.class);
