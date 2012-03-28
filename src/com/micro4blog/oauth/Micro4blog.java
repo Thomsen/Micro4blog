@@ -18,8 +18,10 @@ public abstract class Micro4blog {
 	public static final int SERVER_TENCENT = 1;
 	public static final int SERVER_NETEASE = 2;
 	public static final int SERVER_SOHU = 3;
+	
+	private static int currentServer = -1;
 
-	public static String SERVER = null;
+	public static String SERVER = "";
 	
 	public static String TOKEN = "access_token";
 	public static String EXPIRES = "expires_in";
@@ -30,11 +32,11 @@ public abstract class Micro4blog {
 	private String urlAccessToken = null;
 	private String urlAccessAuthorize = null;
 	
-	private static String appKey;
-	private static String appSecret;
+	private static String appKey = "";
+	private static String appSecret = "";
 	
 	// TODO 居然在dialog中显示了
-	private static String redirectUrl = "http://www.google.com.hk";
+	private static String redirectUrl = "";
 	
 	private static Micro4blog micro4blogInstance;
 	
@@ -54,6 +56,9 @@ public abstract class Micro4blog {
 	}
 	
 	public static Micro4blog getInstance(int serverType) {
+		
+		currentServer = serverType;
+		
 		if (serverType == SERVER_SINA) {
 			micro4blogInstance = new Micro4blogForSina();
 		} else if (serverType == SERVER_TENCENT) {
@@ -160,22 +165,14 @@ public abstract class Micro4blog {
             final Micro4blogDialogListener listener);
     
     protected abstract void authorizeCallBack(int requestCode, int resultCode, Intent data);
-
     
     protected boolean isSessionValid() {
         if (accessToken != null) {
-        	Log.i("thom", "accessToken " + accessToken);
             return (!TextUtils.isEmpty(accessToken.getTokenOauthOrAccess()) && (accessToken.getExpiresIn() == 0 || (System
                     .currentTimeMillis() < accessToken.getExpiresIn())));
         }
         return false;
     }
-    
-	//==========================================
-	/*
-	 * 
-	 */
-	//==========================================
 
 	public String getUrlAccessToken() {
 		return urlAccessAuthorize;
@@ -239,6 +236,14 @@ public abstract class Micro4blog {
 
 	public void setUrlAccessAuthorize(String urlAccessAuthorize) {
 		this.urlAccessAuthorize = urlAccessAuthorize;
+	}
+
+	public static int getCurrentServer() {
+		return currentServer;
+	}
+
+	public static void setCurrentServer(int currentServer) {
+		Micro4blog.currentServer = currentServer;
 	}
 
 	

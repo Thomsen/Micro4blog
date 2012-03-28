@@ -39,7 +39,7 @@ public class Micro4blogDialog extends Dialog {
     static final int MARGIN = 4;
     static final int PADDING = 2;
 
-    private final Micro4blog mMicro4blog;
+    private Micro4blog mMicro4blog;
     private String mUrl;
     private Micro4blogDialogListener mListener;
     private ProgressDialog mSpinner;
@@ -74,6 +74,16 @@ public class Micro4blogDialog extends Dialog {
         addContentView(mContent, new LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT));
     }
+    
+    @Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		
+		mMicro4blog = null;
+		mListener = null;
+	}
+   
 
     private void setUpWebView() {
         webViewContainer = new RelativeLayout(getContext());
@@ -91,6 +101,8 @@ public class Micro4blogDialog extends Dialog {
         mWebView.loadUrl(mUrl);
         mWebView.setLayoutParams(FILL);
         mWebView.setVisibility(View.INVISIBLE);
+        
+//        mContent.addView(mWebView);
 
         webViewContainer.addView(mWebView);
 
@@ -104,7 +116,9 @@ public class Micro4blogDialog extends Dialog {
         mContent.addView(webViewContainer, lp);
     }
 
-    private void setUpCloseBtn() {
+
+
+	private void setUpCloseBtn() {
         mBtnClose = new ImageView(getContext());
         mBtnClose.setClickable(true);
         mBtnClose.setOnClickListener(new View.OnClickListener() {
@@ -134,14 +148,13 @@ public class Micro4blogDialog extends Dialog {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.d("thom", "Redirect URL: " + url);
             // 待后台增加对默认重定向地址的支持后修改下面的逻辑
-            if (url.startsWith(mMicro4blog.getRedirectUrl())) { // TODO 为什么这里执行了
+            if (url.startsWith(mMicro4blog.getRedirectUrl())) { // TODO 为什么这里执行了， 为什么有时执行，有时有不执行
                 handleRedirectUrl(view, url);
                 Micro4blogDialog.this.dismiss();
                 return true;
             }
-            // launch non-dialog URLs in a full browser
+            // launch non-dialog URLs in a full browser， TODO: 原来是在这里执行的
             getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             return true;
         }
@@ -156,29 +169,32 @@ public class Micro4blogDialog extends Dialog {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            Log.d("thom", "onPageStarted URL: " + url);
             // google issue. shouldOverrideUrlLoading not executed
             if (url.startsWith(mMicro4blog.getRedirectUrl())) {
-            	Log.d("thom", "is google issue");
                 handleRedirectUrl(view, url);
                 view.stopLoading();
                 Micro4blogDialog.this.dismiss();
                 return;
             }
-            super.onPageStarted(view, url, favicon);
-            mSpinner.show();
+            super.onPageStarted(view, url, favicon);  // sina和tencent的区别，是tencent执行了两次， 然后执行到shouldOverrideUrlLoading
+            mSpinner.show(); // 对话框开始
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            Log.d("thom", "onPageFinished URL: " + url);
             super.onPageFinished(view, url);
-            mSpinner.dismiss();
+            mSpinner.dismiss();  // 对话框结束
 
             mContent.setBackgroundColor(Color.TRANSPARENT);
             webViewContainer.setBackgroundResource(R.drawable.dialog_bg);
-            // mBtnClose.setVisibility(View.VISIBLE);
-            mWebView.setVisibility(View.VISIBLE);
+            
+        	mWebView.setVisibility(View.VISIBLE);  // TODO 在这里显示了dialog中的验证
+        	
+        	if ( mMicro4blog.getCurrentServer() != Micro4blog.SERVER_SINA) {
+        		Micro4blogDialog.this.dismiss();
+        	}
+            
+            
         }
 
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
