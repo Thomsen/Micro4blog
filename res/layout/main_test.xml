@@ -5,9 +5,24 @@
     android:orientation="vertical" >
     
     <Button
-        android:id="@+id/auth"
+        android:id="@+id/sina"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Auth" />
+        android:text="Sina" />
+    <Button
+        android:id="@+id/tencent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Tencent" />
+    <Button
+        android:id="@+id/netease"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Netease" />
+    <Button
+        android:id="@+id/sohu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Sohu" />
 
 </LinearLayout>
