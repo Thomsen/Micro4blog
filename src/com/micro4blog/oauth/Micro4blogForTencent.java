@@ -19,8 +19,10 @@ public class Micro4blogForTencent extends Micro4blog {
 		setAppSecret("77f11f15151a8b85b15044bca6c2d2ed");
 		
 		// TODO： 要设置callback url，并在manifest中配置
-		setRedirectUrl("micro4blog://TimelineActivity");
+//		setRedirectUrl("micro4blog://TimelineActivity");
 
+		// TODO： 在dialog显示， 原来是https 换成了http
+		// 针对dialog的callback
 		setUrlRequestToken("https://open.t.qq.com/cgi-bin/request_token");
 		setUrlAccessToken("https://open.t.qq.com/cgi-bin/access_token");
 		setUrlAccessAuthorize("https://open.t.qq.com/cgi-bin/authorize");
@@ -123,11 +125,11 @@ public class Micro4blogForTencent extends Micro4blog {
 		
 		try {
 			
-			hhp.getMicro4blogAuthHeader(this, "POST", getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
+			hhp.getMicro4blogAuthHeader(this, "GET", getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
 		
 			Micro4blogParameters params = hhp.getAuthParams();
 			
-			result = request(context, getUrlRequestToken(), params, "POST", accessToken);
+			result = request(context, getUrlRequestToken(), params, "GET", accessToken);
 		} catch (Micro4blogException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -193,8 +195,11 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 较之1.0，2.0的请求参数比较少，sina是在请求前传入的
 		
 		
-		// TODO： 解决多次注册的encode问题
-		parameters.add("oauth_token", requestToken.getTokenOauthOrAccess());
+		if (requestToken.getTokenOauthOrAccess() != null) {
+			// TODO： 解决多次注册的encode问题
+			parameters.add("oauth_token", requestToken.getTokenOauthOrAccess());
+		}
+		
 		
 		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
 		

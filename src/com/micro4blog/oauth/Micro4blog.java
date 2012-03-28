@@ -33,6 +33,7 @@ public abstract class Micro4blog {
 	private static String appKey;
 	private static String appSecret;
 	
+	// TODO 居然在dialog中显示了
 	private static String redirectUrl = "http://www.google.com.hk";
 	
 	private static Micro4blog micro4blogInstance;

@@ -183,6 +183,7 @@ public class Micro4blogDialog extends Dialog {
 
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             handler.proceed();
+            // TODO 是否是针对https的请求处理
         }
 
     }
