@@ -75,15 +75,6 @@ public class Micro4blogDialog extends Dialog {
         addContentView(mContent, new LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT));
     }
-    
-//    @Override
-//	protected void onStop() {
-//		super.onStop();
-//		
-//		// XXX 导致sina的二次添加时 mMicro4blog的空指针错误
-//		mMicro4blog = null;
-//		mListener = null;
-//	}
    
 
     private void setUpWebView() {

@@ -68,7 +68,8 @@ public class Micro4blogForTencent extends Micro4blog {
 					accessToken = new OauthToken();
 				}
 
-				accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
+//				accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
+				accessToken.setTokenOauthOrAccess(values.getString("oauth_token"));
 
 				if (isSessionValid()) {
 					mAuthDialogListener.onComplete(values);
