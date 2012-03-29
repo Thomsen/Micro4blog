@@ -3,6 +3,7 @@ package com.micro4blog.oauth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 public class Micro4blogForSohu extends Micro4blog {
 
@@ -11,6 +12,8 @@ public class Micro4blogForSohu extends Micro4blog {
 		
 		setAppKey("xJjgBsXDO51ylviVj1zP");
 		setAppSecret("lu2BhNYtIpcGdRXJSg=CoElLbQlL0PJihDp1d44o");
+		
+		setRedirectUrl("micro4blog://TimelineActivity");
 
 		setUrlRequestToken("http://api.t.sohu.com/oauth/request_token");
 		setUrlAccessToken("http://api.t.sohu.com/oauth/access_token");
@@ -20,20 +23,79 @@ public class Micro4blogForSohu extends Micro4blog {
 	@Override
 	protected void authorize(Activity activity, String[] permissions,
 			int activityCode, Micro4blogDialogListener listener) {
-		// TODO Auto-generated method stub
+
+		Utility.setAuthorization(new RequestTokenHeader());
+		
+		mAuthDialogListener = listener;
+		
+		startDialogAuth(activity, permissions);
 		
 	}
 
 	@Override
 	protected void startDialogAuth(Activity activity, String[] permissions) {
-		// TODO Auto-generated method stub
+		
+		Micro4blogParameters params = new Micro4blogParameters();
+		
+		dialog(activity, params, new Micro4blogDialogListener() {
+
+			@Override
+			public void onComplete(Bundle values) {
+				// FIXME 需要解决sohu tencent netease的授权后跳转问题
+				
+			}
+
+			@Override
+			public void onError(DialogError error) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onCancel() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onMicro4blogException(Micro4blogException e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
 	}
 
 	@Override
 	protected void dialog(Context context, Micro4blogParameters parameters,
 			Micro4blogDialogListener listener) {
-		// TODO Auto-generated method stub
+
+		HttpHeaderFactory hhp = new RequestTokenHeader();
+		String result = "";
+		
+		try {
+			
+			hhp.getMicro4blogAuthHeader(this, "GET", getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
+		
+			Micro4blogParameters params = hhp.getAuthParams();
+			
+			result = request(context, getUrlRequestToken(), params, "GET", accessToken);
+		} catch (Micro4blogException e) {
+			e.printStackTrace();
+		}
+		
+		OauthToken requestToken = new OauthToken(result);
+		
+		if (requestToken.getTokenOauthOrAccess() != null) {
+			parameters.add("oauth_token", requestToken.getTokenOauthOrAccess());
+		}
+		
+		Utility.setAuthorization(new AccessTokenHeader());
+		
+		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
+		
+		new Micro4blogDialog(this, context, url, listener).show();
 		
 	}
 

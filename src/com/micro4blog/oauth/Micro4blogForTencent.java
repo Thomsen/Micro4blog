@@ -21,11 +21,11 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 要设置callback url，并在manifest中配置
 		setRedirectUrl("micro4blog://TimelineActivity");
 
-		// 在dialog显示， 原来是https 换成了http
+		// 在dialog显示， 原来是https 换成了http 记得要改post为get，反之亦是
 		// 针对dialog的callback
-		setUrlRequestToken("https://open.t.qq.com/cgi-bin/request_token");
-		setUrlAccessToken("https://open.t.qq.com/cgi-bin/access_token");
-		setUrlAccessAuthorize("https://open.t.qq.com/cgi-bin/authorize");
+		setUrlRequestToken("http://open.t.qq.com/cgi-bin/request_token");
+		setUrlAccessToken("http://open.t.qq.com/cgi-bin/access_token");
+		setUrlAccessAuthorize("http://open.t.qq.com/cgi-bin/authorize");
 
 	}
 
@@ -152,6 +152,8 @@ public class Micro4blogForTencent extends Micro4blog {
 		
 		Utility.setAuthorization(new AccessTokenHeader());
 		
+		// FIXME 解决由于通信问题，导致url没有参数，使得服务请求参数错误
+		
 		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
 		
 		new Micro4blogDialog(this, context, url, listener).show();
@@ -166,7 +168,6 @@ public class Micro4blogForTencent extends Micro4blog {
 	@Override
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {
-		// TODO Auto-generated method stub
 
 	}
 
