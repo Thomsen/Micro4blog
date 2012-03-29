@@ -59,7 +59,9 @@ public class AuthActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				m4b = Micro4blog.getInstance(Micro4blog.SERVER_NETEASE);
+				
+				m4b.authorize(AuthActivity.this, new AuthDialogListener());
 				
 			}
 		});
@@ -68,7 +70,9 @@ public class AuthActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				m4b = Micro4blog.getInstance(Micro4blog.SERVER_SOHU);
+				
+				m4b.authorize(AuthActivity.this, new AuthDialogListener());
 				
 			}
 		});

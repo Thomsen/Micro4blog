@@ -47,7 +47,9 @@ public class Micro4blogForSina extends Micro4blog {
             startDialogAuth(activity, permissions);
         }
         
-        // TODO sina multiple add problem
+        // FIXME sina multiple add problem
+        // 这个问题是由于Micro4blogDialog中使用了onStop，将mMicro4blog置为null
+        // 不过却连续生成了两个TimelineActivity
 
     }
     

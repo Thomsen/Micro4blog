@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -75,14 +76,14 @@ public class Micro4blogDialog extends Dialog {
                 LayoutParams.FILL_PARENT));
     }
     
-    @Override
-	protected void onStop() {
-		// TODO Auto-generated method stub
-		super.onStop();
-		
-		mMicro4blog = null;
-		mListener = null;
-	}
+//    @Override
+//	protected void onStop() {
+//		super.onStop();
+//		
+//		// XXX 导致sina的二次添加时 mMicro4blog的空指针错误
+//		mMicro4blog = null;
+//		mListener = null;
+//	}
    
 
     private void setUpWebView() {
@@ -101,6 +102,9 @@ public class Micro4blogDialog extends Dialog {
         mWebView.loadUrl(mUrl);
         mWebView.setLayoutParams(FILL);
         mWebView.setVisibility(View.INVISIBLE);
+        
+        // 去横向滚动，不过不行，通过url参数是可以的 TODO
+//        mWebView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
         
 //        mContent.addView(mWebView);
 
@@ -149,7 +153,7 @@ public class Micro4blogDialog extends Dialog {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // 待后台增加对默认重定向地址的支持后修改下面的逻辑
-            if (url.startsWith(mMicro4blog.getRedirectUrl())) { // TODO 为什么这里执行了， 为什么有时执行，有时有不执行
+            if (url.startsWith(mMicro4blog.getRedirectUrl())) {
                 handleRedirectUrl(view, url);
                 Micro4blogDialog.this.dismiss();
                 return true;
@@ -190,10 +194,9 @@ public class Micro4blogDialog extends Dialog {
             
         	mWebView.setVisibility(View.VISIBLE);  // TODO 在这里显示了dialog中的验证
         	
-        	if ( mMicro4blog.getCurrentServer() != Micro4blog.SERVER_SINA) {
-        		Micro4blogDialog.this.dismiss();
-        	}
-            
+//        	if ( mMicro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
+//        		Micro4blogDialog.this.dismiss();
+//        	}
             
         }
 
