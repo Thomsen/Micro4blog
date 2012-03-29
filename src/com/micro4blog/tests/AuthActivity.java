@@ -92,6 +92,11 @@ public class AuthActivity extends Activity {
 		public void onComplete(Bundle values) {
 
 			String token = values.getString("access_token");
+			
+			if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_SINA) {
+				token = values.getString("oauth_token");
+			}
+			
 			String expires_in = values.getString("expires_in");
 			AccessToken accessToken = new AccessToken(token, m4b.getAppSecret());
 			accessToken.setExpiresIn(expires_in);

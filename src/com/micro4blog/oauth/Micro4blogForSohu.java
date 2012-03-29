@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.webkit.CookieSyncManager;
 
 public class Micro4blogForSohu extends Micro4blog {
 
@@ -42,6 +43,24 @@ public class Micro4blogForSohu extends Micro4blog {
 			@Override
 			public void onComplete(Bundle values) {
 				// FIXME 需要解决sohu tencent netease的授权后跳转问题
+				
+				CookieSyncManager.getInstance().sync();
+
+				if (null == accessToken) {
+					accessToken = new OauthToken();
+				}
+
+//				accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
+				accessToken.setTokenOauthOrAccess(values.getString("oauth_token"));
+
+				if (isSessionValid()) {
+					mAuthDialogListener.onComplete(values);
+				} else {
+					mAuthDialogListener
+							.onMicro4blogException(new Micro4blogException(
+									"Failed to receive access token."));
+				}
+
 				
 			}
 
@@ -90,6 +109,9 @@ public class Micro4blogForSohu extends Micro4blog {
 		if (requestToken.getTokenOauthOrAccess() != null) {
 			parameters.add("oauth_token", requestToken.getTokenOauthOrAccess());
 		}
+		
+		parameters.add("clientType", "phone");
+		parameters.add("oauth_callback", getRedirectUrl());
 		
 		Utility.setAuthorization(new AccessTokenHeader());
 		

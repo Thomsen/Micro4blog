@@ -208,7 +208,8 @@ public class Utility {
 	 */
 	public static Bundle parseUrl(String url) {
 		// hack to prevent MalformedURLException
-		url = url.replace("weiboconnect", "http");
+//		url = url.replace("weiboconnect", "http");
+		url = url.replace("micro4blog", "http");
 		try {
 			URL u = new URL(url);
 			Bundle b = decodeUrl(u.getQuery());
