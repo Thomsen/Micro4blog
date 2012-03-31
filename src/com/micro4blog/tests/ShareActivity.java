@@ -1,11 +1,17 @@
-package com.micro4blog.oauth;
+package com.micro4blog.tests;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import com.micro4blog.R;
-import com.micro4blog.oauth.AsyncMicro4blogRunner.RequestListener;
+import com.micro4blog.http.Micro4blogParameters;
+import com.micro4blog.http.Utility;
+import com.micro4blog.oauth.AccessToken;
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.utils.AsyncMicro4blogRunner;
+import com.micro4blog.utils.Micro4blogException;
+import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;
 
 import android.app.Activity;
 import android.app.AlertDialog;

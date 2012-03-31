@@ -1,4 +1,14 @@
-package com.micro4blog.oauth;
+package com.micro4blog.service;
+
+import com.micro4blog.dialog.DialogError;
+import com.micro4blog.dialog.Micro4blogDialog;
+import com.micro4blog.dialog.Micro4blogDialogListener;
+import com.micro4blog.http.Micro4blogParameters;
+import com.micro4blog.http.Oauth2AccessTokenHeader;
+import com.micro4blog.http.Utility;
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.utils.Micro4blogException;
 
 import android.Manifest;
 import android.app.Activity;
@@ -33,19 +43,21 @@ public class Micro4blogForSina extends Micro4blog {
             final Micro4blogDialogListener listener) {
         Utility.setAuthorization(new Oauth2AccessTokenHeader());
 
-        boolean singleSignOnStarted = false;
+//        boolean singleSignOnStarted = false;
         
         mAuthDialogListener = listener;
         
         // Prefer single sign-on, where available.
-        if (activityCode >= 0) {
-            singleSignOnStarted = startSingleSignOn(activity, getAppKey(), permissions, activityCode);
-            
-        }
+//        if (activityCode >= 0) {
+//            singleSignOnStarted = startSingleSignOn(activity, getAppKey(), permissions, activityCode);
+//            
+//        }
         // Otherwise fall back to traditional dialog.
-        if (!singleSignOnStarted) {
-            startDialogAuth(activity, permissions);
-        }
+//        if (!singleSignOnStarted) {
+//            startDialogAuth(activity, permissions);
+//        }
+        
+        startDialogAuth(activity, permissions);
         
         // FIXME sina multiple add problem
         // 这个问题是由于Micro4blogDialog中使用了onStop，将mMicro4blog置为null

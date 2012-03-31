@@ -1,4 +1,4 @@
-package com.micro4blog.oauth;
+package com.micro4blog.dialog;
 
 public class DialogError extends Throwable {
 	private static final long serialVersionUID = 1L;

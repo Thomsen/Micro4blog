@@ -1,4 +1,4 @@
-package com.micro4blog.oauth;
+package com.micro4blog.utils;
 
 public class Micro4blogException extends Exception {
 

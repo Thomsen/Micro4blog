@@ -14,9 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.micro4blog.oauth;
+package com.micro4blog.utils;
 
 import java.io.IOException;
+
+import com.micro4blog.http.Micro4blogParameters;
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.tests.ShareActivity;
 
 import android.content.Context;
 

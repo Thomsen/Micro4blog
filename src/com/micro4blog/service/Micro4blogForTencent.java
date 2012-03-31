@@ -1,4 +1,16 @@
-package com.micro4blog.oauth;
+package com.micro4blog.service;
+
+import com.micro4blog.dialog.DialogError;
+import com.micro4blog.dialog.Micro4blogDialog;
+import com.micro4blog.dialog.Micro4blogDialogListener;
+import com.micro4blog.http.AccessTokenHeader;
+import com.micro4blog.http.HttpHeaderFactory;
+import com.micro4blog.http.Micro4blogParameters;
+import com.micro4blog.http.RequestTokenHeader;
+import com.micro4blog.http.Utility;
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.utils.Micro4blogException;
 
 import android.app.Activity;
 import android.content.Context;
