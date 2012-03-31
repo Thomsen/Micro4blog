@@ -1,4 +1,4 @@
-package com.micro4blog.oauth;
+package com.micro4blog.dialog;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -32,6 +32,9 @@ import android.widget.RelativeLayout;
 
 import com.micro4blog.R;
 import com.micro4blog.android.SslError;
+import com.micro4blog.http.Utility;
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.utils.Micro4blogException;
 
 public class Micro4blogDialog extends Dialog {
 

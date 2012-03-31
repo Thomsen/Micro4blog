@@ -13,9 +13,16 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity android:name=".activity.MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        
+        <activity android:name=".activity.HomeTimelineActivity" />
 
         <!-- test activity -->
+        <!-- 
         <activity android:name=".tests.AuthActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,6 +38,7 @@
                   <data android:scheme="micro4blog" android:host="TimelineActivity" /> 
             </intent-filter>
         </activity>
+        -->
         <!-- end -->
     </application>
 

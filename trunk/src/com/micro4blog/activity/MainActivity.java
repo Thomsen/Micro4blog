@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,11 +18,24 @@ import android.widget.Toast;
 
 import com.micro4blog.GlobalFramework;
 import com.micro4blog.R;
+import com.micro4blog.dialog.DialogError;
+import com.micro4blog.dialog.Micro4blogDialogListener;
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.utils.Micro4blogException;
 
 public class MainActivity extends GlobalFramework {
 	
 	private GridView mGridView;
 	private Activity mThis;
+	
+	
+	private boolean isSinaOauthed = false;
+	private boolean isSohuOauthed = false;
+	private boolean isTencentOauthed = false;
+	private boolean isNeteaseOauthed = false;
+	
+	Micro4blog mMicro4blog;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +52,15 @@ public class MainActivity extends GlobalFramework {
 		
 		
 		
+	}
+	
+	public void onResume() {
+		super.onStart();
+		
+		isSinaOauthed = gSharedPreferences.getBoolean("is_sina_oauthed", false);
+		isSohuOauthed = gSharedPreferences.getBoolean("is_sohu_oauthed", false);
+		isTencentOauthed = gSharedPreferences.getBoolean("is_tencent_oauthed", false);
+		isNeteaseOauthed = gSharedPreferences.getBoolean("is_netease_oauthed", false);
 	}
 
 	//==============================================
@@ -82,13 +106,164 @@ public class MainActivity extends GlobalFramework {
 		
 	}
 
-	protected void loginServer(int arg2) {
-		// TODO Auto-generated method stub
+	/**
+	 * 用户登录到主页，若没有添加账户，需要提示长按进行用户授权
+	 * @param serverType
+	 */
+	protected void loginServer(int serverType) {
+		
+		mMicro4blog = Micro4blog.getInstance(serverType);
+		Intent intent = new Intent(mThis, HomeTimelineActivity.class);
+		
+		switch (serverType) {
+		case Micro4blog.SERVER_SINA: {
+			
+			if (isSinaOauthed) {
+				// TODO 传递数据到timeline中显示，这时候就需要通信
+				startActivity(intent);
+			} else {
+				Toast.makeText(mThis,  "请长按进行新浪授权", Toast.LENGTH_SHORT).show();
+			}
+			
+			break;
+		}
+		case Micro4blog.SERVER_TENCENT: {
+			
+			if (isTencentOauthed ) {
+				startActivity(intent);
+			} else {
+				Toast.makeText(mThis,  "请长按进行腾讯授权", Toast.LENGTH_SHORT).show();
+			}
+			
+			break;
+		}
+		case Micro4blog.SERVER_NETEASE: {
+			
+			if (isNeteaseOauthed ) {
+				startActivity(intent);
+			} else {
+				Toast.makeText(mThis,  "请长按进行网易授权", Toast.LENGTH_SHORT).show();
+			}
+			
+			break;
+		}
+		case Micro4blog.SERVER_SOHU: {
+			
+			if (isSohuOauthed ) {
+				startActivity(intent);
+			} else {
+				Toast.makeText(mThis,  "请长按进行搜狐授权", Toast.LENGTH_SHORT).show();
+			}
+			
+			break;
+		}
+		default: {
+			break;
+		}
+		}
+		
+	}
+	
+
+	/**
+	 * 进行授权，若服务已经授权，长按时进行提示
+	 * @param serverType
+	 */
+	protected void registerServer(int serverType) {
+		switch (serverType) {
+		case Micro4blog.SERVER_SINA: {
+			if (isSinaOauthed) {
+				Toast.makeText(mThis, "已经授权新浪服务了", Toast.LENGTH_SHORT).show();
+				return ;
+			}
+			break;
+		}
+		case Micro4blog.SERVER_TENCENT: {
+			if (isTencentOauthed) {
+				Toast.makeText(mThis, "已经授权腾讯服务了", Toast.LENGTH_SHORT).show();
+				return ;
+			}
+			break;
+		}
+		case Micro4blog.SERVER_NETEASE: {
+			if (isNeteaseOauthed) {
+				Toast.makeText(mThis, "已经授权网易服务了", Toast.LENGTH_SHORT).show();
+				return ;
+			}
+			break;
+		}
+		case Micro4blog.SERVER_SOHU: {
+			if (isSohuOauthed) {
+				Toast.makeText(mThis, "已经授权搜狐服务了", Toast.LENGTH_SHORT).show();
+				return ;
+			}
+			break;
+		}
+		default: {
+			break;
+		}
+		}
+		
+		
+		mMicro4blog = Micro4blog.getInstance(serverType);
+		mMicro4blog.authorize(mThis, new MainAuthDialogListener());
 		
 	}
 
-	protected void registerServer(int arg2) {
-		// TODO Auto-generated method stub
+	/**
+	 * 该内部类主要是针对授权后的回调处理
+	 * @author Thomsen
+	 *
+	 */
+	public class MainAuthDialogListener implements Micro4blogDialogListener {
+		
+		SharedPreferences.Editor editor = gSharedPreferences.edit();
+
+		@Override
+		public void onComplete(Bundle values) {
+
+			if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SINA) {
+				
+				isSinaOauthed = true;
+				editor.putBoolean("is_sina_oauthed", isSinaOauthed);
+				
+			} else if (Micro4blog.SERVER_TENCENT == Micro4blog.getCurrentServer()) {
+
+				isTencentOauthed = true;
+				editor.putBoolean("is_tencent_oauthed", isTencentOauthed);
+				
+			} else if (Micro4blog.SERVER_NETEASE == Micro4blog.getCurrentServer()) {
+				
+				isNeteaseOauthed = true;
+				editor.putBoolean("is_netease_oauthed", isNeteaseOauthed);
+				
+			} else if (Micro4blog.SERVER_SOHU == Micro4blog.getCurrentServer()) {
+				
+				isSohuOauthed = true;
+				editor.putBoolean("is_sohu_oauthed", isSohuOauthed);
+				
+			}
+			
+			editor.commit();
+		}
+
+		@Override
+		public void onError(DialogError error) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onCancel() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onMicro4blogException(Micro4blogException e) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 
@@ -102,6 +277,11 @@ public class MainActivity extends GlobalFramework {
 		
 		mGridView.setAdapter(adapter);
 	}
+	
+	/**
+	 * 登录显示界面
+	 * @return
+	 */
 
 	private List<Map<String, Object>> getMapData() {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();

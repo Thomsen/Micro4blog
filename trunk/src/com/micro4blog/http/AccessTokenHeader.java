@@ -1,10 +1,14 @@
-package com.micro4blog.oauth;
+package com.micro4blog.http;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.utils.Micro4blogException;
 
 public class AccessTokenHeader extends HttpHeaderFactory {
 

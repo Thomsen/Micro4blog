@@ -1,4 +1,8 @@
-package com.micro4blog.oauth;
+package com.micro4blog.http;
+
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.utils.Micro4blogException;
 
 public class Oauth2AccessTokenHeader extends HttpHeaderFactory {
 

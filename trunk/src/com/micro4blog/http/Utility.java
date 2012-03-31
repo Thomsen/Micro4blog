@@ -1,4 +1,4 @@
-package com.micro4blog.oauth;
+package com.micro4blog.http;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -57,6 +57,10 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
+
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.utils.Micro4blogException;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;

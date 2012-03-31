@@ -1,4 +1,6 @@
-package com.micro4blog.oauth;
+package com.micro4blog.dialog;
+
+import com.micro4blog.utils.Micro4blogException;
 
 import android.os.Bundle;
 
