@@ -43,7 +43,7 @@ public class MainActivity extends GlobalFramework {
 		
 		mThis = this;
 		
-		setContentView(R.layout.main);
+		setContentView(R.layout.main_login);
 		
 		setUp();
 		
