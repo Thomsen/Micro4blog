@@ -11,7 +11,7 @@ public class HomeTimelineActivity extends TimelineActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.main);
+		
 		
 		Toast.makeText(this, Micro4blog.getCurrentServer() + "", Toast.LENGTH_SHORT).show();
 	}

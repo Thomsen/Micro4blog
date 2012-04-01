@@ -104,6 +104,9 @@ public class AuthActivity extends Activity {
 			m4b.setAccessToken(accessToken);
 			Intent intent = new Intent();
 			intent.setClass(AuthActivity.this, TimelineActivity.class);
+			
+			intent.putExtra("acctoken", token);
+			
 			startActivity(intent);
 		}
 
