@@ -34,10 +34,7 @@ public abstract class Micro4blog {
 	
 	private static int currentServer = -1;
 
-	public static String SERVER = "";
-	
-	public static String TOKEN = "access_token";
-	public static String EXPIRES = "expires_in";
+	private static String serverUrl = "";
 	
 	public static int DEFAULT_AUTH_ACTIVITY_CODE = 0;
 	
@@ -45,8 +42,8 @@ public abstract class Micro4blog {
 	private String urlAccessToken = null;
 	private String urlAccessAuthorize = null;
 	
-	private static String appKey = "";
-	private static String appSecret = "";
+	private String appKey = "";
+	private String appSecret = "";
 	
 	// TODO 居然在dialog中显示了
 	private static String redirectUrl = "";
@@ -57,7 +54,7 @@ public abstract class Micro4blog {
 //	public static String urlOauth2AccessAuthorize = null;
 	
 	private RequestToken requestToken;
-	protected static OauthToken accessToken;
+	protected OauthToken accessToken;
 	
 	protected Micro4blogDialogListener mAuthDialogListener;
 	
@@ -73,12 +70,17 @@ public abstract class Micro4blog {
 		currentServer = serverType;
 		
 		if (serverType == SERVER_SINA) {
-			micro4blogInstance = new Micro4blogForSina();
+	
+			micro4blogInstance = Micro4blogForSina.getInstance();
+			
 		} else if (serverType == SERVER_TENCENT) {
+
 			micro4blogInstance = new Micro4blogForTencent();
 		} else if (serverType == SERVER_NETEASE) {
+
 			micro4blogInstance = new Micro4blogForNetease();
 		} else if (serverType == SERVER_SOHU) {
+
 			micro4blogInstance = new Micro4blogForSohu();
 		}
 		
@@ -203,12 +205,12 @@ public abstract class Micro4blog {
 		this.requestToken = requestToken;
 	}
 
-	public static OauthToken getAccessToken() {
+	public OauthToken getAccessToken() {
 		return accessToken;
 	}
 
 	public void setAccessToken(OauthToken accessToken) {
-		Micro4blog.accessToken = accessToken;
+		this.accessToken = accessToken;
 	}
 
 	public String getAppKey() {
@@ -216,7 +218,7 @@ public abstract class Micro4blog {
 	}
 
 	public void setAppKey(String appKey) {
-		Micro4blog.appKey = appKey;
+		this.appKey = appKey;
 	}
 
 	public String getAppSecret() {
@@ -224,7 +226,7 @@ public abstract class Micro4blog {
 	}
 
 	public void setAppSecret(String appSecret) {
-		Micro4blog.appSecret = appSecret;
+		this.appSecret = appSecret;
 	}
 
 	public String getRedirectUrl() {
@@ -257,6 +259,14 @@ public abstract class Micro4blog {
 
 	public static void setCurrentServer(int currentServer) {
 		Micro4blog.currentServer = currentServer;
+	}
+
+	public static void setServerUrl(String serverUrl) {
+		Micro4blog.serverUrl = serverUrl;
+	}
+
+	public String getServerUrl() {
+		return serverUrl;
 	}
 
 	

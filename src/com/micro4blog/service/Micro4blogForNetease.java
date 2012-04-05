@@ -84,9 +84,7 @@ public class Micro4blogForNetease extends Micro4blog {
 //                accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
                 
                 accessToken.setTokenOauthOrAccess(values.getString("oauth_token"));
-                
-                accessToken.setExpiresIn(values.getString(EXPIRES));
-                
+                        
                 if (isSessionValid()) {
                     Log.d("Weibo-authorize",
                             "Login Success! access_token=" + accessToken.getTokenOauthOrAccess() + " expires="
