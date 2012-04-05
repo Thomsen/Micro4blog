@@ -35,8 +35,8 @@ public class AsyncMicro4blogRunner {
 	
 	private Micro4blog mMicro4blog;
 	
-	public AsyncMicro4blogRunner(Micro4blog Micro4blog){
-		this.mMicro4blog = Micro4blog;
+	public AsyncMicro4blogRunner(Micro4blog micro4blog){
+		this.mMicro4blog = micro4blog;
 	}
 	
 	public void request(final Context context, 
@@ -68,12 +68,5 @@ public class AsyncMicro4blogRunner {
 
     }
 
-
-	public void request(ShareActivity context, String url,
-			Micro4blogParameters bundle, String httpmethodPost,
-			ShareActivity shareActivity) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

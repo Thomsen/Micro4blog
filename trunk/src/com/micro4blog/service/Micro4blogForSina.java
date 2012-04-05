@@ -22,6 +22,9 @@ import android.webkit.CookieSyncManager;
 
 public class Micro4blogForSina extends Micro4blog {
 
+	
+	private static Micro4blogForSina m4bSina;
+	
 	@Override
 	protected void initConfig() {
 		
@@ -35,9 +38,19 @@ public class Micro4blogForSina extends Micro4blog {
 		
 		setUrlAccessToken("https://api.weibo.com/oauth2/access_token");
 		setUrlAccessAuthorize("https://api.weibo.com/oauth2/authorize");
+		
+		setServerUrl("https://api.weibo.com/2/");
 	
 	}
 	
+	
+	public static Micro4blogForSina getInstance() {
+		if (m4bSina == null) {
+			m4bSina = new Micro4blogForSina();
+		}
+		
+		return m4bSina;
+	}
 	
 	protected void authorize(Activity activity, String[] permissions, int activityCode,
             final Micro4blogDialogListener listener) {
@@ -80,8 +93,8 @@ public class Micro4blogForSina extends Micro4blog {
                 if (null == accessToken) {
                 	accessToken = new OauthToken();
                 }
-                accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
-                accessToken.setExpiresIn(values.getString(EXPIRES));
+                accessToken.setTokenOauthOrAccess(values.getString("access_token"));
+                accessToken.setExpiresIn(values.getString("expires_in"));
                 if (isSessionValid()) {
                     Log.d("Weibo-authorize",
                             "Login Success! access_token=" + accessToken.getTokenOauthOrAccess() + " expires="
@@ -121,7 +134,7 @@ public class Micro4blogForSina extends Micro4blog {
         parameters.add("display", "mobile");
 
         if (isSessionValid()) {
-            parameters.add(TOKEN, accessToken.getTokenOauthOrAccess());
+            parameters.add("access_token", accessToken.getTokenOauthOrAccess());
         }
         String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
         if (context.checkCallingOrSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
@@ -138,6 +151,9 @@ public class Micro4blogForSina extends Micro4blog {
 			Intent data) {
 		// TODO Auto-generated method stub
 	}
+
+
+
 
 
 }

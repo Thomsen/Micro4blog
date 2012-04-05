@@ -65,8 +65,8 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	        mTokenSecret = in.getStringExtra(EXTRA_TOKEN_SECRET);
 
 	        AccessToken accessToken = new AccessToken(mAccessToken, mTokenSecret);
-	        Micro4blog micro4blog = Micro4blog.getInstance(1);  // TODO four instance
-	        micro4blog.setAccessToken(accessToken);
+	        Micro4blog micro4blog = Micro4blog.getInstance(Micro4blog.SERVER_SINA);  // TODO four instance
+//	        micro4blog.setAccessToken(accessToken);
 
 	        Button close = (Button) this.findViewById(R.id.btnClose);
 	        close.setOnClickListener(this);
@@ -128,9 +128,10 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	        if (viewId == R.id.btnClose) {
 	            finish();
 	        } else if (viewId == R.id.btnSend) {
-	            Micro4blog micro4blog = Micro4blog.getInstance(1); // TODO four instance
+	            Micro4blog micro4blog = Micro4blog.getInstance(Micro4blog.SERVER_SINA); // TODO four instance
 	            try {
-	                if (!TextUtils.isEmpty((String) (Micro4blog.getAccessToken().getTokenOauthOrAccess()))) {
+	            	// XXX 判断是否登录
+	                if (!TextUtils.isEmpty((String) (micro4blog.getAccessToken().getTokenOauthOrAccess()))) {
 	                    this.mContent = mEdit.getText().toString();
 	                    if (!TextUtils.isEmpty(mPicPath)) {
 	                        upload(micro4blog, micro4blog.getAppKey(), this.mPicPath, this.mContent, "", "");
@@ -140,7 +141,7 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	                        update(micro4blog, micro4blog.getAppKey(), mContent, "", "");
 	                    }
 	                } else {
-	                    Toast.makeText(this, this.getString(R.string.please_login), Toast.LENGTH_LONG);
+	                    Toast.makeText(this, this.getString(R.string.please_login), Toast.LENGTH_LONG).show();
 	                }
 	            } catch (MalformedURLException e) {
 	                e.printStackTrace();
@@ -183,7 +184,7 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	            bundle.add("lat", lat);
 	        }
 	        String rlt = "";
-	        String url = micro4blog.SERVER + "statuses/upload.json";
+	        String url = micro4blog.getServerUrl() + "statuses/upload.json";
 	        AsyncMicro4blogRunner micro4blogRunner = new AsyncMicro4blogRunner(micro4blog);
 	        micro4blogRunner.request(this, url, bundle, Utility.HTTPMETHOD_POST, this);
 
@@ -202,9 +203,10 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	            bundle.add("lat", lat);
 	        }
 	        String rlt = "";
-	        String url = micro4blog.SERVER + "statuses/update.json";
-	        AsyncMicro4blogRunner Micro4blogRunner = new AsyncMicro4blogRunner(micro4blog);
-	        Micro4blogRunner.request(this, url, bundle, Utility.HTTPMETHOD_POST, this);
+	        String url = micro4blog.getServerUrl() + "statuses/update.json";
+	        AsyncMicro4blogRunner micro4blogRunner = new AsyncMicro4blogRunner(micro4blog);
+	        micro4blogRunner.request(this, url, bundle, Utility.HTTPMETHOD_POST, this);
+	     
 	        return rlt;
 	    }
 

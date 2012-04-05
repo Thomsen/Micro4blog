@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -20,10 +21,16 @@ import com.micro4blog.GlobalFramework;
 import com.micro4blog.R;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
+import com.micro4blog.oauth.AccessToken;
 import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.tests.ShareActivity;
 import com.micro4blog.utils.Micro4blogException;
 
 public class MainActivity extends GlobalFramework {
+	
+	
+	private final String TAG = "MainActivity";
 	
 	private GridView mGridView;
 	private Activity mThis;
@@ -35,6 +42,8 @@ public class MainActivity extends GlobalFramework {
 	private boolean isNeteaseOauthed = false;
 	
 	Micro4blog mMicro4blog;
+	
+	OauthToken mAccessToken;
 	
 
 	@Override
@@ -61,6 +70,9 @@ public class MainActivity extends GlobalFramework {
 		isSohuOauthed = gSharedPreferences.getBoolean("is_sohu_oauthed", false);
 		isTencentOauthed = gSharedPreferences.getBoolean("is_tencent_oauthed", false);
 		isNeteaseOauthed = gSharedPreferences.getBoolean("is_netease_oauthed", false);
+		
+		mAccessToken = new OauthToken();
+		mAccessToken.setTokenOauthOrAccess(gSharedPreferences.getString("sina_access_token", ""));
 	}
 
 	//==============================================
@@ -113,12 +125,17 @@ public class MainActivity extends GlobalFramework {
 	protected void loginServer(int serverType) {
 		
 		mMicro4blog = Micro4blog.getInstance(serverType);
-		Intent intent = new Intent(mThis, HomeTimelineActivity.class);
+//		Intent intent = new Intent(mThis, HomeTimelineActivity.class);
+		Intent intent = new Intent(mThis, ShareActivity.class);
 		
+				
 		switch (serverType) {
 		case Micro4blog.SERVER_SINA: {
 			
 			if (isSinaOauthed) {
+				
+				mMicro4blog.setAccessToken(mAccessToken);
+				
 				// TODO 传递数据到timeline中显示，这时候就需要通信
 				startActivity(intent);
 			} else {
@@ -226,6 +243,12 @@ public class MainActivity extends GlobalFramework {
 				
 				isSinaOauthed = true;
 				editor.putBoolean("is_sina_oauthed", isSinaOauthed);
+				
+				editor.putString("sina_access_token", values.getString("access_token"));
+								
+				mAccessToken.setTokenOauthOrAccess(values.getString("access_token"));
+											
+				Log.d(TAG, values.toString());
 				
 			} else if (Micro4blog.SERVER_TENCENT == Micro4blog.getCurrentServer()) {
 

@@ -24,8 +24,8 @@ public class OauthToken {
 	}
 	
 	public OauthToken(String token, String secret) {
-		oauthTokenSecret = secret;
 		tokenOauthOrAccess = token;
+		oauthTokenSecret = secret;
 	}
 	
 	private String getParameter(String params) {
