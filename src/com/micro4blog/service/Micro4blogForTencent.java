@@ -10,6 +10,7 @@ import com.micro4blog.http.RequestTokenHeader;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.utils.Micro4blogException;
 
 import android.app.Activity;
@@ -33,7 +34,7 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 要设置callback url，并在manifest中配置
 		setRedirectUrl("micro4blog://TimelineActivity");
 
-		// 在dialog显示， 原来是https 换成了http 记得要改post为get，反之亦是
+		// 为了在dialog显示， 原来是https 换成了http 记得要改post为get，反之亦是
 		// 针对dialog的callback
 		setUrlRequestToken("http://open.t.qq.com/cgi-bin/request_token");
 		setUrlAccessToken("http://open.t.qq.com/cgi-bin/access_token");
@@ -134,16 +135,25 @@ public class Micro4blogForTencent extends Micro4blog {
 		
 		try {
 			
-			hhp.getMicro4blogAuthHeader(this, "GET", getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
+			// URLEncoder Exception
+			hhp.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
 		
 			Micro4blogParameters params = hhp.getAuthParams();
 			
-			result = request(context, getUrlRequestToken(), params, "GET", accessToken);
+			result = request(context, getUrlRequestToken(), params, Utility.HTTPMETHOD_GET, accessToken);
 		} catch (Micro4blogException e) {
 			e.printStackTrace();
 		}
 		
-		OauthToken requestToken = new OauthToken(result);
+		RequestToken requestToken = new RequestToken(result);
+		
+//		RequestToken requestToken = null;
+//		try {
+//			requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
+//		} catch (Micro4blogException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 
 		// TODO: 1、通过request url和请求参数得到request token
@@ -159,7 +169,7 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 到了这里全局主要的问题就是得到该有的parameters
 		
 		
-		if (requestToken.getTokenOauthOrAccess() != null) {
+		if (requestToken != null) {
 			parameters.add("oauth_token", requestToken.getTokenOauthOrAccess());
 		}
 		

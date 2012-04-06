@@ -18,6 +18,9 @@ public class RequestTokenHeader extends HttpHeaderFactory {
 		if (bundle == null || (bundle.size() == 0)) {
             return null;
         }
+		
+		// 下面的头部在流程中都要逐步的生成，不然会encode错误，或者无法通过认证
+		
         Micro4blogParameters pp = new Micro4blogParameters();
         String key = "oauth_callback";
         pp.add(key, bundle.getValue(key));
@@ -31,9 +34,10 @@ public class RequestTokenHeader extends HttpHeaderFactory {
         pp.add(key, bundle.getValue(key));
         key = "oauth_version";
         pp.add(key, bundle.getValue(key));
-//        key = "source";
-//        pp.add(key, bundle.getValue(key));
+        key = "source";
+        pp.add(key, bundle.getValue(key));
         return pp;
+        
 	}
 
 	@Override

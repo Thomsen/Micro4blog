@@ -10,6 +10,7 @@ import com.micro4blog.http.RequestTokenHeader;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.utils.Micro4blogException;
 
 import android.Manifest;
@@ -45,7 +46,7 @@ public class Micro4blogForNetease extends Micro4blog {
 	protected void authorize(Activity activity, String[] permissions,
 			int activityCode, Micro4blogDialogListener listener) {
 
-		Utility.setAuthorization(new RequestTokenHeader());
+//		Utility.setAuthorization(new RequestTokenHeader());
 		
 		mAuthDialogListener = listener;
 		
@@ -123,23 +124,31 @@ public class Micro4blogForNetease extends Micro4blog {
 	protected void dialog(Context context, Micro4blogParameters parameters,
 			Micro4blogDialogListener listener) {
 
-		HttpHeaderFactory hhp = new RequestTokenHeader();
-		String result = "";
+//		HttpHeaderFactory hhp = new RequestTokenHeader();
+//		String result = "";
+//		
+//		try {
+//			
+//			hhp.getMicro4blogAuthHeader(this, "GET", getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
+//		
+//			Micro4blogParameters params = hhp.getAuthParams();
+//			
+//			result = request(context, getUrlRequestToken(), params, "GET", accessToken);
+//		} catch (Micro4blogException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		OauthToken requestToken = new OauthToken(result);
 		
+		RequestToken requestToken = null;
 		try {
-			
-			hhp.getMicro4blogAuthHeader(this, "GET", getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
-		
-			Micro4blogParameters params = hhp.getAuthParams();
-			
-			result = request(context, getUrlRequestToken(), params, "GET", accessToken);
+			requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
 		} catch (Micro4blogException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		OauthToken requestToken = new OauthToken(result);
-		
-		if (requestToken.getTokenOauthOrAccess() != null) {
+		if (requestToken != null) {
 			parameters.add("oauth_token", requestToken.getTokenOauthOrAccess());
 		}
 		

@@ -119,7 +119,8 @@ public class Utility {
 				request.setHeader(key, mRequestHeader.getValue(key));
 			}
 		}
-		if (!isBundleEmpty(authParam) && httpHeader != null) {
+//		if (!isBundleEmpty(authParam) && httpHeader != null) {
+		if (httpHeader != null) {
 			String authHeader = httpHeader.getMicro4blogAuthHeader(micro4blog, httpMethod,
 					url, authParam, micro4blog.getAppKey(),
 					micro4blog.getAppSecret(), token);
@@ -295,13 +296,18 @@ public class Utility {
 			HttpUriRequest request = null;
 			ByteArrayOutputStream bos = null;
 			if (method.equals("GET")) {
-				url = url + "?" + encodeUrl(params);
+				
+				// 明白，起初想要的是get方法用url参数形式，post方法用header形式
+				
+				if (! isBundleEmpty(params)) {
+					url = url + "?" + encodeUrl(params);
+				}
 
 				HttpGet get = new HttpGet(url);
 				request = get;
 			} else if (method.equals("POST")) {
 				
-				url = url + "?" + encodeUrl(params);
+//				url = url + "?" + encodeUrl(params);
 				
 				HttpPost post = new HttpPost(url);
 				
