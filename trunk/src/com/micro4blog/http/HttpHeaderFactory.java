@@ -65,8 +65,8 @@ public abstract class HttpHeaderFactory {
         // step 5: for additional parameters
         this.addAdditionalParams(authParams, params);
         
-//        return "OAuth " + encodeParameters(authParams, ",", true);
-        return encodeParameters(authParams, "&", true);
+        return "OAuth " + encodeParameters(authParams, ",", true);
+//        return encodeParameters(authParams, "&", true);
     }
 
     private String generateAuthSignature(final String method, Micro4blogParameters signatureParams,
@@ -82,7 +82,7 @@ public abstract class HttpHeaderFactory {
     		Micro4blogParameters params, String url) throws Micro4blogException {
     	Micro4blogParameters signatureParams = new Micro4blogParameters();
         signatureParams.addAll(authParams);
-//        signatureParams.add("source", micro4blog.getAppKey());
+        signatureParams.add("source", micro4blog.getAppKey());
         signatureParams.addAll(params);
         this.parseUrlParameters(url, signatureParams);
         Micro4blogParameters lsp = generateSignatureList(signatureParams);
@@ -91,7 +91,7 @@ public abstract class HttpHeaderFactory {
 
     private Micro4blogParameters generateAuthParameters(Micro4blog micro4blog, long nonce, long timestamp, OauthToken token) {
     	Micro4blogParameters authParams = new Micro4blogParameters();
-        authParams.add("oauth_callback", micro4blog.getRedirectUrl());
+//        authParams.add("oauth_callback", micro4blog.getRedirectUrl());
     	authParams.add("oauth_consumer_key", micro4blog.getAppKey());
         authParams.add("oauth_nonce", String.valueOf(nonce));
         authParams.add("oauth_signature_method", HttpHeaderFactory.CONST_SIGNATURE_METHOD);
@@ -100,7 +100,7 @@ public abstract class HttpHeaderFactory {
         if (token != null) {
             authParams.add("oauth_token", token.getTokenOauthOrAccess());
         } else {
-//            authParams.add("source", micro4blog.getAppKey());
+            authParams.add("source", micro4blog.getAppKey());
         }
         
        
@@ -145,19 +145,19 @@ public abstract class HttpHeaderFactory {
         for (int i = 0; i < postParams.size(); i++) {
             if (buf.length() != 0) {
                 if (quot) {
-                    buf.append("");
+                    buf.append("\"");
                 }
                 buf.append(splitter);
             }
             buf.append(encode(postParams.getKey(i))).append("=");
             if (quot) {
-                buf.append("");
+                buf.append("\"");
             }
             buf.append(encode(postParams.getValue(i)));
         }
         if (buf.length() != 0) {
             if (quot) {
-                buf.append("");
+                buf.append("\"");
             }
         }
         return buf.toString();

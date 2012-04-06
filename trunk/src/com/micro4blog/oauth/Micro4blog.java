@@ -96,14 +96,15 @@ public abstract class Micro4blog {
         return rlt;
     }
 
-    public RequestToken getRequestToken(Context context, String key, String secret,
+    public RequestToken getRequestToken(Context context, String httpMethod, String key, String secret,
             String callback_url) throws Micro4blogException {
         Utility.setAuthorization(new RequestTokenHeader());
-        Micro4blogParameters postParams = new Micro4blogParameters();
-        postParams.add("oauth_callback", callback_url);
+        Micro4blogParameters params = new Micro4blogParameters();
+        params.add("oauth_callback", callback_url);
+        
         String rlt;
         // TODO：待检查
-        rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.urlAccessToken, "POST", postParams, null);
+        rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlRequestToken(), httpMethod, params, null);
         RequestToken request = new RequestToken(rlt);
         this.requestToken = request;
         return request;
@@ -115,7 +116,7 @@ public abstract class Micro4blog {
         Micro4blogParameters authParam = new Micro4blogParameters();
         authParam.add("oauth_verifier", this.requestToken.getOauthVerifier()/* "605835" */);
         authParam.add("source", appKey);
-        String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.urlAccessAuthorize, "POST", authParam,
+        String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlAccessToken(), "POST", authParam,
                 this.requestToken);
         AccessToken accessToken = new AccessToken(rlt);
         this.accessToken = accessToken;
@@ -131,7 +132,7 @@ public abstract class Micro4blog {
         postParams.add("client_id", app_key);
         postParams.add("client_secret", app_secret);
         postParams.add("grant_type", "password");
-        String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.urlAccessToken, "POST", postParams,
+        String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlAccessToken(), "POST", postParams,
                 null);
         Oauth2AccessToken accessToken = new Oauth2AccessToken(rlt);
         this.accessToken = accessToken;
