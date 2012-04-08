@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.CookieSyncManager;
+import android.widget.Toast;
 
 public class Micro4blogForSina extends Micro4blog {
 
@@ -93,11 +94,11 @@ public class Micro4blogForSina extends Micro4blog {
                 if (null == accessToken) {
                 	accessToken = new OauthToken();
                 }
-                accessToken.setTokenOauthOrAccess(values.getString("access_token"));
+                accessToken.setOauthToken(values.getString("access_token"));
                 accessToken.setExpiresIn(values.getString("expires_in"));
                 if (isSessionValid()) {
                     Log.d("Weibo-authorize",
-                            "Login Success! access_token=" + accessToken.getTokenOauthOrAccess() + " expires="
+                            "Login Success! access_token=" + accessToken.getOauthToken() + " expires="
                                     + accessToken.getExpiresIn());
                     mAuthDialogListener.onComplete(values);
                 } else {
@@ -134,13 +135,16 @@ public class Micro4blogForSina extends Micro4blog {
         parameters.add("display", "mobile");
 
         if (isSessionValid()) {
-            parameters.add("access_token", accessToken.getTokenOauthOrAccess());
+            parameters.add("access_token", accessToken.getOauthToken());
         }
         String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
         if (context.checkCallingOrSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             Utility.showAlert(context, "Error",
                     "Application requires permission to access the Internet");
         } else {
+        	
+        	Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
+        	
             new Micro4blogDialog(this, context, url, listener).show();
         }
     }
@@ -149,7 +153,7 @@ public class Micro4blogForSina extends Micro4blog {
 	@Override
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {
-		// TODO Auto-generated method stub
+		
 	}
 
 

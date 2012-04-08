@@ -17,13 +17,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -52,8 +50,6 @@ public class Micro4blogDialog extends Dialog {
     private RelativeLayout webViewContainer;
     private RelativeLayout mContent;
 
-    private final static String TAG = "Micro4blog-WebView";
-
     public Micro4blogDialog(Micro4blog micro4blog, Context context, String url, Micro4blogDialogListener listener) {
         super(context, R.style.ContentOverlay);
         mMicro4blog = micro4blog;
@@ -77,6 +73,7 @@ public class Micro4blogDialog extends Dialog {
 
         addContentView(mContent, new LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT));
+        
     }
    
 
@@ -97,11 +94,9 @@ public class Micro4blogDialog extends Dialog {
         mWebView.setLayoutParams(FILL);
         mWebView.setVisibility(View.INVISIBLE);
         
-        // 去横向滚动，不过不行，通过url参数是可以的 TODO
+        // 去横向滚动，不过不行，通过url参数是可以的 
 //        mWebView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
         
-//        mContent.addView(mWebView);
-
         webViewContainer.addView(mWebView);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
@@ -186,17 +181,14 @@ public class Micro4blogDialog extends Dialog {
             mContent.setBackgroundColor(Color.TRANSPARENT);
             webViewContainer.setBackgroundResource(R.drawable.dialog_bg);
             
-        	mWebView.setVisibility(View.VISIBLE);  // TODO 在这里显示了dialog中的验证
+        	mWebView.setVisibility(View.VISIBLE);
         	
-//        	if ( mMicro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
-//        		Micro4blogDialog.this.dismiss();
-//        	}
             
         }
 
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             handler.proceed();
-            // TODO 是否是针对https的请求处理
+            
         }
 
     }

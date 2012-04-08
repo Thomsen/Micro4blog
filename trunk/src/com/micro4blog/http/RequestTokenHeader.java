@@ -34,8 +34,13 @@ public class RequestTokenHeader extends HttpHeaderFactory {
         pp.add(key, bundle.getValue(key));
         key = "oauth_version";
         pp.add(key, bundle.getValue(key));
-        key = "source";
-        pp.add(key, bundle.getValue(key));
+        
+        // 对于Tencent的Oauth参数授权，不需要source       
+        if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) {
+	        key = "source";
+	        pp.add(key, bundle.getValue(key));
+        }
+        
         return pp;
         
 	}

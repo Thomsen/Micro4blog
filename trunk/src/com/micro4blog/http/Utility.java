@@ -58,10 +58,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
-import com.micro4blog.oauth.Micro4blog;
-import com.micro4blog.oauth.OauthToken;
-import com.micro4blog.utils.Micro4blogException;
-
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.database.Cursor;
@@ -72,9 +68,12 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+
+import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.utils.Micro4blogException;
 
 /**
  * Utility class for Micro4blog object.
@@ -119,8 +118,8 @@ public class Utility {
 				request.setHeader(key, mRequestHeader.getValue(key));
 			}
 		}
-//		if (!isBundleEmpty(authParam) && httpHeader != null) {
-		if (httpHeader != null) {
+		if (!isBundleEmpty(authParam) && httpHeader != null) {
+//		if (httpHeader != null) {
 			String authHeader = httpHeader.getMicro4blogAuthHeader(micro4blog, httpMethod,
 					url, authParam, micro4blog.getAppKey(),
 					micro4blog.getAppSecret(), token);
@@ -278,7 +277,6 @@ public class Utility {
 				params.remove(key);
 			}
 		}
-		// TODO: 有图片和没有图片的通信方式
 		if (TextUtils.isEmpty(file)) {
 			rlt = openUrl(micro4blog, context, url, method, params, null, token);
 		} else {
@@ -338,7 +336,7 @@ public class Utility {
 				request = new HttpDelete(url);
 			}
 			setHeader(micro4blog, method, request, params, url, token);
-			HttpResponse response = client.execute(request); //TODO　在这里执行请求，打开了url，没有
+			HttpResponse response = client.execute(request);
 			StatusLine status = response.getStatusLine();
 			int statusCode = status.getStatusCode();
 

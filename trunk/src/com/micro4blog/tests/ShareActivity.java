@@ -131,7 +131,7 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	            Micro4blog micro4blog = Micro4blog.getInstance(Micro4blog.SERVER_SINA); // TODO four instance
 	            try {
 	            	// XXX 判断是否登录
-	                if (!TextUtils.isEmpty((String) (micro4blog.getAccessToken().getTokenOauthOrAccess()))) {
+	                if (!TextUtils.isEmpty((String) (micro4blog.getAccessToken().getOauthToken()))) {
 	                    this.mContent = mEdit.getText().toString();
 	                    if (!TextUtils.isEmpty(mPicPath)) {
 	                        upload(micro4blog, micro4blog.getAppKey(), this.mPicPath, this.mContent, "", "");

@@ -4,27 +4,26 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class OauthToken {
 	
-	private String tokenOauthOrAccess;
 	private String tokenRefresh;
 	private long expiresIn;
 	private String oauthVerifier;
 	private String oauthTokenSecret;
+	private String oauthToken;
 	private String[] responseStr;
 	
 	protected SecretKeySpec secretKeySpec;
 	
-	public OauthToken() {
-		
+	public OauthToken() {		
 	}
 	
 	public OauthToken(String resultStr) {
 		responseStr = resultStr.split("&");
 		oauthTokenSecret = getParameter("oauth_token_secret");
-		tokenOauthOrAccess = getParameter("oauth_token");
+		oauthToken = getParameter("oauth_token");
 	}
 	
 	public OauthToken(String token, String secret) {
-		tokenOauthOrAccess = token;
+		oauthToken = token;
 		oauthTokenSecret = secret;
 	}
 	
@@ -40,12 +39,12 @@ public class OauthToken {
 		return value;
 	}
 
-	public String getTokenOauthOrAccess() {
-		return tokenOauthOrAccess;
+	public String getOauthToken() {
+		return oauthToken;
 	}
 
-	public void setTokenOauthOrAccess(String tokenOauthOrAccess) {
-		this.tokenOauthOrAccess = tokenOauthOrAccess;
+	public void setOauthToken(String oauthToken) {
+		this.oauthToken = oauthToken;
 	}
 
 	public String getTokenRefresh() {

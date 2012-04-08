@@ -2,17 +2,16 @@ package com.micro4blog.activity;
 
 import java.io.IOException;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.Toast;
+
 import com.micro4blog.R;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
-import com.micro4blog.tests.ShareActivity;
 import com.micro4blog.utils.AsyncMicro4blogRunner;
 import com.micro4blog.utils.Micro4blogException;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.widget.Toast;
 
 public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro4blogRunner.RequestListener {
 	
