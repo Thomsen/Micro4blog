@@ -68,8 +68,10 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.widget.Toast;
 
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
@@ -82,6 +84,8 @@ import com.micro4blog.utils.Micro4blogException;
  */
 
 public class Utility {
+	
+	private static final String TAG = "Utility";
 
 	private static Micro4blogParameters mRequestHeader = new Micro4blogParameters();
 	private static HttpHeaderFactory httpHeader;
@@ -177,7 +181,7 @@ public class Utility {
 			return "";
 		}
 		StringBuilder sb = new StringBuilder();
-		boolean first = true;  // TODO 针对多服务的第一次encode，需要考虑， 不对，是针对一次解析的过程
+		boolean first = true;
 		for (int loc = 0; loc < parameters.size(); loc++) {
 			if (first)
 				first = false;
@@ -293,22 +297,15 @@ public class Utility {
 			HttpClient client = getNewHttpClient(context);
 			HttpUriRequest request = null;
 			ByteArrayOutputStream bos = null;
-			if (method.equals("GET")) {
-				
+			if (method.equals("GET")) {				
 				// 明白，起初想要的是get方法用url参数形式，post方法用header形式
-				
 				if (! isBundleEmpty(params)) {
 					url = url + "?" + encodeUrl(params);
 				}
-
 				HttpGet get = new HttpGet(url);
 				request = get;
-			} else if (method.equals("POST")) {
-				
-//				url = url + "?" + encodeUrl(params);
-				
+			} else if (method.equals("POST")) {		
 				HttpPost post = new HttpPost(url);
-				
 				byte[] data = null;
 				bos = new ByteArrayOutputStream(1024 * 50);
 				if (!TextUtils.isEmpty(file)) {
@@ -347,6 +344,9 @@ public class Utility {
 			}
 			// parse content stream from response
 			result = read(response);
+			
+			Log.d(TAG, "response result: " + result);
+			
 			return result;
 		} catch (IOException e) {
 			throw new Micro4blogException(e);

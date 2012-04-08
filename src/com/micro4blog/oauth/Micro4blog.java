@@ -67,13 +67,16 @@ public abstract class Micro4blog {
 			
 		} else if (serverType == SERVER_TENCENT) {
 
-			micro4blogInstance = new Micro4blogForTencent();
+			micro4blogInstance = Micro4blogForTencent.getInstance();
+			
 		} else if (serverType == SERVER_NETEASE) {
 
-			micro4blogInstance = new Micro4blogForNetease();
+			micro4blogInstance = Micro4blogForNetease.getInstance();
+			
 		} else if (serverType == SERVER_SOHU) {
 
-			micro4blogInstance = new Micro4blogForSohu();
+			micro4blogInstance = Micro4blogForSohu.getInstance();
+			
 		}
 		
 		micro4blogInstance.initConfig();
@@ -99,20 +102,20 @@ public abstract class Micro4blog {
         return request;
     }
 
-    public AccessToken generateAccessToken(Context context, RequestToken requestToken)
+    public AccessToken generateAccessToken(Context context, String httpMethod, RequestToken requestToken)
             throws Micro4blogException {
         Utility.setAuthorization(new AccessTokenHeader());
         Micro4blogParameters authParam = new Micro4blogParameters();
-        authParam.add("oauth_verifier", this.requestToken.getOauthVerifier()/* "605835" */);
-        authParam.add("source", appKey);
-        String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlAccessToken(), "POST", authParam,
+        authParam.add("oauth_verifier", this.requestToken.getOauthVerifier());
+//        authParam.add("source", appKey);
+        String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlAccessToken(), httpMethod, authParam,
                 this.requestToken);
         AccessToken accessToken = new AccessToken(rlt);
         this.accessToken = accessToken;
         return accessToken;
     }  
 
-    public Oauth2AccessToken getOauth2AccessToken(Context context, String app_key,
+    public Oauth2AccessToken getOauth2AccessToken(Context context, String httpMethod, String app_key,
             String app_secret, String usrname, String password) throws Micro4blogException {
         Utility.setAuthorization(new Oauth2AccessTokenHeader());
         Micro4blogParameters postParams = new Micro4blogParameters();
@@ -121,7 +124,7 @@ public abstract class Micro4blog {
         postParams.add("client_id", app_key);
         postParams.add("client_secret", app_secret);
         postParams.add("grant_type", "password");
-        String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlAccessToken(), "POST", postParams,
+        String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlAccessToken(), httpMethod, postParams,
                 null);
         Oauth2AccessToken accessToken = new Oauth2AccessToken(rlt);
         this.accessToken = accessToken;
@@ -180,7 +183,7 @@ public abstract class Micro4blog {
     }
 
 	public String getUrlAccessToken() {
-		return urlAccessAuthorize;
+		return urlAccessToken;
 	}
 
 	public void setUrlAccessToken(String urlAccessToken) {

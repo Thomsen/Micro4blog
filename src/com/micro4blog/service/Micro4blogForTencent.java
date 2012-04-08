@@ -21,6 +21,20 @@ import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.utils.Micro4blogException;
 
 public class Micro4blogForTencent extends Micro4blog {
+	
+	private static Micro4blogForTencent m4bTencent;
+	
+	public Micro4blogForTencent() {
+		super();
+	}
+	
+	public synchronized static Micro4blogForTencent getInstance() {
+		if (m4bTencent == null) {
+			m4bTencent = new Micro4blogForTencent();
+		}
+		
+		return m4bTencent;
+	}
 
 	@Override
 	protected void initConfig() {

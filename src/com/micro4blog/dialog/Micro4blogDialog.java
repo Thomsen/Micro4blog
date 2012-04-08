@@ -49,6 +49,9 @@ public class Micro4blogDialog extends Dialog {
     private WebView mWebView;
     private RelativeLayout webViewContainer;
     private RelativeLayout mContent;
+    
+    // 解决onPageStarted执行两次的问题
+	boolean isNoExecute = true;
 
     public Micro4blogDialog(Micro4blog micro4blog, Context context, String url, Micro4blogDialogListener listener) {
         super(context, R.style.ContentOverlay);
@@ -142,14 +145,20 @@ public class Micro4blogDialog extends Dialog {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // 待后台增加对默认重定向地址的支持后修改下面的逻辑
-            if (url.startsWith(mMicro4blog.getRedirectUrl())) {
+            if (url.startsWith(mMicro4blog.getRedirectUrl())  && isNoExecute) {
                 handleRedirectUrl(view, url);
-                Micro4blogDialog.this.dismiss();
-                return true;
+                
+//                Micro4blogDialog.this.dismiss();
+//                return true;
             }
-            // launch non-dialog URLs in a full browser， TODO: 原来是在这里执行的
-            getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            
+            isNoExecute = true;
+            Micro4blogDialog.this.dismiss();
             return true;
+                                             
+            // launch non-dialog URLs in a full browser， TODO: 原来是在这里执行的
+//            getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+//            return true;
         }
 
         @Override
@@ -162,11 +171,16 @@ public class Micro4blogDialog extends Dialog {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            // google issue. shouldOverrideUrlLoading not executed
+              	
+        	// google issue. shouldOverrideUrlLoading not executed
+        	// 但是测试sohu授权时，shouldOverideUrlLoading能够执行
             if (url.startsWith(mMicro4blog.getRedirectUrl())) {
                 handleRedirectUrl(view, url);
                 view.stopLoading();
                 Micro4blogDialog.this.dismiss();
+                
+                isNoExecute = false;
+                
                 return;
             }
             super.onPageStarted(view, url, favicon);  // sina和tencent的区别，是tencent执行了两次， 然后执行到shouldOverrideUrlLoading
@@ -200,6 +214,7 @@ public class Micro4blogDialog extends Dialog {
         String error_code = values.getString("error_code");
 
         if (error == null && error_code == null) {
+        	// 执行了Micor4blog下的service中的监听事件
             mListener.onComplete(values);
         } else if (error.equals("access_denied")) {
             // 用户或授权服务器拒绝授予数据访问权限

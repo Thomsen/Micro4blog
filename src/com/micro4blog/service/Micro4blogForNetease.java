@@ -20,6 +20,20 @@ import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.utils.Micro4blogException;
 
 public class Micro4blogForNetease extends Micro4blog {
+	
+	private static Micro4blogForNetease m4bNetease;
+	
+	public Micro4blogForNetease() {
+		super();
+	}
+	
+	public synchronized static Micro4blogForNetease getInstance() {
+		if (m4bNetease == null) {
+			m4bNetease = new Micro4blogForNetease();
+		}
+		
+		return m4bNetease;
+	}
 
 	@Override
 	protected void initConfig() {
@@ -115,7 +129,7 @@ public class Micro4blogForNetease extends Micro4blog {
 	protected void dialog(Context context, Micro4blogParameters parameters,
 			Micro4blogDialogListener listener) {
 		
-		RequestToken requestToken = null;
+		RequestToken requestToken = new RequestToken();
 		try {
 			requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
 		} catch (Micro4blogException e) {			
