@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import com.micro4blog.R;
+import com.micro4blog.http.AccessTokenHeader;
 import com.micro4blog.http.Micro4blogParameters;
+import com.micro4blog.http.RequestTokenHeader;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.AccessToken;
 import com.micro4blog.oauth.Micro4blog;
@@ -25,6 +27,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -36,11 +39,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ShareActivity extends Activity implements OnClickListener, RequestListener {
+	
+	private static final String TAG = "ShareActivity";
 
-	public static final String EXTRA_ACCESS_TOKEN = null;
-	public static final String EXTRA_TOKEN_SECRET = null;
-	public static final String EXTRA_MICRO4BLOG_CONTENT = null;
-	public static final String EXTRA_PIC_URI = null;
+	public static final String EXTRA_ACCESS_TOKEN = "micro4blog.access.token";
+	public static final String EXTRA_TOKEN_SECRET = "micro4blog.token.secret";
+	public static final String EXTRA_MICRO4BLOG_CONTENT = "micro4blog.content";
+	public static final String EXTRA_PIC_URI = "micro4blog.pic.uri";
 
 	 private TextView mTextNum;
 	    private Button mSend;
@@ -56,70 +61,82 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
-	        this.setContentView(R.layout.share_mblog_view);
+	        
+//	        this.setContentView(R.layout.share_mblog_view);
 
-	        Intent in = this.getIntent();
-	        mPicPath = in.getStringExtra(EXTRA_PIC_URI);
-	        mContent = in.getStringExtra(EXTRA_MICRO4BLOG_CONTENT);
-	        mAccessToken = in.getStringExtra(EXTRA_ACCESS_TOKEN);
-	        mTokenSecret = in.getStringExtra(EXTRA_TOKEN_SECRET);
-
-	        AccessToken accessToken = new AccessToken(mAccessToken, mTokenSecret);
-	        Micro4blog micro4blog = Micro4blog.getInstance(Micro4blog.SERVER_SINA);  // TODO four instance
+//	        Intent in = this.getIntent();
+//	        mPicPath = in.getStringExtra(EXTRA_PIC_URI);
+//	        mContent = in.getStringExtra(EXTRA_MICRO4BLOG_CONTENT);
+//	        mAccessToken = in.getStringExtra(EXTRA_ACCESS_TOKEN);
+//	        mTokenSecret = in.getStringExtra(EXTRA_TOKEN_SECRET);
+//
+//	        AccessToken accessToken = new AccessToken(mAccessToken, mTokenSecret);
+//	        Micro4blog micro4blog = Micro4blog.getInstance(Micro4blog.SERVER_SINA);  // TODO four instance
 //	        micro4blog.setAccessToken(accessToken);
-
-	        Button close = (Button) this.findViewById(R.id.btnClose);
-	        close.setOnClickListener(this);
-	        mSend = (Button) this.findViewById(R.id.btnSend);
-	        mSend.setOnClickListener(this);
-	        LinearLayout total = (LinearLayout) this.findViewById(R.id.ll_text_limit_unit);
-	        total.setOnClickListener(this);
-	        mTextNum = (TextView) this.findViewById(R.id.tv_text_limit);
-	        ImageView picture = (ImageView) this.findViewById(R.id.ivDelPic);
-	        picture.setOnClickListener(this);
-
-	        mEdit = (EditText) this.findViewById(R.id.etEdit);
-	        mEdit.addTextChangedListener(new TextWatcher() {
-	            public void afterTextChanged(Editable s) {
-	            }
-
-	            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	            }
-
-	            public void onTextChanged(CharSequence s, int start, int before, int count) {
-	                String mText = mEdit.getText().toString();
-	                String mStr;
-	                int len = mText.length();
-	                if (len <= Micro4blog_MAX_LENGTH) {
-	                    len = Micro4blog_MAX_LENGTH - len;
-	                    mTextNum.setTextColor(R.color.text_num_gray);
-	                    if (!mSend.isEnabled())
-	                        mSend.setEnabled(true);
-	                } else {
-	                    len = len - Micro4blog_MAX_LENGTH;
-
-	                    mTextNum.setTextColor(Color.RED);
-	                    if (mSend.isEnabled())
-	                        mSend.setEnabled(false);
-	                }
-	                mTextNum.setText(String.valueOf(len));
-	            }
-	        });
-	        mEdit.setText(mContent);
-	        mPiclayout = (FrameLayout) ShareActivity.this.findViewById(R.id.flPic);
-	        if (TextUtils.isEmpty(this.mPicPath)) {
-	            mPiclayout.setVisibility(View.GONE);
-	        } else {
-	            mPiclayout.setVisibility(View.VISIBLE);
-	            File file = new File(mPicPath);
-	            if (file.exists()) {
-	                Bitmap pic = BitmapFactory.decodeFile(this.mPicPath);
-	                ImageView image = (ImageView) this.findViewById(R.id.ivImage);
-	                image.setImageBitmap(pic);
-	            } else {
-	                mPiclayout.setVisibility(View.GONE);
-	            }
-	        }
+//
+//	        Button close = (Button) this.findViewById(R.id.btnClose);
+//	        close.setOnClickListener(this);
+//	        mSend = (Button) this.findViewById(R.id.btnSend);
+//	        mSend.setOnClickListener(this);
+//	        LinearLayout total = (LinearLayout) this.findViewById(R.id.ll_text_limit_unit);
+//	        total.setOnClickListener(this);
+//	        mTextNum = (TextView) this.findViewById(R.id.tv_text_limit);
+//	        ImageView picture = (ImageView) this.findViewById(R.id.ivDelPic);
+//	        picture.setOnClickListener(this);
+//
+//	        mEdit = (EditText) this.findViewById(R.id.etEdit);
+//	        mEdit.addTextChangedListener(new TextWatcher() {
+//	            public void afterTextChanged(Editable s) {
+//	            }
+//
+//	            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//	            }
+//
+//	            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//	                String mText = mEdit.getText().toString();
+//	                String mStr;
+//	                int len = mText.length();
+//	                if (len <= Micro4blog_MAX_LENGTH) {
+//	                    len = Micro4blog_MAX_LENGTH - len;
+//	                    mTextNum.setTextColor(R.color.text_num_gray);
+//	                    if (!mSend.isEnabled())
+//	                        mSend.setEnabled(true);
+//	                } else {
+//	                    len = len - Micro4blog_MAX_LENGTH;
+//
+//	                    mTextNum.setTextColor(Color.RED);
+//	                    if (mSend.isEnabled())
+//	                        mSend.setEnabled(false);
+//	                }
+//	                mTextNum.setText(String.valueOf(len));
+//	            }
+//	        });
+//	        mEdit.setText(mContent);
+//	        mPiclayout = (FrameLayout) ShareActivity.this.findViewById(R.id.flPic);
+//	        if (TextUtils.isEmpty(this.mPicPath)) {
+//	            mPiclayout.setVisibility(View.GONE);
+//	        } else {
+//	            mPiclayout.setVisibility(View.VISIBLE);
+//	            File file = new File(mPicPath);
+//	            if (file.exists()) {
+//	                Bitmap pic = BitmapFactory.decodeFile(this.mPicPath);
+//	                ImageView image = (ImageView) this.findViewById(R.id.ivImage);
+//	                image.setImageBitmap(pic);
+//	            } else {
+//	                mPiclayout.setVisibility(View.GONE);
+//	            }
+//	        }
+	        
+	        Micro4blog micro4blog = Micro4blog.getInstance(Micro4blog.getCurrentServer());
+	        
+	        try {
+				Log.i(TAG, getPublicTimeline(micro4blog));
+				
+				Toast.makeText(this, getPublicTimeline(micro4blog), Toast.LENGTH_SHORT).show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}  
+	        
 	    }
 
 	    public void onClick(View v) {
@@ -238,4 +255,22 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	        });
 
 	    }
+	    
+	    private String getPublicTimeline(Micro4blog micro4blog) throws MalformedURLException, IOException,
+        Micro4blogException {
+	    	
+	    	Utility.setAuthorization(new AccessTokenHeader());
+	    	
+	    	//		    String url = micro4blog.getServerUrl() + "statuses/public_timeline.json";
+	    	String url = micro4blog.getServerUrl() + "statuses/friends_timeline.json";
+		    Micro4blogParameters bundle = new Micro4blogParameters();
+		    bundle.add("source", micro4blog.getAppKey());
+		    bundle.add("oauth_verifier", micro4blog.getAccessToken().getOauthVerifier());
+//		    bundle.add("oauth_token", micro4blog.getAccessToken().getOauthToken());
+		    
+		    bundle.add("count", "20");
+		    
+		    String rlt = micro4blog.request(this, url, bundle, Utility.HTTPMETHOD_GET, micro4blog.getAccessToken());
+		    return rlt;
+	    } 
 }

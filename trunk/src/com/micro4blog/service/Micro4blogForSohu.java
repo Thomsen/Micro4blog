@@ -20,6 +20,20 @@ import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.utils.Micro4blogException;
 
 public class Micro4blogForSohu extends Micro4blog {
+	
+	private static Micro4blogForSohu m4bSohu;
+	
+	public Micro4blogForSohu() {
+		super();
+	}
+	
+	public synchronized static Micro4blogForSohu getInstance() {
+		if (m4bSohu == null) {
+			m4bSohu = new Micro4blogForSohu();
+		}
+		
+		return m4bSohu;
+	}
 
 	@Override
 	protected void initConfig() {
@@ -32,6 +46,8 @@ public class Micro4blogForSohu extends Micro4blog {
 		setUrlRequestToken("http://api.t.sohu.com/oauth/request_token");
 		setUrlAccessToken("http://api.t.sohu.com/oauth/access_token");
 		setUrlAccessAuthorize("http://api.t.sohu.com/oauth/authorize");
+	
+		setServerUrl("http://api.t.sohu.com/");
 	}
 
 	@Override
@@ -63,6 +79,7 @@ public class Micro4blogForSohu extends Micro4blog {
 				accessToken.setOauthToken(values.getString("oauth_token"));
 
 				if (isSessionValid()) {
+					// 执行了MainActivity中的监听事件，一次
 					mAuthDialogListener.onComplete(values);
 				} else {
 					mAuthDialogListener
@@ -96,9 +113,12 @@ public class Micro4blogForSohu extends Micro4blog {
 	protected void dialog(Context context, Micro4blogParameters parameters,
 			Micro4blogDialogListener listener) {
 		
-		RequestToken requestToken = null;
+		RequestToken requestToken = new RequestToken();
 		try {
 			requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
+		
+			setRequestToken(requestToken);			
+			
 		} catch (Micro4blogException e) {			
 			e.printStackTrace();
 		}

@@ -26,6 +26,18 @@ public class Micro4blogForSina extends Micro4blog {
 	
 	private static Micro4blogForSina m4bSina;
 	
+	public Micro4blogForSina() {
+		super();
+	}
+	
+	public static Micro4blogForSina getInstance() {
+		if (m4bSina == null) {
+			m4bSina = new Micro4blogForSina();
+		}
+		
+		return m4bSina;
+	}
+	
 	@Override
 	protected void initConfig() {
 		
@@ -42,15 +54,6 @@ public class Micro4blogForSina extends Micro4blog {
 		
 		setServerUrl("https://api.weibo.com/2/");
 	
-	}
-	
-	
-	public static Micro4blogForSina getInstance() {
-		if (m4bSina == null) {
-			m4bSina = new Micro4blogForSina();
-		}
-		
-		return m4bSina;
 	}
 	
 	protected void authorize(Activity activity, String[] permissions, int activityCode,

@@ -21,8 +21,11 @@ import com.micro4blog.GlobalFramework;
 import com.micro4blog.R;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
+import com.micro4blog.http.Utility;
+import com.micro4blog.oauth.AccessToken;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.tests.ShareActivity;
 import com.micro4blog.utils.Micro4blogException;
 
@@ -42,7 +45,9 @@ public class MainActivity extends GlobalFramework {
 	
 	Micro4blog mMicro4blog;
 	
-	OauthToken mAccessToken;
+//	RequestToken mRequestToken = new RequestToken();
+//	OauthToken mAccessToken;
+	AccessToken mAccessToken = new AccessToken();
 	
 
 	@Override
@@ -57,9 +62,6 @@ public class MainActivity extends GlobalFramework {
 		
 		setListener();
 		
-		
-		
-		
 	}
 	
 	public void onResume() {
@@ -70,8 +72,50 @@ public class MainActivity extends GlobalFramework {
 		isTencentOauthed = gSharedPreferences.getBoolean("is_tencent_oauthed", false);
 		isNeteaseOauthed = gSharedPreferences.getBoolean("is_netease_oauthed", false);
 		
-		mAccessToken = new OauthToken();
-		mAccessToken.setOauthToken(gSharedPreferences.getString("sina_access_token", ""));
+//		mAccessToken = new OauthToken();
+//		mAccessToken.setOauthToken(gSharedPreferences.getString("sina_access_token", ""));
+				
+	}
+	
+	private void readPreferences() {
+						
+		if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SINA) {
+					
+//			mRequestToken.setOauthToken(gSharedPreferences.getString("sina_access_token", ""));
+						
+		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
+			
+		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_NETEASE) {
+			
+		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SOHU) {
+			
+//			try {
+//				mRequestToken = mMicro4blog.getRequestToken(mThis, Utility.HTTPMETHOD_GET, mMicro4blog.getAppKey(),
+//						mMicro4blog.getAppSecret(), mMicro4blog.getRedirectUrl());
+//				
+//				mRequestToken.setOauthVerifier(gSharedPreferences.getString("sohu_oauth_verifier", ""));
+//				
+//				mAccessToken = mMicro4blog.generateAccessToken(mThis, Utility.HTTPMETHOD_GET, mRequestToken);
+//			
+//			} catch (Micro4blogException e) {
+//				e.printStackTrace();
+//			}
+						
+//			mRequestToken.setOauthToken(gSharedPreferences.getString("sohu_oauth_token", ""));
+			
+			mAccessToken.setOauthVerifier(gSharedPreferences.getString("sohu_oauth_verifier", null));
+			
+			mAccessToken.setOauthToken(gSharedPreferences.getString("sohu_access_token", null));
+			mAccessToken.setOauthTokenSecret(gSharedPreferences.getString("sohu_access_token_sercet", null));
+			
+			
+		}	
+				
+//		mMicro4blog.setRequestToken(mRequestToken);
+				
+//		mAccessToken.setOauthTokenSecret(mMicro4blog.getAppSecret());
+		
+		mMicro4blog.setAccessToken(mAccessToken);
 	}
 
 	//==============================================
@@ -127,16 +171,23 @@ public class MainActivity extends GlobalFramework {
 //		Intent intent = new Intent(mThis, HomeTimelineActivity.class);
 		Intent intent = new Intent(mThis, ShareActivity.class);
 		
+		readPreferences();
 				
 		switch (serverType) {
 		case Micro4blog.SERVER_SINA: {
 			
 			if (isSinaOauthed) {
-				
-				mMicro4blog.setAccessToken(mAccessToken);
+					
+//				try {
+//					mMicro4blog.share2weibo(mThis, mAccessToken.getOauthToken(), mMicro4blog.getAppSecret(), "adbds", null);
+//				} catch (Micro4blogException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				
 				// TODO 传递数据到timeline中显示，这时候就需要通信
 				startActivity(intent);
+				
 			} else {
 				Toast.makeText(mThis,  "请长按进行新浪授权", Toast.LENGTH_SHORT).show();
 			}
@@ -164,7 +215,7 @@ public class MainActivity extends GlobalFramework {
 			break;
 		}
 		case Micro4blog.SERVER_SOHU: {
-			
+							
 			if (isSohuOauthed ) {
 				startActivity(intent);
 			} else {
@@ -218,8 +269,7 @@ public class MainActivity extends GlobalFramework {
 		default: {
 			break;
 		}
-		}
-		
+		}	
 		
 		mMicro4blog = Micro4blog.getInstance(serverType);
 		mMicro4blog.authorize(mThis, new MainAuthDialogListener());
@@ -232,8 +282,11 @@ public class MainActivity extends GlobalFramework {
 	 *
 	 */
 	public class MainAuthDialogListener implements Micro4blogDialogListener {
-		
+				
 		SharedPreferences.Editor editor = gSharedPreferences.edit();
+		
+		// Syntax error on token ";", , expected TODO why
+//		mAccessToken = new AccessToken();
 
 		@Override
 		public void onComplete(Bundle values) {
@@ -254,6 +307,8 @@ public class MainActivity extends GlobalFramework {
 				isTencentOauthed = true;
 				editor.putBoolean("is_tencent_oauthed", isTencentOauthed);
 				
+//				mRequestToken.setOauthToken(values.getString("oauth_token"));
+				
 			} else if (Micro4blog.SERVER_NETEASE == Micro4blog.getCurrentServer()) {
 				
 				isNeteaseOauthed = true;
@@ -262,7 +317,34 @@ public class MainActivity extends GlobalFramework {
 			} else if (Micro4blog.SERVER_SOHU == Micro4blog.getCurrentServer()) {
 				
 				isSohuOauthed = true;
+				
+//				Toast.makeText(mThis, values.toString(), Toast.LENGTH_SHORT).show();
+				
+				RequestToken requestToken = mMicro4blog.getRequestToken();
+				requestToken.setOauthVerifier(values.getString("oauth_verifier"));
+				try {
+					mAccessToken = mMicro4blog.generateAccessToken(mThis, Utility.HTTPMETHOD_GET,
+							requestToken);
+				} catch (Micro4blogException e) {
+					e.printStackTrace();
+				}
+				
 				editor.putBoolean("is_sohu_oauthed", isSohuOauthed);
+//				editor.putString("sohu_oauth_token", values.getString("oauth_token"));
+//				editor.putString("sohu_oauth_verifier", values.getString("oauth_verifier"));
+//				
+//				mRequestToken.setOauthToken(values.getString("oauth_token"));
+//				mRequestToken.setOauthVerifier(values.getString("oauth_verifier"));
+				
+				editor.putString("sohu_oauth_verifier", values.getString("oauth_verifier"));
+				editor.putString("sohu_access_token", mAccessToken.getOauthToken());
+				
+				// 签名需要 使用request token sercet
+				editor.putString("sohu_access_token_sercet", mAccessToken.getOauthTokenSecret());
+				
+				Toast.makeText(mThis, mAccessToken.getOauthToken() + "\n" + mAccessToken.getOauthTokenSecret(), Toast.LENGTH_SHORT).show();
+				
+				
 				
 			}
 			

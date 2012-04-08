@@ -58,7 +58,7 @@ public abstract class HttpHeaderFactory {
         
         // step 2: authParams有两个用处：1.加密串一部分 2.生成最后Authorization头域
         authParams = this.generateAuthParameters(micro4blog, nonce, timestamp, token);
-        Log.d(TAG, "authParams: " + Utility.encodeParameters(authParams));
+        Log.d(TAG, "authParams before : " + Utility.encodeParameters(authParams));
 
         signatureParams = this.generateSignatureParameters(micro4blog, authParams, params, url);
         Log.d(TAG, "signatureParams: " + Utility.encodeParameters(signatureParams));
@@ -69,7 +69,7 @@ public abstract class HttpHeaderFactory {
         // step 4: 生成oauth_signature
         String signature = generateSignature(micro4blog, oauthBaseString, token);
         authParams.add("oauth_signature", signature);
-        Log.d(TAG, "authParams: " + Utility.encodeParameters(authParams));       
+        Log.d(TAG, "authParams after : " + Utility.encodeParameters(authParams));       
         
         // step 5: for additional parameters
         this.addAdditionalParams(authParams, params);
@@ -99,12 +99,10 @@ public abstract class HttpHeaderFactory {
 
     private Micro4blogParameters generateAuthParameters(Micro4blog micro4blog, long nonce, long timestamp, OauthToken token) {
     	Micro4blogParameters authParams = new Micro4blogParameters();
-    	
-    	// 腾讯微博使用URL参数方式
+     	// 腾讯微博使用URL参数方式
     	if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
           authParams.add("oauth_callback", micro4blog.getRedirectUrl()); 		
     	}
-
     	authParams.add("oauth_consumer_key", micro4blog.getAppKey());
         authParams.add("oauth_nonce", String.valueOf(nonce));
         authParams.add("oauth_signature_method", HttpHeaderFactory.CONST_SIGNATURE_METHOD);
