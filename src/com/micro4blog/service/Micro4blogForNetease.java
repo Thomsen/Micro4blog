@@ -1,26 +1,23 @@
 package com.micro4blog.service;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.webkit.CookieSyncManager;
+import android.widget.Toast;
+
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialog;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.AccessTokenHeader;
-import com.micro4blog.http.HttpHeaderFactory;
 import com.micro4blog.http.Micro4blogParameters;
-import com.micro4blog.http.RequestTokenHeader;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.utils.Micro4blogException;
-
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.util.Log;
-import android.webkit.CookieSyncManager;
 
 public class Micro4blogForNetease extends Micro4blog {
 
@@ -45,8 +42,6 @@ public class Micro4blogForNetease extends Micro4blog {
 	@Override
 	protected void authorize(Activity activity, String[] permissions,
 			int activityCode, Micro4blogDialogListener listener) {
-
-//		Utility.setAuthorization(new RequestTokenHeader());
 		
 		mAuthDialogListener = listener;
 		
@@ -82,13 +77,12 @@ public class Micro4blogForNetease extends Micro4blog {
                 if (null == accessToken) {
                 	accessToken = new OauthToken();
                 }
-//                accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
                 
-                accessToken.setTokenOauthOrAccess(values.getString("oauth_token"));
+                accessToken.setOauthToken(values.getString("oauth_token"));
                         
                 if (isSessionValid()) {
                     Log.d("Weibo-authorize",
-                            "Login Success! access_token=" + accessToken.getTokenOauthOrAccess() + " expires="
+                            "Login Success! access_token=" + accessToken.getOauthToken() + " expires="
                                     + accessToken.getExpiresIn());
                     mAuthDialogListener.onComplete(values);
                 } else {
@@ -100,20 +94,17 @@ public class Micro4blogForNetease extends Micro4blog {
 
 			@Override
 			public void onError(DialogError error) {
-				// TODO Auto-generated method stub
-				
+					
 			}
 
 			@Override
 			public void onCancel() {
-				// TODO Auto-generated method stub
-				
+					
 			}
 
 			@Override
 			public void onMicro4blogException(Micro4blogException e) {
-				// TODO Auto-generated method stub
-				
+					
 			}
 			
 		});
@@ -123,33 +114,16 @@ public class Micro4blogForNetease extends Micro4blog {
 	@Override
 	protected void dialog(Context context, Micro4blogParameters parameters,
 			Micro4blogDialogListener listener) {
-
-//		HttpHeaderFactory hhp = new RequestTokenHeader();
-//		String result = "";
-//		
-//		try {
-//			
-//			hhp.getMicro4blogAuthHeader(this, "GET", getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
-//		
-//			Micro4blogParameters params = hhp.getAuthParams();
-//			
-//			result = request(context, getUrlRequestToken(), params, "GET", accessToken);
-//		} catch (Micro4blogException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		OauthToken requestToken = new OauthToken(result);
 		
 		RequestToken requestToken = null;
 		try {
 			requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
-		} catch (Micro4blogException e) {
-			// TODO Auto-generated catch block
+		} catch (Micro4blogException e) {			
 			e.printStackTrace();
 		}
 		
-		if (requestToken != null) {
-			parameters.add("oauth_token", requestToken.getTokenOauthOrAccess());
+		if (requestToken.getOauthToken() != null) {
+			parameters.add("oauth_token", requestToken.getOauthToken());
 		}
 		
 		parameters.add("client_type", "mobile");
@@ -157,9 +131,9 @@ public class Micro4blogForNetease extends Micro4blog {
 		Utility.setAuthorization(new AccessTokenHeader());
 		
 		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
+		Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
 		
 		new Micro4blogDialog(this, context, url, listener).show();
-	
 	
 //		parameters.add("client_id", getAppKey());
 //        parameters.add("response_type", "token");
@@ -181,8 +155,7 @@ public class Micro4blogForNetease extends Micro4blog {
 	@Override
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {
-		// TODO Auto-generated method stub
-		
+			
 	}
 
 }

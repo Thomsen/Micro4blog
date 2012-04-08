@@ -10,7 +10,7 @@ public class Oauth2AccessToken extends OauthToken {
 			if (resultStr.indexOf("{") > 0) {
 				try {
 					JSONObject json = new JSONObject(resultStr);
-					setTokenOauthOrAccess(json.getString("access_token"));
+					setOauthToken(json.getString("access_token"));
 					setExpiresIn(json.getString("expires_in"));
 					setTokenRefresh(json.getString("refresh_token"));
 				} catch (JSONException e) {

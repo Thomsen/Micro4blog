@@ -39,13 +39,6 @@ public class AccessTokenHeader extends HttpHeaderFactory {
 	}
 
 	@Override
-	public void addAdditionalParams(Micro4blogParameters des,
-			Micro4blogParameters src) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public String generateSignature(Micro4blog micro4blog, String data, OauthToken token)
 			throws Micro4blogException {
 		byte[] byteHMAC = null;
@@ -69,6 +62,12 @@ public class AccessTokenHeader extends HttpHeaderFactory {
             throw new Micro4blogException(e);
         }
         return String.valueOf(Utility.base64Encode(byteHMAC));
+	}
+	
+	@Override
+	public void addAdditionalParams(Micro4blogParameters des,
+			Micro4blogParameters src) {
+			
 	}
 
 }

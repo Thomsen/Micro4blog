@@ -1,5 +1,10 @@
 package com.micro4blog.oauth;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
+
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.AccessTokenHeader;
 import com.micro4blog.http.Micro4blogParameters;
@@ -12,16 +17,6 @@ import com.micro4blog.service.Micro4blogForSohu;
 import com.micro4blog.service.Micro4blogForTencent;
 import com.micro4blog.tests.ShareActivity;
 import com.micro4blog.utils.Micro4blogException;
-
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.webkit.CookieSyncManager;
 
 public abstract class Micro4blog {
 	
@@ -49,9 +44,6 @@ public abstract class Micro4blog {
 	private static String redirectUrl = "";
 	
 	private static Micro4blog micro4blogInstance;
-	
-//	private String urlOauth2AccessToken = null;
-//	public static String urlOauth2AccessAuthorize = null;
 	
 	private RequestToken requestToken;
 	protected OauthToken accessToken;
@@ -89,7 +81,6 @@ public abstract class Micro4blog {
 		return micro4blogInstance;
 	}
 
-	// TODO: 使用request是得到通信的结果
 	public String request(Context context, String url, Micro4blogParameters params, String httpMethod,
             OauthToken token) throws Micro4blogException {
         String rlt = Utility.openUrl(micro4blogInstance, context, url, httpMethod, params, this.accessToken);
@@ -100,10 +91,8 @@ public abstract class Micro4blog {
             String callback_url) throws Micro4blogException {
         Utility.setAuthorization(new RequestTokenHeader());
         Micro4blogParameters params = new Micro4blogParameters();
-        params.add("oauth_callback", callback_url);
-        
+        params.add("oauth_callback", callback_url);        
         String rlt;
-        // TODO：待检查
         rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlRequestToken(), httpMethod, params, null);
         RequestToken request = new RequestToken(rlt);
         this.requestToken = request;
@@ -184,7 +173,7 @@ public abstract class Micro4blog {
     
     protected boolean isSessionValid() {
         if (accessToken != null) {
-            return (!TextUtils.isEmpty(accessToken.getTokenOauthOrAccess()) && (accessToken.getExpiresIn() == 0 || (System
+            return (!TextUtils.isEmpty(accessToken.getOauthToken()) && (accessToken.getExpiresIn() == 0 || (System
                     .currentTimeMillis() < accessToken.getExpiresIn())));
         }
         return false;

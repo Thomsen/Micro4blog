@@ -1,5 +1,12 @@
 package com.micro4blog.service;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.webkit.CookieSyncManager;
+import android.widget.Toast;
+
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialog;
 import com.micro4blog.dialog.Micro4blogDialogListener;
@@ -12,16 +19,6 @@ import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.utils.Micro4blogException;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.ViewGroup.LayoutParams;
-import android.webkit.CookieSyncManager;
-import android.webkit.WebView;
-import android.widget.LinearLayout;
 
 public class Micro4blogForTencent extends Micro4blog {
 
@@ -82,7 +79,7 @@ public class Micro4blogForTencent extends Micro4blog {
 				}
 
 //				accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
-				accessToken.setTokenOauthOrAccess(values.getString("oauth_token"));
+				accessToken.setOauthToken(values.getString("oauth_token"));
 
 				if (isSessionValid()) {
 					mAuthDialogListener.onComplete(values);
@@ -135,7 +132,6 @@ public class Micro4blogForTencent extends Micro4blog {
 		
 		try {
 			
-			// URLEncoder Exception
 			hhp.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
 		
 			Micro4blogParameters params = hhp.getAuthParams();
@@ -146,17 +142,9 @@ public class Micro4blogForTencent extends Micro4blog {
 		}
 		
 		RequestToken requestToken = new RequestToken(result);
-		
-//		RequestToken requestToken = null;
-//		try {
-//			requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
-//		} catch (Micro4blogException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
+				
 
-		// TODO: 1、通过request url和请求参数得到request token
+		// 1、通过request url和请求参数得到request token
 		// 2、通过request token和oauthorize url得到回调url，从中得到verifier code
 		// 第二步，是通过url中提供的用户登录授权后得到verifier code
 		// 3、通过request token、verifier code加上之前参数通过access url得到access token
@@ -169,22 +157,19 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 到了这里全局主要的问题就是得到该有的parameters
 		
 		
-		if (requestToken != null) {
-			parameters.add("oauth_token", requestToken.getTokenOauthOrAccess());
+		if (requestToken.getOauthToken() != null) {
+			parameters.add("oauth_token", requestToken.getOauthToken());
 		}
 		
 		Utility.setAuthorization(new AccessTokenHeader());
 		
-		// FIXME 解决由于通信问题，导致url没有参数，使得服务请求参数错误
-		
+	
 		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
+		
+		Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
 		
 		new Micro4blogDialog(this, context, url, listener).show();
 		
-//		WebView wv = new WebView(context);
-//		wv.loadUrl(url);
-//		((Activity) context).addContentView(wv, new LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 
-//								LinearLayout.LayoutParams.FILL_PARENT));
 
 	}
 

@@ -21,7 +21,6 @@ import com.micro4blog.GlobalFramework;
 import com.micro4blog.R;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
-import com.micro4blog.oauth.AccessToken;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.tests.ShareActivity;
@@ -72,7 +71,7 @@ public class MainActivity extends GlobalFramework {
 		isNeteaseOauthed = gSharedPreferences.getBoolean("is_netease_oauthed", false);
 		
 		mAccessToken = new OauthToken();
-		mAccessToken.setTokenOauthOrAccess(gSharedPreferences.getString("sina_access_token", ""));
+		mAccessToken.setOauthToken(gSharedPreferences.getString("sina_access_token", ""));
 	}
 
 	//==============================================
@@ -246,7 +245,7 @@ public class MainActivity extends GlobalFramework {
 				
 				editor.putString("sina_access_token", values.getString("access_token"));
 								
-				mAccessToken.setTokenOauthOrAccess(values.getString("access_token"));
+				mAccessToken.setOauthToken(values.getString("access_token"));
 											
 				Log.d(TAG, values.toString());
 				

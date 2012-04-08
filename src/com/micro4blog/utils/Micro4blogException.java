@@ -2,6 +2,10 @@ package com.micro4blog.utils;
 
 public class Micro4blogException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7507060810200881909L;
 	public int statusCode = -1;
 	
 	public Micro4blogException() {

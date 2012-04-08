@@ -26,8 +26,7 @@ public class Oauth2AccessTokenHeader extends HttpHeaderFactory {
 	@Override
 	public void addAdditionalParams(Micro4blogParameters des,
 			Micro4blogParameters src) {
-		// TODO Auto-generated method stub
-		
+				
 	}
 
 	@Override
