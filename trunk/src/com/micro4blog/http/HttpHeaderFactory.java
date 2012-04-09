@@ -40,6 +40,7 @@ public abstract class HttpHeaderFactory {
     public static final String CONST_HMAC_SHA1 = "HmacSHA1";
     public static final String CONST_SIGNATURE_METHOD = "HMAC-SHA1";
     public static final String CONST_OAUTH_VERSION = "1.0";
+    public static final String CONST_OAUTH_VERSION_A = "1.0a";
     
     private Micro4blogParameters authParams;
     private Micro4blogParameters signatureParams;
@@ -79,6 +80,11 @@ public abstract class HttpHeaderFactory {
 
     private String generateAuthSignature(final String method, Micro4blogParameters signatureParams,
             final String url, OauthToken token) {
+    	
+    	if (token != null && token.getOauthVerifier() != null) {
+    		signatureParams.add("oauth_verifier", token.getOauthVerifier());
+    	}
+    	
         StringBuffer base = new StringBuffer(method).append("&")
                 .append(encode(constructRequestURL(url))).append("&");
         base.append(encode(encodeParameters(signatureParams, "&", false)));
@@ -86,11 +92,17 @@ public abstract class HttpHeaderFactory {
         return oauthBaseString;
     }
 
-    private Micro4blogParameters generateSignatureParameters(Micro4blog micro4blog, Micro4blogParameters authParams,
+    protected Micro4blogParameters generateSignatureParameters(Micro4blog micro4blog, Micro4blogParameters authParams,
     		Micro4blogParameters params, String url) throws Micro4blogException {
     	Micro4blogParameters signatureParams = new Micro4blogParameters();
         signatureParams.addAll(authParams);
         signatureParams.add("source", micro4blog.getAppKey());
+        
+        // 不行，generateSignatureList将其过滤了
+//        if (micro4blog.getAccessToken().getOauthVerifier() != null) {
+//        	signatureParams.add("oauth_verifier", micro4blog.getAccessToken().getOauthVerifier());
+//        }
+        
         signatureParams.addAll(params);
         this.parseUrlParameters(url, signatureParams);
         Micro4blogParameters lsp = generateSignatureList(signatureParams);
@@ -110,6 +122,13 @@ public abstract class HttpHeaderFactory {
         authParams.add("oauth_version", HttpHeaderFactory.CONST_OAUTH_VERSION);
         if (token != null) {
             authParams.add("oauth_token", token.getOauthToken());
+            
+            // 为了使用access token，生成signature
+            // 不能在这里加，不能产生access token
+//            authParams.add("oauth_verifier", token.getOauthVerifier());
+            
+            // 放入generateSignatureParameters
+            
         } else {
             authParams.add("source", micro4blog.getAppKey());
         }
@@ -246,12 +265,12 @@ public abstract class HttpHeaderFactory {
     // 生成用于哈希的base string串，注意要按顺序，按需文档需求参数生成，否则40107错误
     public abstract Micro4blogParameters generateSignatureList(Micro4blogParameters bundle);
 
-    // add additional parameters to des key-value pairs,support to expanding
+    public abstract String generateSignature(Micro4blog micro4blog, String data, OauthToken token) throws Micro4blogException;
+
+ // add additional parameters to des key-value pairs,support to expanding
     // params
     public abstract void addAdditionalParams(Micro4blogParameters des, Micro4blogParameters src);
-
-    public abstract String generateSignature(Micro4blog micro4blog, String data, OauthToken token) throws Micro4blogException;
-  
+    
 	public Micro4blogParameters getAuthParams() {
 		return authParams;
 	}

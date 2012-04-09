@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.AccessTokenHeader;
+import com.micro4blog.http.HttpHeaderFactory;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Oauth2AccessTokenHeader;
 import com.micro4blog.http.RequestTokenHeader;
@@ -21,6 +22,9 @@ import com.micro4blog.utils.Micro4blogException;
 public abstract class Micro4blog {
 	
 	// TODO 需要设计，兼容4大微博
+	// 解决 oauth版本的问题，sina 2.0 sohu 1.0 tencent 1.0a netease 1.0a
+	// 首先要确定oauth的标准参数，不同平台的参数提供的不一样
+	// netease在access token的返回中使用的是access_token_secreate
 	
 	public static final int SERVER_SINA = 0;
 	public static final int SERVER_TENCENT = 1;
@@ -106,7 +110,13 @@ public abstract class Micro4blog {
             throws Micro4blogException {
         Utility.setAuthorization(new AccessTokenHeader());
         Micro4blogParameters authParam = new Micro4blogParameters();
-        authParam.add("oauth_verifier", this.requestToken.getOauthVerifier());
+        
+        if (requestToken.getOauthVerifier() != null) {
+        	 authParam.add("oauth_verifier", this.requestToken.getOauthVerifier());
+        } else {
+        	authParam.add("oauth_version", HttpHeaderFactory.CONST_OAUTH_VERSION);
+        }
+       
 //        authParam.add("source", appKey);
         String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlAccessToken(), httpMethod, authParam,
                 this.requestToken);

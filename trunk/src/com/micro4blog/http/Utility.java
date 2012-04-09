@@ -128,7 +128,13 @@ public class Utility {
 					url, authParam, micro4blog.getAppKey(),
 					micro4blog.getAppSecret(), token);
 			if (authHeader != null) {
+				
+				// Sohu的oauth中注意事项，要留意
+				// 不过这个注意事项有两个版本
+
 				request.setHeader("Authorization", authHeader);
+				
+				
 			}
 		}
 		request.setHeader("User-Agent",
@@ -339,6 +345,9 @@ public class Utility {
 
 			if (statusCode != 200) {
 				result = read(response);
+				
+				Log.d(TAG, "response result error: " + result);
+				
 				throw new Micro4blogException(String.format(status.toString()),
 						statusCode);
 			}

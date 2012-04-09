@@ -53,6 +53,7 @@ public class Micro4blogForSina extends Micro4blog {
 		setUrlAccessAuthorize("https://api.weibo.com/oauth2/authorize");
 		
 		setServerUrl("https://api.weibo.com/2/");
+//		setServerUrl("http://api.weibo.com/2/");
 	
 	}
 	

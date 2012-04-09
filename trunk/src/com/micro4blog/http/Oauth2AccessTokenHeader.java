@@ -14,7 +14,8 @@ public class Oauth2AccessTokenHeader extends HttpHeaderFactory {
 			return null;
 		}
 		
-		return "Oauth2 " + token.getOauthVerifier();
+		// 如果这里的OAuth2写成了Oauth2，则一直出现auth faild 21301
+		return "OAuth2 " + token.getOauthToken();
 	}
 
 	@Override
