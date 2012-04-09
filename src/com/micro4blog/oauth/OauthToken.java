@@ -59,6 +59,8 @@ public class OauthToken {
 		return expiresIn;
 	}
 
+	// 问题在于对expires_in的设定，使得expires_in与服务器返回的不一致，正确的
+	
 	public void setExpiresIn(long expiresIn) {
 		this.expiresIn = expiresIn;
 	}

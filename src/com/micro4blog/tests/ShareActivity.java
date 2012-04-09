@@ -6,7 +6,10 @@ import java.net.MalformedURLException;
 
 import com.micro4blog.R;
 import com.micro4blog.http.AccessTokenHeader;
+import com.micro4blog.http.ApiTokenHeader;
+import com.micro4blog.http.HttpHeaderFactory;
 import com.micro4blog.http.Micro4blogParameters;
+import com.micro4blog.http.Oauth2AccessTokenHeader;
 import com.micro4blog.http.RequestTokenHeader;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.AccessToken;
@@ -259,13 +262,16 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	    private String getPublicTimeline(Micro4blog micro4blog) throws MalformedURLException, IOException,
         Micro4blogException {
 	    	
-	    	Utility.setAuthorization(new AccessTokenHeader());
 	    	
-	    	//		    String url = micro4blog.getServerUrl() + "statuses/public_timeline.json";
+	    	
 	    	String url = micro4blog.getServerUrl() + "statuses/friends_timeline.json";
 		    Micro4blogParameters bundle = new Micro4blogParameters();
-		    bundle.add("source", micro4blog.getAppKey());
-		    bundle.add("oauth_verifier", micro4blog.getAccessToken().getOauthVerifier());
+
+	    	
+//		    String url = micro4blog.getServerUrl() + "statuses/public_timeline.json";
+	    	
+//		    bundle.add("source", micro4blog.getAppKey());
+//		    bundle.add("oauth_verifier", micro4blog.getAccessToken().getOauthVerifier());
 //		    bundle.add("oauth_token", micro4blog.getAccessToken().getOauthToken());
 		    
 		    bundle.add("count", "20");
