@@ -104,6 +104,7 @@ public class Micro4blogForSina extends Micro4blog {
                     Log.d("Weibo-authorize",
                             "Login Success! access_token=" + accessToken.getOauthToken() + " expires="
                                     + accessToken.getExpiresIn());
+                    setAccessToken(accessToken);
                     mAuthDialogListener.onComplete(values);
                 } else {
                     Log.d("Weibo-authorize", "Failed to receive access token");
@@ -158,6 +159,9 @@ public class Micro4blogForSina extends Micro4blog {
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {
 		
+	}
+
+	protected void getUserAccessToken(Bundle values) {
 	}
 
 

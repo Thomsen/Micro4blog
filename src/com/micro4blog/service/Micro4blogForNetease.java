@@ -6,13 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.CookieSyncManager;
-import android.widget.Toast;
 
 import com.micro4blog.dialog.DialogError;
-import com.micro4blog.dialog.Micro4blogDialog;
 import com.micro4blog.dialog.Micro4blogDialogListener;
-import com.micro4blog.http.AccessTokenHeader;
 import com.micro4blog.http.Micro4blogParameters;
+import com.micro4blog.http.RequestTokenHeader;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
@@ -21,13 +19,13 @@ import com.micro4blog.utils.Micro4blogException;
 
 public class Micro4blogForNetease extends Micro4blog {
 	
-	private static Micro4blogForNetease m4bNetease;
+	private static Micro4blog m4bNetease;
 	
 	public Micro4blogForNetease() {
 		super();
 	}
 	
-	public synchronized static Micro4blogForNetease getInstance() {
+	public synchronized static Micro4blog getInstance() {
 		if (m4bNetease == null) {
 			m4bNetease = new Micro4blogForNetease();
 		}
@@ -50,6 +48,8 @@ public class Micro4blogForNetease extends Micro4blog {
 
 //		setUrlAccessAuthorize("https://api.t.163.com/oauth2/authorize");
 //		setUrlAccessToken("https://api.t.163.com/oauth2/access_token");
+		
+		setServerUrl("http://api.t.163.com/");
 		
 	}
 
@@ -88,23 +88,33 @@ public class Micro4blogForNetease extends Micro4blog {
 			public void onComplete(Bundle values) {
 				// ensure any cookies set by the dialog are saved
                 CookieSyncManager.getInstance().sync();
-                if (null == accessToken) {
-                	accessToken = new OauthToken();
-                }
                 
-                accessToken.setOauthToken(values.getString("oauth_token"));
-                        
-                if (isSessionValid()) {
-                    Log.d("Weibo-authorize",
-                            "Login Success! access_token=" + accessToken.getOauthToken() + " expires="
-                                    + accessToken.getExpiresIn());
-                    mAuthDialogListener.onComplete(values);
-                } else {
-                    Log.d("Weibo-authorize", "Failed to receive access token");
-                    mAuthDialogListener.onMicro4blogException(new Micro4blogException(
-                            "Failed to receive access token."));
-                }
-			}
+                // oauth第三步，换取access token				
+				getUserAccessToken(values);
+				
+				mAuthDialogListener.onComplete(values);
+                
+//                // 代码的健壮性
+//                if (null == requestToken) {
+//                	requestToken = new RequestToken();
+//                }
+//                
+//                // 获取第二步，得到的结果
+//                // 用户授权过后的token，网易没有返回oauth_verifier
+//                requestToken.setOauthToken(values.getString("oauth_token"));
+//                setRequestToken(requestToken);
+//                        
+//                if (isSessionValid()) {
+//                    Log.d("Weibo-authorize",
+//                            "Login Success! access_token=" + accessToken.getOauthToken() + " expires="
+//                                    + accessToken.getExpiresIn());
+//                    mAuthDialogListener.onComplete(values);
+//                } else {
+//                    Log.d("Weibo-authorize", "Failed to receive access token");
+//                    mAuthDialogListener.onMicro4blogException(new Micro4blogException(
+//                            "Failed to receive access token."));
+//                }
+			}		
 
 			@Override
 			public void onError(DialogError error) {
@@ -129,25 +139,13 @@ public class Micro4blogForNetease extends Micro4blog {
 	protected void dialog(Context context, Micro4blogParameters parameters,
 			Micro4blogDialogListener listener) {
 		
-		RequestToken requestToken = new RequestToken();
-		try {
-			requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
-		} catch (Micro4blogException e) {			
-			e.printStackTrace();
-		}
-		
-		if (requestToken.getOauthToken() != null) {
-			parameters.add("oauth_token", requestToken.getOauthToken());
-		}
+		// oauth第一步，获取request token
+		getAppRequestToken(context, parameters);
 		
 		parameters.add("client_type", "mobile");
 		
-		Utility.setAuthorization(new AccessTokenHeader());
-		
-		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
-		Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
-		
-		new Micro4blogDialog(this, context, url, listener).show();
+		// oauth第二步，进行用户的授权认证
+		getUserRequestToken(context, parameters, listener);
 	
 //		parameters.add("client_id", getAppKey());
 //        parameters.add("response_type", "token");
@@ -166,6 +164,7 @@ public class Micro4blogForNetease extends Micro4blog {
 //        }
 	}
 
+	
 	@Override
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {

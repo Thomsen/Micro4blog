@@ -3,8 +3,11 @@ package com.micro4blog.oauth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.Toast;
 
+import com.micro4blog.dialog.Micro4blogDialog;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.AccessTokenHeader;
 import com.micro4blog.http.HttpHeaderFactory;
@@ -54,7 +57,7 @@ public abstract class Micro4blog {
 	
 	protected Micro4blogDialogListener mAuthDialogListener;
 	
-	protected abstract void initConfig();
+	protected Context mContext;
 	
 	public Micro4blog() {
 		Utility.setRequestHeader("Accept-Encoding", "gzip");
@@ -63,34 +66,140 @@ public abstract class Micro4blog {
 	
 	public static Micro4blog getInstance(int serverType) {
 		
-		currentServer = serverType;
-		
+		currentServer = serverType;		
 		if (serverType == SERVER_SINA) {
-	
-			micro4blogInstance = Micro4blogForSina.getInstance();
-			
+			micro4blogInstance = Micro4blogForSina.getInstance();		
 		} else if (serverType == SERVER_TENCENT) {
-
-			micro4blogInstance = Micro4blogForTencent.getInstance();
-			
+			micro4blogInstance = Micro4blogForTencent.getInstance();			
 		} else if (serverType == SERVER_NETEASE) {
-
-			micro4blogInstance = Micro4blogForNetease.getInstance();
-			
+			micro4blogInstance = Micro4blogForNetease.getInstance();			
 		} else if (serverType == SERVER_SOHU) {
-
-			micro4blogInstance = Micro4blogForSohu.getInstance();
-			
-		}
-		
+			micro4blogInstance = Micro4blogForSohu.getInstance();			
+		}		
 		micro4blogInstance.initConfig();
 		
 		return micro4blogInstance;
+	}
+	
+	
+	/**
+	 * OAuth第一步，得到未经授权的request token
+	 * @param context
+	 * @param parameters
+	 */
+	protected void getAppRequestToken(Context context, Micro4blogParameters parameters) {
+				
+		if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) {
+			
+			requestToken = new RequestToken();
+			
+			try {
+				requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
+					
+			} catch (Micro4blogException e) {			
+				e.printStackTrace();
+			}
+		} else {
+			RequestTokenHeader header = new RequestTokenHeader();
+			String result = "";
+			
+			try {
+				
+//				parameters.add("oauth_callback", getRedirectUrl());
+				
+				header.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), requestToken);
+			
+				Micro4blogParameters params = header.getAuthParams();
+				
+				result = request(context, getUrlRequestToken(), params, Utility.HTTPMETHOD_GET, requestToken);
+			} catch (Micro4blogException e) {
+				e.printStackTrace();
+			}
+			
+			requestToken = new RequestToken(result);
+		}
+		
+		
+		
+		if (requestToken.getOauthToken() != null) {
+			parameters.add("oauth_token", requestToken.getOauthToken());
+		}
+		
+		
+//		parameters.add("client_type", "mobile");
+	}
+
+	/**
+	 * OAuth第二步， 得到经过授权qeust token
+	 * 与未经授权的request token相同
+	 * @param context
+	 * @param parameters
+	 * @param listener
+	 */
+	protected void getUserRequestToken(Context context, Micro4blogParameters parameters, Micro4blogDialogListener listener) {
+		
+		Utility.setAuthorization(new AccessTokenHeader());
+		
+		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
+		Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
+		
+		new Micro4blogDialog(this, context, url, listener).show();
+	}
+	
+	/**
+	 * OAuth第三步，用授权的request token换取access token
+	 * @param values
+	 */
+	protected void getUserAccessToken(Bundle values) {
+		if (null == requestToken) {
+			requestToken = new RequestToken();
+		}
+
+		requestToken.setOauthToken(values.getString("oauth_token"));
+		requestToken.setOauthVerifier(values.getString("oauth_verifier"));
+		
+		setRequestToken(requestToken);
+		
+		if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) {
+			try {
+				accessToken = generateAccessToken(mContext, Utility.HTTPMETHOD_GET,
+						requestToken);
+			} catch (Micro4blogException e) {
+				e.printStackTrace();
+			}
+		} else {			
+			AccessTokenHeader header = new AccessTokenHeader();
+			String result = "";
+			
+			try {
+				
+				Micro4blogParameters params = new Micro4blogParameters();
+//				params.add("oauth_verifier", requestToken.getOauthVerifier());
+				
+				header.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, getUrlAccessToken(), params, getAppKey(), getAppSecret(), requestToken);
+			
+				params = header.getAuthParams();
+				
+//				params.add("oauth_callback", getRedirectUrl());
+				
+//				result = request(mContext, getUrlAccessToken(), params, Utility.HTTPMETHOD_GET, requestToken);
+				
+				result = Utility.openUrl(micro4blogInstance, mContext, getUrlAccessToken(), Utility.HTTPMETHOD_GET, params, requestToken);
+				
+			} catch (Micro4blogException e) {
+				e.printStackTrace();
+			}
+			
+			accessToken = new OauthToken(result);
+		}
+				
+		setAccessToken(accessToken);
 	}
 
 	public String request(Context context, String url, Micro4blogParameters params, String httpMethod,
             OauthToken token) throws Micro4blogException {
         String rlt = Utility.openUrl(micro4blogInstance, context, url, httpMethod, params, this.accessToken);
+//		String rlt = Utility.openUrl(micro4blogInstance, context, url, httpMethod, params, token);
         return rlt;
     }
 
@@ -114,9 +223,10 @@ public abstract class Micro4blog {
         if (requestToken.getOauthVerifier() != null) {
         	 authParam.add("oauth_verifier", this.requestToken.getOauthVerifier());
         } else {
-        	authParam.add("oauth_version", HttpHeaderFactory.CONST_OAUTH_VERSION);
-        }
-       
+//        	authParam.add("oauth_version", HttpHeaderFactory.CONST_OAUTH_VERSION);
+        	authParam.add("oauth_token", requestToken.getOauthToken());
+        }  
+        
 //        authParam.add("source", appKey);
         String rlt = Utility.openUrl(micro4blogInstance, context, micro4blogInstance.getUrlAccessToken(), httpMethod, authParam,
                 this.requestToken);
@@ -173,16 +283,6 @@ public abstract class Micro4blog {
             final Micro4blogDialogListener listener) {
         authorize(activity, permissions, DEFAULT_AUTH_ACTIVITY_CODE, listener);
     }
-
-    protected abstract void authorize(Activity activity, String[] permissions, int activityCode,
-            final Micro4blogDialogListener listener);
-    
-    protected abstract void startDialogAuth(Activity activity, String[] permissions);
-
-    protected abstract void dialog(Context context, Micro4blogParameters parameters,
-            final Micro4blogDialogListener listener);
-    
-    protected abstract void authorizeCallBack(int requestCode, int resultCode, Intent data);
     
     protected boolean isSessionValid() {
         if (accessToken != null) {
@@ -271,6 +371,17 @@ public abstract class Micro4blog {
 	public String getServerUrl() {
 		return serverUrl;
 	}
+	
+	protected abstract void initConfig();
+	
+    protected abstract void authorize(Activity activity, String[] permissions, int activityCode,
+            final Micro4blogDialogListener listener);
+    
+    protected abstract void startDialogAuth(Activity activity, String[] permissions);
 
+    protected abstract void dialog(Context context, Micro4blogParameters parameters,
+            final Micro4blogDialogListener listener);
+    
+    protected abstract void authorizeCallBack(int requestCode, int resultCode, Intent data);
 	
 }

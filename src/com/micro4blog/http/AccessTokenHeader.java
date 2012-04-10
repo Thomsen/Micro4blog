@@ -32,11 +32,12 @@ public class AccessTokenHeader extends HttpHeaderFactory {
         
         if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_NETEASE) {
             key = "oauth_verifier";
-            pp.add(key, bundle.getValue(key)); 
-            
-            key = "oauth_version";
-            pp.add(key, bundle.getValue(key));
+            pp.add(key, bundle.getValue(key));            
+           
         }
+        
+        key = "oauth_version";
+        pp.add(key, bundle.getValue(key));
                
  
         
