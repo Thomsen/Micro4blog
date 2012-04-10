@@ -85,23 +85,30 @@ public class Micro4blogForTencent extends Micro4blog {
 
 			@Override
 			public void onComplete(Bundle values) {
-
+				
 				CookieSyncManager.getInstance().sync();
+                
+                // oauth第三步，换取access token				
+				getUserAccessToken(values);
+				
+				mAuthDialogListener.onComplete(values);
 
-				if (null == accessToken) {
-					accessToken = new OauthToken();
-				}
-
-//				accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
-				accessToken.setOauthToken(values.getString("oauth_token"));
-
-				if (isSessionValid()) {
-					mAuthDialogListener.onComplete(values);
-				} else {
-					mAuthDialogListener
-							.onMicro4blogException(new Micro4blogException(
-									"Failed to receive access token."));
-				}
+//				CookieSyncManager.getInstance().sync();
+//
+//				if (null == accessToken) {
+//					accessToken = new OauthToken();
+//				}
+//
+////				accessToken.setTokenOauthOrAccess(values.getString(TOKEN));
+//				accessToken.setOauthToken(values.getString("oauth_token"));
+//
+//				if (isSessionValid()) {
+//					mAuthDialogListener.onComplete(values);
+//				} else {
+//					mAuthDialogListener
+//							.onMicro4blogException(new Micro4blogException(
+//									"Failed to receive access token."));
+//				}
 
 			}
 
@@ -141,21 +148,25 @@ public class Micro4blogForTencent extends Micro4blog {
 		// HttpHeaderFactory hhp = new AccessTokenHeader();
 		
 		
-		HttpHeaderFactory hhp = new RequestTokenHeader();
-		String result = "";
-		
-		try {
-			
-			hhp.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
-		
-			Micro4blogParameters params = hhp.getAuthParams();
-			
-			result = request(context, getUrlRequestToken(), params, Utility.HTTPMETHOD_GET, accessToken);
-		} catch (Micro4blogException e) {
-			e.printStackTrace();
-		}
-		
-		RequestToken requestToken = new RequestToken(result);
+//		RequestTokenHeader header = new RequestTokenHeader();
+//		String result = "";
+//		
+//		try {
+//			
+//			parameters.add("oauth_callback", getRedirectUrl());
+//			
+//			header.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), accessToken);
+//		
+//			Micro4blogParameters params = header.getAuthParams();
+//			
+////			params.add("oauth_callback", getRedirectUrl());
+//			
+//			result = request(context, getUrlRequestToken(), params, Utility.HTTPMETHOD_GET, accessToken);
+//		} catch (Micro4blogException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		RequestToken requestToken = new RequestToken(result);
 				
 
 		// 1、通过request url和请求参数得到request token
@@ -171,18 +182,25 @@ public class Micro4blogForTencent extends Micro4blog {
 		// 到了这里全局主要的问题就是得到该有的parameters
 		
 		
-		if (requestToken.getOauthToken() != null) {
-			parameters.add("oauth_token", requestToken.getOauthToken());
-		}
+//		if (requestToken.getOauthToken() != null) {
+//			parameters.add("oauth_token", requestToken.getOauthToken());
+//		}
+//		
+//		Utility.setAuthorization(new AccessTokenHeader());
+//		
+//	
+//		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
+//		
+//		Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
+//		
+//		new Micro4blogDialog(this, context, url, listener).show();
 		
-		Utility.setAuthorization(new AccessTokenHeader());
 		
-	
-		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
+		// oauth第一步，获取request token
+		getAppRequestToken(context, parameters);
 		
-		Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
-		
-		new Micro4blogDialog(this, context, url, listener).show();
+		// oauth第二步，进行用户的授权认证
+		getUserRequestToken(context, parameters, listener);
 		
 
 	}
@@ -192,5 +210,6 @@ public class Micro4blogForTencent extends Micro4blog {
 			Intent data) {
 
 	}
+
 
 }

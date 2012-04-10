@@ -54,6 +54,8 @@ public class Micro4blogForSohu extends Micro4blog {
 	protected void authorize(Activity activity, String[] permissions,
 			int activityCode, Micro4blogDialogListener listener) {
 
+		mContext = activity;
+		
 		mAuthDialogListener = listener;
 		
 		startDialogAuth(activity, permissions);
@@ -69,23 +71,48 @@ public class Micro4blogForSohu extends Micro4blog {
 
 			@Override
 			public void onComplete(Bundle values) {
-						
+				
 				CookieSyncManager.getInstance().sync();
+                
+                // oauth第三步，换取access token				
+				getUserAccessToken(values);
+				
+				mAuthDialogListener.onComplete(values);
+						
+//				CookieSyncManager.getInstance().sync();
+//				
+//				
+//				// oauth第三步，换取access token
+//				
+//				if (null == requestToken) {
+//					requestToken = new RequestToken();
+//				}
+//
+//				requestToken.setOauthToken(values.getString("oauth_token"));
+//				requestToken.setOauthVerifier(values.getString("oauth_verifier"));
+//				
+//				setRequestToken(requestToken);
+//				
+//				try {
+//					accessToken = generateAccessToken(mContext, Utility.HTTPMETHOD_GET,
+//							requestToken);
+//				} catch (Micro4blogException e) {
+//					e.printStackTrace();
+//				}
+//				
+//				setAccessToken(accessToken);
+//				
+//				mAuthDialogListener.onComplete(values);
 
-				if (null == accessToken) {
-					accessToken = new OauthToken();
-				}
-
-				accessToken.setOauthToken(values.getString("oauth_token"));
-
-				if (isSessionValid()) {
-					// 执行了MainActivity中的监听事件，一次
-					mAuthDialogListener.onComplete(values);
-				} else {
-					mAuthDialogListener
-							.onMicro4blogException(new Micro4blogException(
-									"Failed to receive access token."));
-				}
+				// sina oauth2.0
+//				if (isSessionValid()) {
+//					// 执行了MainActivity中的监听事件，一次
+//					mAuthDialogListener.onComplete(values);
+//				} else {
+//					mAuthDialogListener
+//							.onMicro4blogException(new Micro4blogException(
+//									"Failed to receive access token."));
+//				}
 
 				
 			}
@@ -113,29 +140,39 @@ public class Micro4blogForSohu extends Micro4blog {
 	protected void dialog(Context context, Micro4blogParameters parameters,
 			Micro4blogDialogListener listener) {
 		
-		RequestToken requestToken = new RequestToken();
-		try {
-			requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
+////		RequestToken requestToken = new RequestToken();
+//		try {
+//			requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET, getAppKey(), getAppSecret(), getRedirectUrl());
+//		
+//			// 放在这里错了，因为是未经授权的token
+////			setRequestToken(requestToken);			
+//			
+//		} catch (Micro4blogException e) {			
+//			e.printStackTrace();
+//		}
+//		
+//		if (requestToken.getOauthToken() != null) {
+//			parameters.add("oauth_token", requestToken.getOauthToken());
+//		}
+//		
+//		parameters.add("clientType", "phone");
+//		parameters.add("oauth_callback", getRedirectUrl());
+//		
+//		Utility.setAuthorization(new AccessTokenHeader());
+//		
+//		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
+//		Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
+//		
+//		new Micro4blogDialog(this, context, url, listener).show();
 		
-			setRequestToken(requestToken);			
-			
-		} catch (Micro4blogException e) {			
-			e.printStackTrace();
-		}
-		
-		if (requestToken.getOauthToken() != null) {
-			parameters.add("oauth_token", requestToken.getOauthToken());
-		}
+		// oauth第一步，获取request token
+		getAppRequestToken(context, parameters);
 		
 		parameters.add("clientType", "phone");
 		parameters.add("oauth_callback", getRedirectUrl());
 		
-		Utility.setAuthorization(new AccessTokenHeader());
-		
-		String url = getUrlAccessAuthorize() + "?" + Utility.encodeUrl(parameters);
-		Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
-		
-		new Micro4blogDialog(this, context, url, listener).show();
+		// oauth第二步，进行用户的授权认证
+		getUserRequestToken(context, parameters, listener);
 		
 	}
 
@@ -144,5 +181,6 @@ public class Micro4blogForSohu extends Micro4blog {
 			Intent data) {
 			
 	}
+
 
 }

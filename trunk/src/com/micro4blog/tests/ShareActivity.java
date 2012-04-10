@@ -264,7 +264,8 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	    	
 	    	
 	    	
-	    	String url = micro4blog.getServerUrl() + "statuses/friends_timeline.json";
+//	    	String url = micro4blog.getServerUrl() + "statuses/friends_timeline.json";
+	    	String url = micro4blog.getServerUrl() + "statuses/home_timeline.json";
 		    Micro4blogParameters bundle = new Micro4blogParameters();
 
 	    	

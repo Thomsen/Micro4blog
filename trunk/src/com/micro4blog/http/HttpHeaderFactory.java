@@ -113,7 +113,13 @@ public abstract class HttpHeaderFactory {
     	Micro4blogParameters authParams = new Micro4blogParameters();
      	// 腾讯微博使用URL参数方式
     	if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
-          authParams.add("oauth_callback", micro4blog.getRedirectUrl()); 		
+    	
+    		if (token == null) {
+    			authParams.add("oauth_callback", micro4blog.getRedirectUrl()); 
+    		} else {
+    			authParams.add("oauth_verifier", token.getOauthVerifier());
+    		}
+          		
     	}
     	authParams.add("oauth_consumer_key", micro4blog.getAppKey());
         authParams.add("oauth_nonce", String.valueOf(nonce));
