@@ -21,28 +21,28 @@ public class RequestTokenHeader extends HttpHeaderFactory {
 		
 		// 下面的头部在流程中都要逐步的生成，不然会encode错误，或者无法通过认证
 		
-        Micro4blogParameters pp = new Micro4blogParameters();
+        Micro4blogParameters mp = new Micro4blogParameters();
         String key = "oauth_callback";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         key = "oauth_consumer_key";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         key = "oauth_nonce";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         key = "oauth_signature_method";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         key = "oauth_timestamp";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         key = "oauth_version";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         
         // 对于Tencent的Oauth参数授权，不需要source
         
         if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) {
 	        key = "source";
-	        pp.add(key, bundle.getValue(key));
+	        mp.add(key, bundle.getValue(key));
         }
         
-        return pp;
+        return mp;
         
 	}
 

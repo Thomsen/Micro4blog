@@ -135,7 +135,7 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	        try {
 				Log.i(TAG, getPublicTimeline(micro4blog));
 				
-				Toast.makeText(this, getPublicTimeline(micro4blog), Toast.LENGTH_SHORT).show();
+//				Toast.makeText(this, getPublicTimeline(micro4blog), Toast.LENGTH_SHORT).show();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}  
@@ -265,7 +265,7 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	    	
 	    	
 //	    	String url = micro4blog.getServerUrl() + "statuses/friends_timeline.json";
-	    	String url = micro4blog.getServerUrl() + "statuses/home_timeline.json";
+	    	String url = ""; 
 		    Micro4blogParameters bundle = new Micro4blogParameters();
 
 	    	
@@ -273,11 +273,37 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	    	
 //		    bundle.add("source", micro4blog.getAppKey());
 //		    bundle.add("oauth_verifier", micro4blog.getAccessToken().getOauthVerifier());
-//		    bundle.add("oauth_token", micro4blog.getAccessToken().getOauthToken());
+//		    bundle.add("oauth_token", micro4blog.getAccessToken().getOauthToken());		    	   
 		    
-		    bundle.add("count", "20");
+		    String rlt = "";
 		    
-		    String rlt = micro4blog.request(this, url, bundle, Utility.HTTPMETHOD_GET, micro4blog.getAccessToken());
+		    if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) {
+//		    	 bundle.add("count", "20");
+		    	 // TODO 需要确定不同服务的相同功能的URL
+//		    	url = micro4blog.getServerUrl() + "statuses/friends_timeline.json";
+		    	url = micro4blog.getServerUrl() + "statuses/home_timeline.json";
+		    
+		    	if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SINA) {
+		    		bundle.add("count", "20");
+			    	rlt = micro4blog.request(this, url, bundle, Utility.HTTPMETHOD_GET, micro4blog.getAccessToken());
+		    	} else {
+			    	rlt = micro4blog.requestWithGet(new ApiTokenHeader(), url, bundle, micro4blog.getAccessToken());
+		    	}
+
+		    			    	
+		    } else {
+		    	
+//		    	bundle.add("format", "json");
+		    	bundle.add("pageflag", "0");
+		    	bundle.add("pagetime", "0");
+		    	bundle.add("reqnum", "20");
+		    	
+		    	url = micro4blog.getServerUrl() + "statuses/home_timeline?format=json";
+//		    	url = micro4blog.getServerUrl() + "statuses/home_timeline";
+		    	
+		    	rlt = micro4blog.requestWithGet(new ApiTokenHeader(), url, bundle, micro4blog.getAccessToken());
+		    }
+		    	
 		    return rlt;
 	    } 
 }

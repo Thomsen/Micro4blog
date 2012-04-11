@@ -81,6 +81,10 @@ public class MainActivity extends GlobalFramework {
 	}
 	
 	private void readPreferences() {
+		
+		if (mAccessToken == null) {
+			mAccessToken = new OauthToken();
+		}
 						
 		if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SINA) {
 			
@@ -93,7 +97,21 @@ public class MainActivity extends GlobalFramework {
 						
 		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
 			
+			mAccessToken.setOauthVerifier(gSharedPreferences.getString("tencent_oauth_verifier", null));
+			
+			mAccessToken.setOauthToken(gSharedPreferences.getString("tencent_access_token", null));
+			mAccessToken.setOauthTokenSecret(gSharedPreferences.getString("tencent_oauth_token_sercet", null));
+			
+			Utility.setAuthorization(new ApiTokenHeader());
+			
 		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_NETEASE) {
+			
+//			mAccessToken.setOauthVerifier(gSharedPreferences.getString("sohu_oauth_verifier", null));
+			
+			mAccessToken.setOauthToken(gSharedPreferences.getString("netease_access_token", null));
+			mAccessToken.setOauthTokenSecret(gSharedPreferences.getString("netease_oauth_token_sercet", null));
+			
+			Utility.setAuthorization(new ApiTokenHeader());
 			
 		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SOHU) {
 			
@@ -114,12 +132,14 @@ public class MainActivity extends GlobalFramework {
 			mAccessToken.setOauthVerifier(gSharedPreferences.getString("sohu_oauth_verifier", null));
 			
 			mAccessToken.setOauthToken(gSharedPreferences.getString("sohu_access_token", null));
-			mAccessToken.setOauthTokenSecret(gSharedPreferences.getString("sohu_access_token_sercet", null));
+			mAccessToken.setOauthTokenSecret(gSharedPreferences.getString("sohu_oauth_token_sercet", null));
 			
 			Utility.setAuthorization(new ApiTokenHeader());
 			
 			
 		}	
+		
+		Log.d(TAG, "token: " + mAccessToken.getOauthToken() + "\n" + "secret: " + mAccessToken.getOauthTokenSecret());
 				
 //		mMicro4blog.setRequestToken(mRequestToken);
 				
@@ -323,6 +343,10 @@ public class MainActivity extends GlobalFramework {
 				isTencentOauthed = true;
 				editor.putBoolean("is_tencent_oauthed", isTencentOauthed);
 				
+				editor.putString("tencent_access_token", mAccessToken.getOauthToken());
+				editor.putString("tencent_oauth_token_sercet", mAccessToken.getOauthTokenSecret());
+				editor.putString("tencent_oauth_verifier", values.getString("oauth_verifier"));
+				
 //				mRequestToken.setOauthToken(values.getString("oauth_token"));
 				
 			} else if (Micro4blog.SERVER_NETEASE == Micro4blog.getCurrentServer()) {
@@ -330,6 +354,9 @@ public class MainActivity extends GlobalFramework {
 				isNeteaseOauthed = true;
 								
 				editor.putBoolean("is_netease_oauthed", isNeteaseOauthed);
+				
+				editor.putString("netease_access_token", mAccessToken.getOauthToken());
+				editor.putString("netease_oauth_token_sercet", mAccessToken.getOauthTokenSecret());
 				
 				
 				// oauth第三步，换取access token
@@ -372,7 +399,7 @@ public class MainActivity extends GlobalFramework {
 				editor.putString("sohu_access_token", mAccessToken.getOauthToken());
 				
 				// 签名需要 使用request token sercet
-				editor.putString("sohu_access_token_sercet", mAccessToken.getOauthTokenSecret());
+				editor.putString("sohu_oauth_token_sercet", mAccessToken.getOauthTokenSecret());
 				
 			}
 			

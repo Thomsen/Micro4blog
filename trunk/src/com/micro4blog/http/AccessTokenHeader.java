@@ -18,35 +18,35 @@ public class AccessTokenHeader extends HttpHeaderFactory {
 		 if (bundle == null || (bundle.size() == 0)) {
 	            return null;
 	        }
-        Micro4blogParameters pp = new Micro4blogParameters();
+        Micro4blogParameters mp = new Micro4blogParameters();
         String key = "oauth_consumer_key";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         key = "oauth_nonce";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         key = "oauth_signature_method";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         key = "oauth_timestamp";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         key = "oauth_token";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
         
         if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_NETEASE) {
             key = "oauth_verifier";
-            pp.add(key, bundle.getValue(key));            
+            mp.add(key, bundle.getValue(key));            
            
         }
         
         key = "oauth_version";
-        pp.add(key, bundle.getValue(key));
+        mp.add(key, bundle.getValue(key));
                
  
         
         if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SINA) {
 	        key = "source";
-	        pp.add(key, bundle.getValue(key));
+	        mp.add(key, bundle.getValue(key));
         }
         
-        return pp;
+        return mp;
 	}
 
 	@Override

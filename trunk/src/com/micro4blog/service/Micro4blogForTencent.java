@@ -50,6 +50,8 @@ public class Micro4blogForTencent extends Micro4blog {
 		setUrlRequestToken("http://open.t.qq.com/cgi-bin/request_token");
 		setUrlAccessToken("http://open.t.qq.com/cgi-bin/access_token");
 		setUrlAccessAuthorize("http://open.t.qq.com/cgi-bin/authorize");
+		
+		setServerUrl("http://open.t.qq.com/api/");
 
 	}
 

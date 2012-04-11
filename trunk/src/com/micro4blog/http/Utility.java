@@ -122,7 +122,9 @@ public class Utility {
 				request.setHeader(key, mRequestHeader.getValue(key));
 			}
 		}
-		if (!isBundleEmpty(authParam) && httpHeader != null) {
+		if (!isBundleEmpty(authParam) && httpHeader != null 
+				&& ! (httpHeader instanceof ApiTokenHeader)
+				&& (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) ) {
 //		if (httpHeader != null) {
 			String authHeader = httpHeader.getMicro4blogAuthHeader(micro4blog, httpMethod,
 					url, authParam, micro4blog.getAppKey(),
@@ -306,7 +308,13 @@ public class Utility {
 			if (method.equals("GET")) {				
 				// 明白，起初想要的是get方法用url参数形式，post方法用header形式
 				if (! isBundleEmpty(params)) {
-					url = url + "?" + encodeUrl(params);
+					
+					// 也可以经format传给params
+					if (url.contains("?")) {
+						url = url + "&" + encodeUrl(params);
+					} else {
+						url = url + "?" + encodeUrl(params);
+					}
 				}
 				HttpGet get = new HttpGet(url);
 				request = get;
@@ -339,6 +347,7 @@ public class Utility {
 				request = new HttpDelete(url);
 			}
 			setHeader(micro4blog, method, request, params, url, token);
+			Log.d(TAG, "open url: " + url);
 			HttpResponse response = client.execute(request);
 			StatusLine status = response.getStatusLine();
 			int statusCode = status.getStatusCode();
@@ -660,6 +669,11 @@ public class Utility {
 		int j = 0;
 		for (int loc = 0; loc < httpParams.size(); loc++) {
 			String key = httpParams.getKey(loc);
+			
+//			if (httpParams.getValue(key) == null) {
+//				return "";
+//			}
+			
 			if (j != 0) {
 				buf.append("&");
 			}

@@ -53,9 +53,10 @@ public abstract class HttpHeaderFactory {
         
     	// step 1: generate timestamp and nonce
         final long timestamp = System.currentTimeMillis() / 1000;
-        final long nonce = timestamp + (new Random()).nextInt();
+//        final long nonce = timestamp + (new Random()).nextInt();
 //        Random random = new Random();
 //        long nonce = (random.nextInt(9876599) + 123400);
+        final String nonce = getRandomNonce();
         
         // step 2: authParams有两个用处：1.加密串一部分 2.生成最后Authorization头域
         authParams = this.generateAuthParameters(micro4blog, nonce, timestamp, token);
@@ -66,14 +67,19 @@ public abstract class HttpHeaderFactory {
         
         // step 3: 生成用于签名的base String
         String oauthBaseString = this.generateAuthSignature(method, signatureParams, url, token);
+        Log.d(TAG, "all oauth base string : " + oauthBaseString);
         
         // step 4: 生成oauth_signature
         String signature = generateSignature(micro4blog, oauthBaseString, token);
         authParams.add("oauth_signature", signature);
+        Log.d(TAG, "oauth signature : " + signature);
         Log.d(TAG, "authParams after : " + Utility.encodeParameters(authParams));       
         
         // step 5: for additional parameters
         this.addAdditionalParams(authParams, params);
+        
+        // thom add
+//        authParams = generateSignatureList(authParams);
         
         return "OAuth " + encodeParameters(authParams, ",", true);
     }
@@ -81,9 +87,9 @@ public abstract class HttpHeaderFactory {
     private String generateAuthSignature(final String method, Micro4blogParameters signatureParams,
             final String url, OauthToken token) {
     	
-    	if (token != null && token.getOauthVerifier() != null) {
-    		signatureParams.add("oauth_verifier", token.getOauthVerifier());
-    	}
+//    	if (token != null && token.getOauthVerifier() != null) {
+//    		signatureParams.add("oauth_verifier", token.getOauthVerifier());
+//    	}
     	
         StringBuffer base = new StringBuffer(method).append("&")
                 .append(encode(constructRequestURL(url))).append("&");
@@ -106,10 +112,13 @@ public abstract class HttpHeaderFactory {
         signatureParams.addAll(params);
         this.parseUrlParameters(url, signatureParams);
         Micro4blogParameters lsp = generateSignatureList(signatureParams);
+        
+        lsp.addAll(params); 
+        
         return lsp;
     }
 
-    private Micro4blogParameters generateAuthParameters(Micro4blog micro4blog, long nonce, long timestamp, OauthToken token) {
+    private Micro4blogParameters generateAuthParameters(Micro4blog micro4blog, String nonce, long timestamp, OauthToken token) {
     	Micro4blogParameters authParams = new Micro4blogParameters();
      	// 腾讯微博使用URL参数方式
     	if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
@@ -117,7 +126,7 @@ public abstract class HttpHeaderFactory {
     		if (token == null) {
     			authParams.add("oauth_callback", micro4blog.getRedirectUrl()); 
     		} else {
-    			authParams.add("oauth_verifier", token.getOauthVerifier());
+//    			authParams.add("oauth_verifier", token.getOauthVerifier());
     		}
           		
     	}
@@ -244,6 +253,10 @@ public abstract class HttpHeaderFactory {
      */
     public static String encode(String value) {
         String encoded = null;
+        
+//        if (value == null) {
+//        	return "";
+//        }
                       
         try {
             encoded = URLEncoder.encode(value, "UTF-8");
@@ -266,6 +279,18 @@ public abstract class HttpHeaderFactory {
             }
         }
         return buf.toString();
+    }
+    
+    // tencent oauth nonce 32
+    public static String getRandomNonce() {
+        StringBuffer buffer = new StringBuffer("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        StringBuffer sb = new StringBuffer();
+        Random r = new Random();
+        int range = buffer.length();
+        for (int i = 0; i < 32; i ++) {
+            sb.append(buffer.charAt(r.nextInt(range)));
+            }
+        return sb.toString();
     }
     
     // 生成用于哈希的base string串，注意要按顺序，按需文档需求参数生成，否则40107错误
