@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.micro4blog.dialog.Micro4blogDialog;
@@ -23,6 +24,8 @@ import com.micro4blog.tests.ShareActivity;
 import com.micro4blog.utils.Micro4blogException;
 
 public abstract class Micro4blog {
+	
+	private static final String TAG = "Micro4blog";
 	
 	// TODO 需要设计，兼容4大微博
 	// 解决 oauth版本的问题，sina 2.0 sohu 1.0 tencent 1.0a netease 1.0a
@@ -101,20 +104,21 @@ public abstract class Micro4blog {
 			}
 		} else {
 			RequestTokenHeader header = new RequestTokenHeader();
-			String result = "";
 			
-			try {
-				
-//				parameters.add("oauth_callback", getRedirectUrl());
-				
-				header.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), requestToken);
+			String result = requestWithGet(header, getUrlRequestToken(), parameters, requestToken);
 			
-				Micro4blogParameters params = header.getAuthParams();
-				
-				result = request(context, getUrlRequestToken(), params, Utility.HTTPMETHOD_GET, requestToken);
-			} catch (Micro4blogException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				
+////				parameters.add("oauth_callback", getRedirectUrl());
+//				
+//				header.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, getUrlRequestToken(), parameters, getAppKey(), getAppSecret(), requestToken);
+//			
+//				Micro4blogParameters params = header.getAuthParams();
+//				
+//				result = request(context, getUrlRequestToken(), params, Utility.HTTPMETHOD_GET, requestToken);
+//			} catch (Micro4blogException e) {
+//				e.printStackTrace();
+//			}
 			
 			requestToken = new RequestToken(result);
 		}
@@ -167,28 +171,15 @@ public abstract class Micro4blog {
 			} catch (Micro4blogException e) {
 				e.printStackTrace();
 			}
-		} else {			
+		} else {
+			
 			AccessTokenHeader header = new AccessTokenHeader();
-			String result = "";
 			
-			try {
-				
-				Micro4blogParameters params = new Micro4blogParameters();
-//				params.add("oauth_verifier", requestToken.getOauthVerifier());
-				
-				header.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, getUrlAccessToken(), params, getAppKey(), getAppSecret(), requestToken);
+			Micro4blogParameters parameters = new Micro4blogParameters();
 			
-				params = header.getAuthParams();
-				
-//				params.add("oauth_callback", getRedirectUrl());
-				
-//				result = request(mContext, getUrlAccessToken(), params, Utility.HTTPMETHOD_GET, requestToken);
-				
-				result = Utility.openUrl(micro4blogInstance, mContext, getUrlAccessToken(), Utility.HTTPMETHOD_GET, params, requestToken);
-				
-			} catch (Micro4blogException e) {
-				e.printStackTrace();
-			}
+			parameters.add("oauth_verifier", requestToken.getOauthVerifier());
+			
+			String result = requestWithGet(header, getUrlAccessToken(), parameters, requestToken);
 			
 			accessToken = new OauthToken(result);
 		}
@@ -196,8 +187,38 @@ public abstract class Micro4blog {
 		setAccessToken(accessToken);
 	}
 
+	public String requestWithGet(HttpHeaderFactory header, String url, Micro4blogParameters parameters, OauthToken token) {
+
+		String result = "";
+		
+		try {
+			
+			Micro4blogParameters params = new Micro4blogParameters();
+//				params.add("oauth_verifier", requestToken.getOauthVerifier());
+			
+			header.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, url, parameters, getAppKey(), getAppSecret(), token);
+		
+			params = header.getAuthParams();
+			
+			params.addAll(parameters);
+			
+			Log.d(TAG, "request with get params: " + Utility.encodeParameters(params));
+			
+//				params.add("oauth_callback", getRedirectUrl());
+			
+//				result = request(mContext, getUrlAccessToken(), params, Utility.HTTPMETHOD_GET, requestToken);
+			
+			result = Utility.openUrl(micro4blogInstance, mContext, url, Utility.HTTPMETHOD_GET, params, token);
+			
+		} catch (Micro4blogException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	public String request(Context context, String url, Micro4blogParameters params, String httpMethod,
             OauthToken token) throws Micro4blogException {
+		
         String rlt = Utility.openUrl(micro4blogInstance, context, url, httpMethod, params, this.accessToken);
 //		String rlt = Utility.openUrl(micro4blogInstance, context, url, httpMethod, params, token);
         return rlt;
