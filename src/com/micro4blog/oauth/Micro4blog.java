@@ -111,7 +111,7 @@ public abstract class Micro4blog {
 			}
 		} else {
 			// tencent
-			String result = requestWithGet(header, getUrlRequestToken(),
+			String result = request(header, Utility.HTTPMETHOD_GET, getUrlRequestToken(),
 					parameters, requestToken);
 			requestToken = new RequestToken(result);
 		}
@@ -162,10 +162,10 @@ public abstract class Micro4blog {
 	}
 
 	/**
-	 * OAuth第三步，用授权的request token换取access token OAuth2.0 获取access token
-	 * 
+	 * OAuth第三步，用授权的request token换取access token 
+	 * OAuth2.0 获取access token
 	 * @param values
-	 *            服务器端返回的值，在Utility.parseUrl(url)方法中获得
+	 *       服务器端返回的值，在Utility.parseUrl(url)方法中获得
 	 */
 	protected void getUserAccessToken(Bundle values) {
 		if (null == requestToken) {
@@ -215,7 +215,7 @@ public abstract class Micro4blog {
 			AccessTokenHeader header = new AccessTokenHeader();
 			Micro4blogParameters parameters = new Micro4blogParameters();
 			parameters.add("oauth_verifier", requestToken.getOauthVerifier());
-			String result = requestWithGet(header, getUrlAccessToken(),
+			String result = request(header, Utility.HTTPMETHOD_GET, getUrlAccessToken(),
 					parameters, requestToken);
 			accessToken = new OauthToken(result);
 			setAccessToken(accessToken);
@@ -224,32 +224,27 @@ public abstract class Micro4blog {
 
 	}
 
-	public String requestWithGet(HttpHeaderFactory header, String url,
+	/**
+	 * 提供tencent和netease sohu api调用时的请求方式
+	 * @param header 设置参数的类型，继承之HttpHeaderFactory
+	 * @param url	请求的URL
+	 * @param parameters	请求的参数
+	 * @param token	请求的oauth token
+	 * @return
+	 */
+	public String request(HttpHeaderFactory header, String httpMethod, String url,
 			Micro4blogParameters parameters, OauthToken token) {
 
 		String result = "";
-
 		try {
-
 			Micro4blogParameters params = new Micro4blogParameters();
-			// params.add("oauth_verifier", requestToken.getOauthVerifier());
-
-			header.getMicro4blogAuthHeader(this, Utility.HTTPMETHOD_GET, url,
+			header.getMicro4blogAuthHeader(this, httpMethod, url,
 					parameters, getAppKey(), getAppSecret(), token);
-
 			params = header.getAuthParams();
-
 			params.addAll(parameters);
-
-			Log.d(TAG,
-					"request with get params: "
-							+ Utility.encodeParameters(params));
-
-			// params.add("oauth_callback", getRedirectUrl());
-
-			// result = request(mContext, getUrlAccessToken(), params,
-			// Utility.HTTPMETHOD_GET, requestToken);
-
+			
+			Log.d(TAG, "request with get params: " + Utility.encodeParameters(params));
+			
 			result = Utility.openUrl(micro4blogInstance, mContext, url,
 					Utility.HTTPMETHOD_GET, params, token);
 
@@ -259,15 +254,34 @@ public abstract class Micro4blog {
 		return result;
 	}
 
+	/**
+	 * 没有对参数进行处理的请求方式
+	 * @param context
+	 * @param url
+	 * @param params
+	 * @param httpMethod
+	 * @param token
+	 * @return
+	 * @throws Micro4blogException
+	 */
 	public String request(Context context, String url,
 			Micro4blogParameters params, String httpMethod, OauthToken token)
 			throws Micro4blogException {
-
 		String result = Utility.openUrl(micro4blogInstance, context, url,
 				httpMethod, params, this.accessToken);
 		return result;
 	}
 
+	/**
+	 * oauth1.0中获取request token
+	 * @param context
+	 * @param httpMethod
+	 * @param key
+	 * @param secret
+	 * @param callback_url
+	 * @return
+	 * @throws Micro4blogException
+	 */
 	public RequestToken getRequestToken(Context context, String httpMethod,
 			String key, String secret, String callback_url)
 			throws Micro4blogException {
@@ -283,26 +297,45 @@ public abstract class Micro4blog {
 		return request;
 	}
 
+	/**
+	 * oauth1.0中使用request token换取access token
+	 * @param context
+	 * @param httpMethod
+	 * @param requestToken
+	 * @return
+	 * @throws Micro4blogException
+	 */
 	public AccessToken generateAccessToken(Context context, String httpMethod,
 			RequestToken requestToken) throws Micro4blogException {
 		Utility.setAuthorization(new AccessTokenHeader());
 		Micro4blogParameters authParam = new Micro4blogParameters();
 
+		// 针对netease中没有获取oauth_verifier的处理
 		if (requestToken.getOauthVerifier() != null) {
-			authParam.add("oauth_verifier",
-					this.requestToken.getOauthVerifier());
+			authParam.add("oauth_verifier", requestToken.getOauthVerifier());
 		} else {
 			authParam.add("oauth_token", requestToken.getOauthToken());
 		}
 
-		String rlt = Utility.openUrl(micro4blogInstance, context,
+		String result = Utility.openUrl(micro4blogInstance, context,
 				micro4blogInstance.getUrlAccessToken(), httpMethod, authParam,
 				this.requestToken);
-		AccessToken accessToken = new AccessToken(rlt);
+		AccessToken accessToken = new AccessToken(result);
 		this.accessToken = accessToken;
 		return accessToken;
 	}
 
+	/**
+	 * oauth2.0获取服务器返回的access token，暂时在应用中还没用到
+	 * @param context
+	 * @param httpMethod
+	 * @param app_key
+	 * @param app_secret
+	 * @param usrname
+	 * @param password
+	 * @return
+	 * @throws Micro4blogException
+	 */
 	public Oauth2AccessToken getOauth2AccessToken(Context context,
 			String httpMethod, String app_key, String app_secret,
 			String usrname, String password) throws Micro4blogException {
@@ -313,14 +346,24 @@ public abstract class Micro4blog {
 		postParams.add("client_id", app_key);
 		postParams.add("client_secret", app_secret);
 		postParams.add("grant_type", "password");
-		String rlt = Utility.openUrl(micro4blogInstance, context,
+		String result = Utility.openUrl(micro4blogInstance, context,
 				micro4blogInstance.getUrlAccessToken(), httpMethod, postParams,
 				null);
-		Oauth2AccessToken accessToken = new Oauth2AccessToken(rlt);
+		Oauth2AccessToken accessToken = new Oauth2AccessToken(result);
 		this.accessToken = accessToken;
 		return accessToken;
 	}
 
+	/**
+	 * sina oauth2.0 发布微博的例子
+	 * @param activity
+	 * @param accessToken
+	 * @param tokenSecret
+	 * @param content
+	 * @param picPath
+	 * @return
+	 * @throws Micro4blogException
+	 */
 	public boolean share2weibo(Activity activity, String accessToken,
 			String tokenSecret, String content, String picPath)
 			throws Micro4blogException {
@@ -341,22 +384,45 @@ public abstract class Micro4blog {
 		return true;
 	}
 
+	/**
+	 * 判断是进行单用户登录，暂时没有处理
+	 * @param activity
+	 * @param applicationId
+	 * @param permissions
+	 * @param activityCode
+	 * @return
+	 */
 	protected boolean startSingleSignOn(Activity activity,
 			String applicationId, String[] permissions, int activityCode) {
 		return false;
 	}
 
+	/**
+	 * 进行服务的授权
+	 * @param activity
+	 * @param listener
+	 */
 	public void authorize(Activity activity,
 			final Micro4blogDialogListener listener) {
 		authorize(activity, new String[] {}, DEFAULT_AUTH_ACTIVITY_CODE,
 				listener);
 	}
 
+	/**
+	 * 进行服务授权，添加允许的权限
+	 * @param activity
+	 * @param permissions
+	 * @param listener
+	 */
 	public void authorize(Activity activity, String[] permissions,
 			final Micro4blogDialogListener listener) {
 		authorize(activity, permissions, DEFAULT_AUTH_ACTIVITY_CODE, listener);
 	}
 
+	/**
+	 * 判断当前会话是否过期
+	 * @return
+	 */
 	protected boolean isSessionValid() {
 		if (accessToken != null) {
 			return (!TextUtils.isEmpty(accessToken.getOauthToken()) && (accessToken
@@ -447,7 +513,7 @@ public abstract class Micro4blog {
 	}
 
 	/**
-	 * 初始化每个服务的不同参数
+	 * 初始化每个服务的不同常量
 	 */
 	protected abstract void initConfig();
 

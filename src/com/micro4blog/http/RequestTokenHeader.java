@@ -15,6 +15,7 @@ public class RequestTokenHeader extends HttpHeaderFactory {
 	@Override
 	public Micro4blogParameters generateSignatureList(
 			Micro4blogParameters bundle) {
+		
 		if (bundle == null || (bundle.size() == 0)) {
             return null;
         }
@@ -36,7 +37,7 @@ public class RequestTokenHeader extends HttpHeaderFactory {
         mp.add(key, bundle.getValue(key));
         
         // 对于Tencent的Oauth参数授权，不需要source
-        
+        // source在url参数中        
         if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) {
 	        key = "source";
 	        mp.add(key, bundle.getValue(key));
@@ -44,13 +45,6 @@ public class RequestTokenHeader extends HttpHeaderFactory {
         
         return mp;
         
-	}
-
-	@Override
-	public void addAdditionalParams(Micro4blogParameters des,
-			Micro4blogParameters src) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -70,6 +64,12 @@ public class RequestTokenHeader extends HttpHeaderFactory {
             throw new Micro4blogException(e);
         }
         return String.valueOf(Utility.base64Encode(byteHMAC));
+	}
+	
+	@Override
+	public void addAdditionalParams(Micro4blogParameters des,
+			Micro4blogParameters src) {
+		
 	}
 
 }

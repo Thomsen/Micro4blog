@@ -19,39 +19,32 @@ public class ApiTokenHeader extends HttpHeaderFactory {
 	@Override
 	public Micro4blogParameters generateSignatureList(
 			Micro4blogParameters bundle) {
+		
+		if (bundle == null || (bundle.size() == 0)) {
+			return null;
+		}
 	
 		Micro4blogParameters mp = new Micro4blogParameters();
 		String key = "";
+		
+		// 腾讯的url格式不同与其他服务
 		if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
 			key = "format";
 			mp.add(key, bundle.getValue(key));
-		}
-		
+		}		
 		key = "oauth_consumer_key";
 		mp.add(key, bundle.getValue(key));
         key = "oauth_nonce";
         mp.add(key, bundle.getValue(key));
-//        key = "oauth_signature";
-//        mp.add(key, bundle.getValue(key));
         key = "oauth_signature_method";
         mp.add(key, bundle.getValue(key));
         key = "oauth_timestamp";
         mp.add(key, bundle.getValue(key));
         key = "oauth_token";
         mp.add(key, bundle.getValue(key));    
-        
-        // 获取用户信息时
-//        if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_NETEASE) {
-//        	key = "oauth_verifier";
-//        	mp.add(key, bundle.getValue(key));
-//        }
-        
+               
         key = "oauth_version";
         mp.add(key, bundle.getValue(key));
-        
-//        key = "source";
-//        mp.add(key, bundle.getValue(key));
-		
 		
 		return mp;
 	}
@@ -66,30 +59,27 @@ public class ApiTokenHeader extends HttpHeaderFactory {
 		// Message Authentication Code
 		try {
 			Mac mac = Mac.getInstance(CONST_HMAC_SHA1);
-			SecretKeySpec spec = null;
-			
+			SecretKeySpec spec = null;		
 			// 判断token中是否已有了密钥提供者
 			if(null == token.getSecretKeySpec()) {
 				String oauthSignature = encode(micro4blog.getAppSecret()) + "&"
 						+ encode(token.getOauthTokenSecret());
 				
-				Log.d(TAG, "o s: " + oauthSignature);
+				Log.d(TAG, "api oauth signature: " + oauthSignature);
 				
 				spec = new SecretKeySpec(oauthSignature.getBytes(), CONST_HMAC_SHA1);
 				token.setSecretKeySpec(spec);
 			}
 			
-			Log.d(TAG, "d t: " + data);
+			Log.d(TAG, "api oauth data: " + data);
 			
 			spec = token.getSecretKeySpec();
 			mac.init(spec);
 			byteHMAC = mac.doFinal(data.getBytes());
 			
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

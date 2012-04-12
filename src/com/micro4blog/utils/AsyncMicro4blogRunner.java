@@ -1,19 +1,3 @@
-/*
- * Copyright 2011 Sina.
- *
- * Licensed under the Apache License and Micro4blog License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.open.Micro4blog.com
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.micro4blog.utils;
 
 import java.io.IOException;
@@ -23,19 +7,17 @@ import android.content.Context;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.oauth.Micro4blog;
 
-
 /**
- * Encapsulation main Micro4blog APIs, Include: 1. getRquestToken , 2. getAccessToken, 3. url request.
- * Implements a Micro4blog api as a asynchronized way. Every object used this runner should implement interface RequestListener.
+ * 
+ * 封装Api请求时需要的授权参数
  *
- * @author  ZhangJie (zhangjie2@staff.sina.com.cn)
  */
 public class AsyncMicro4blogRunner {
 	
-	private Micro4blog mMicro4blog;
+	private Micro4blog micro4blog;
 	
 	public AsyncMicro4blogRunner(Micro4blog micro4blog){
-		this.mMicro4blog = micro4blog;
+		this.micro4blog = micro4blog;
 	}
 	
 	public void request(final Context context, 
@@ -46,7 +28,7 @@ public class AsyncMicro4blogRunner {
 		new Thread(){
 			@Override public void run() {
                 try {
-					String resp = mMicro4blog.request(context, url, params, httpMethod, mMicro4blog.getAccessToken());
+					String resp = micro4blog.request(context, url, params, httpMethod, micro4blog.getAccessToken());
                     listener.onComplete(resp);
                 } catch (Micro4blogException e) {
                     listener.onError(e);

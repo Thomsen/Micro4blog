@@ -15,9 +15,11 @@ public class AccessTokenHeader extends HttpHeaderFactory {
 	@Override
 	public Micro4blogParameters generateSignatureList(
 			Micro4blogParameters bundle) {
-		 if (bundle == null || (bundle.size() == 0)) {
+		 
+		if (bundle == null || (bundle.size() == 0)) {
 	            return null;
-	        }
+	     }
+		 
         Micro4blogParameters mp = new Micro4blogParameters();
         String key = "oauth_consumer_key";
         mp.add(key, bundle.getValue(key));
@@ -29,23 +31,16 @@ public class AccessTokenHeader extends HttpHeaderFactory {
         mp.add(key, bundle.getValue(key));
         key = "oauth_token";
         mp.add(key, bundle.getValue(key));
-        
+       
+        // 网易oauth认证中没有返回oauth_verifier参数
         if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_NETEASE) {
             key = "oauth_verifier";
-            mp.add(key, bundle.getValue(key));            
-           
+            mp.add(key, bundle.getValue(key));                      
         }
         
         key = "oauth_version";
         mp.add(key, bundle.getValue(key));
-               
- 
-        
-        if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SINA) {
-	        key = "source";
-	        mp.add(key, bundle.getValue(key));
-        }
-        
+                       
         return mp;
 	}
 
