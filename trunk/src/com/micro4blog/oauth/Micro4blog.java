@@ -1,5 +1,7 @@
 package com.micro4blog.oauth;
 
+import java.util.ArrayList;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -10,9 +12,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.micro4blog.data.Micro4blogInfo;
 import com.micro4blog.dialog.Micro4blogDialog;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.AccessTokenHeader;
+import com.micro4blog.http.ApiTokenHeader;
 import com.micro4blog.http.HttpHeaderFactory;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Oauth2AccessTokenHeader;
@@ -43,7 +47,11 @@ public abstract class Micro4blog {
 
 	private static int currentServer = -1;
 
-	private static String serverUrl = "";
+	// 应用于Api的调用参数
+	protected static String serverUrl = "";
+	protected static String serverResult = "";
+	protected static Micro4blogParameters apiParameters;
+	protected static ApiTokenHeader apiHeader;
 
 	public static int DEFAULT_AUTH_ACTIVITY_CODE = 0;
 
@@ -262,13 +270,16 @@ public abstract class Micro4blog {
 	 * @param httpMethod
 	 * @param token
 	 * @return
-	 * @throws Micro4blogException
 	 */
 	public String request(Context context, String url,
-			Micro4blogParameters params, String httpMethod, OauthToken token)
-			throws Micro4blogException {
-		String result = Utility.openUrl(micro4blogInstance, context, url,
-				httpMethod, params, this.accessToken);
+			Micro4blogParameters params, String httpMethod, OauthToken token) {
+		String result = "";
+		try {
+			result = Utility.openUrl(micro4blogInstance, context, url,
+					httpMethod, params, token);
+		} catch (Micro4blogException e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 
@@ -352,36 +363,6 @@ public abstract class Micro4blog {
 		Oauth2AccessToken accessToken = new Oauth2AccessToken(result);
 		this.accessToken = accessToken;
 		return accessToken;
-	}
-
-	/**
-	 * sina oauth2.0 发布微博的例子
-	 * @param activity
-	 * @param accessToken
-	 * @param tokenSecret
-	 * @param content
-	 * @param picPath
-	 * @return
-	 * @throws Micro4blogException
-	 */
-	public boolean share2weibo(Activity activity, String accessToken,
-			String tokenSecret, String content, String picPath)
-			throws Micro4blogException {
-		if (TextUtils.isEmpty(accessToken)) {
-			throw new Micro4blogException("token can not be null!");
-		}
-
-		if (TextUtils.isEmpty(content) && TextUtils.isEmpty(picPath)) {
-			throw new Micro4blogException("weibo content can not be null!");
-		}
-		Intent i = new Intent(activity, ShareActivity.class);
-		i.putExtra(ShareActivity.EXTRA_ACCESS_TOKEN, accessToken);
-		i.putExtra(ShareActivity.EXTRA_TOKEN_SECRET, tokenSecret);
-		i.putExtra(ShareActivity.EXTRA_MICRO4BLOG_CONTENT, content);
-		i.putExtra(ShareActivity.EXTRA_PIC_URI, picPath);
-		activity.startActivity(i);
-
-		return true;
 	}
 
 	/**
@@ -511,6 +492,36 @@ public abstract class Micro4blog {
 	public String getServerUrl() {
 		return serverUrl;
 	}
+	
+	/**
+	 * sina oauth2.0 发布微博的例子
+	 * @param activity
+	 * @param accessToken
+	 * @param tokenSecret
+	 * @param content
+	 * @param picPath
+	 * @return
+	 * @throws Micro4blogException
+	 */
+	public boolean share2weibo(Activity activity, String accessToken,
+			String tokenSecret, String content, String picPath)
+			throws Micro4blogException {
+		if (TextUtils.isEmpty(accessToken)) {
+			throw new Micro4blogException("token can not be null!");
+		}
+
+		if (TextUtils.isEmpty(content) && TextUtils.isEmpty(picPath)) {
+			throw new Micro4blogException("weibo content can not be null!");
+		}
+		Intent i = new Intent(activity, ShareActivity.class);
+		i.putExtra(ShareActivity.EXTRA_ACCESS_TOKEN, accessToken);
+		i.putExtra(ShareActivity.EXTRA_TOKEN_SECRET, tokenSecret);
+		i.putExtra(ShareActivity.EXTRA_MICRO4BLOG_CONTENT, content);
+		i.putExtra(ShareActivity.EXTRA_PIC_URI, picPath);
+		activity.startActivity(i);
+
+		return true;
+	}
 
 	/**
 	 * 初始化每个服务的不同常量
@@ -554,4 +565,13 @@ public abstract class Micro4blog {
 	protected abstract void authorizeCallBack(int requestCode, int resultCode,
 			Intent data);
 
+	//---------------------------------------------------------------------
+	/*
+	 * API调用部分
+	 */
+	//---------------------------------------------------------------------
+	
+	public abstract String getHomeTimeline(Context context);
+	
+	public abstract ArrayList<Micro4blogInfo> parseHomeTimeline(String message);
 }

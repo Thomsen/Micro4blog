@@ -198,8 +198,8 @@ public class MainActivity extends GlobalFramework {
 	protected void loginServer(int serverType) {
 		
 		micro4blog = Micro4blog.getInstance(serverType);
-//		Intent intent = new Intent(mThis, HomeTimelineActivity.class);
-		Intent intent = new Intent(mThis, ShareActivity.class);
+		Intent intent = new Intent(mThis, HomeTimelineActivity.class);
+//		Intent intent = new Intent(mThis, ShareActivity.class);
 		
 		readPreferences();
 				

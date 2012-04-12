@@ -1,11 +1,14 @@
 package com.micro4blog.service;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.CookieSyncManager;
 
+import com.micro4blog.data.Micro4blogInfo;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.Micro4blogParameters;
@@ -25,8 +28,7 @@ public class Micro4blogForNetease extends Micro4blog {
 	public synchronized static Micro4blog getInstance() {
 		if (m4bNetease == null) {
 			m4bNetease = new Micro4blogForNetease();
-		}
-		
+		}		
 		return m4bNetease;
 	}
 
@@ -116,6 +118,19 @@ public class Micro4blogForNetease extends Micro4blog {
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {
 			
+	}
+
+	@Override
+	public String getHomeTimeline(Context context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
+		// TODO Auto-generated method stub
+		
+		return null;
 	}
 
 }

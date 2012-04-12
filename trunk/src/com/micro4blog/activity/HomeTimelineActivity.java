@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.micro4blog.R;
@@ -26,7 +27,7 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 		
 		
 		Micro4blog m4b = Micro4blog.getInstance(Micro4blog.getCurrentServer());
-		Micro4blogParameters m4bParams = new Micro4blogParameters();
+//		Micro4blogParameters m4bParams = new Micro4blogParameters();
 		
 //				
 //		String result = "";
@@ -37,12 +38,14 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 //			e.printStackTrace();
 //		}
 		
-		String url = m4b.getServerUrl() + "statuses/home_timeline.json";
+//		String url = m4b.getServerUrl() + "statuses/home_timeline.json";
 		
-		AsyncMicro4blogRunner Micro4blogRunner = new AsyncMicro4blogRunner(m4b);
-		Micro4blogRunner.request(mThis, url, m4bParams, Utility.HTTPMETHOD_POST, this);
+//		AsyncMicro4blogRunner Micro4blogRunner = new AsyncMicro4blogRunner(m4b);
+//		Micro4blogRunner.request(mThis, url, m4bParams, Utility.HTTPMETHOD_POST, this);
 		
 //		Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+		
+		Log.i("thom", m4b.getHomeTimeline(mThis));
 	}
 
 	@Override
