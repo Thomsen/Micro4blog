@@ -27,12 +27,8 @@ public class AsyncMicro4blogRunner {
 			final RequestListener listener){
 		new Thread(){
 			@Override public void run() {
-                try {
-					String resp = micro4blog.request(context, url, params, httpMethod, micro4blog.getAccessToken());
-                    listener.onComplete(resp);
-                } catch (Micro4blogException e) {
-                    listener.onError(e);
-                }
+                String resp = micro4blog.request(context, url, params, httpMethod, micro4blog.getAccessToken());
+				listener.onComplete(resp);
             }
 		}.run();
 		

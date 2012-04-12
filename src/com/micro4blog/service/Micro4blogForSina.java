@@ -1,5 +1,11 @@
 package com.micro4blog.service;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,9 +14,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.CookieSyncManager;
 
+import com.micro4blog.data.Micro4blogInfo;
+import com.micro4blog.data.UserInfo;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
+import com.micro4blog.http.ApiTokenHeader;
 import com.micro4blog.http.Micro4blogParameters;
+import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.Micro4blogException;
 
@@ -29,7 +39,8 @@ public class Micro4blogForSina extends Micro4blog {
 		if (m4bSina == null) {
 			m4bSina = new Micro4blogForSina();
 		}
-		
+		apiParameters = new Micro4blogParameters();
+		apiHeader = new ApiTokenHeader();
 		return m4bSina;
 	}
 	
@@ -126,6 +137,94 @@ public class Micro4blogForSina extends Micro4blog {
 	@Override
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {
+		
+	}
+
+	@Override
+	public String getHomeTimeline(Context context) {
+		
+		serverUrl = getServerUrl() + "statuses/home_timeline.json";
+		apiParameters.add("count", "20");
+		serverResult = request(context, serverUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
+		
+		return serverResult;
+	}
+
+	@Override
+	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
+		ArrayList<Micro4blogInfo> jsonInfoList = new ArrayList<Micro4blogInfo>();
+		if(message == null) {
+			return jsonInfoList;
+		}
+		
+//		JSONArray jArray = new JSONArray(message);
+//		
+//		JSONObject jObject ;
+//		JSONObject userObject;
+//		UserInfo userInfo = null ;
+//		Micro4blogInfo timeLineInfo = null ;
+//		for (int i = 0; i < jArray.length(); i++) {
+//			
+//			jObject = (JSONObject) jArray.get(i);
+//			userInfo = new UserInfo();
+//			timeLineInfo = new Micro4blogInfo();
+//			
+//			timeLineInfo.setTime(jObject.getString("created_at"));
+//			timeLineInfo.setMessageId(jObject.getString("id"));
+//			
+//			// Status And Image URL
+//			String imageUrl = "";
+//			if(!jObject.isNull("thumbnail_pic")){
+//				imageUrl = "\n" + jObject.getString("thumbnail_pic");
+//			}
+//			timeLineInfo.setStatus(jObject.getString("text") + imageUrl);
+//			timeLineInfo.setFavorite(jObject.getString("favorited"));
+//			
+//		    userObject = jObject.getJSONObject("user");
+//			
+//			userInfo.setUid(userObject.getString("id"));
+//		    userInfo.setScreenName(userObject.getString("screen_name"));
+//		    userInfo.setDescription(userObject.getString("description"));
+//		    userInfo.setUserImageURL(userObject.getString("profile_image_url"));
+//		    userInfo.setFollowerCount(userObject.getString("followers_count"));
+//		    userInfo.setFollowCount(userObject.getString("friends_count"));
+//			userInfo.setVerified(userObject.getString("verified"));
+//		    try {
+//		    	
+//		    	if (jObject.has("retweeted_status")) {
+//		        	if (jObject.getString("retweeted_status") != null) {
+//				    	JSONObject retweetObject = jObject.getJSONObject("retweeted_status");
+//				    	timeLineInfo.setRetweeted(true);
+//				    	
+//						// Status And Image URL
+//						String retweetedImageUrl = "";
+//						if(!retweetObject.isNull("thumbnail_pic")){
+//							retweetedImageUrl = "\n" + retweetObject.getString("thumbnail_pic");
+//						}
+//				    	timeLineInfo.setRetweetedStatus(retweetObject.getString("text") + retweetedImageUrl);
+//				    	
+//				    	JSONObject originalUserObject = retweetObject.getJSONObject("user");
+//				    	userInfo.setRetweetedScreenName(originalUserObject.getString("screen_name"));
+//				    	userInfo.setRetweetUserId(originalUserObject.getString("id"));
+//				    	
+//				    	//userInfo.setScreenName(originalUserObject.getString("screen_name") + " RT by " + userObject.getString("screen_name"));
+//				    }
+//		        }
+//		    	
+//		    } catch (JSONException e) {
+//		    	
+//		    	e.printStackTrace();
+//		    	
+//		    }
+//		    
+//			timeLineInfo.setUserInfo(userInfo);
+//		    
+//		    jsonInfoList.add(timeLineInfo);
+//		    
+//			
+//		}
+		
+		return jsonInfoList;
 		
 	}
 
