@@ -1,4 +1,4 @@
-package com.micro4blog.service;
+package com.micro4blog.server;
 
 import java.util.ArrayList;
 
@@ -15,109 +15,109 @@ import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.Micro4blogException;
 
-public class Micro4blogForTencent extends Micro4blog {
+public class Micro4blogForNetease extends Micro4blog {
 	
-	private static final String TAG = "Micro4blogForTencent";
+	private static final String TAG = "Micro4blogForNetease";
 	
-	private static Micro4blogForTencent m4bTencent;
+	private static Micro4blog m4bNetease;
 	
-	public Micro4blogForTencent() {
+	public Micro4blogForNetease() {
 		super();
 	}
 	
-	public synchronized static Micro4blogForTencent getInstance() {
-		if (m4bTencent == null) {
-			m4bTencent = new Micro4blogForTencent();
-		}
-		
-		return m4bTencent;
+	public synchronized static Micro4blog getInstance() {
+		if (m4bNetease == null) {
+			m4bNetease = new Micro4blogForNetease();
+		}		
+		return m4bNetease;
 	}
 
 	@Override
 	protected void initConfig() {
-
-		setAppKey("801111016");
-		setAppSecret("77f11f15151a8b85b15044bca6c2d2ed");
 		
-		// 要设置callback url，并在manifest中配置
-		setRedirectUrl("micro4blog://TimelineActivity");
-
-		// 为了在dialog显示， 原来是https 换成了http 记得要改post为get，反之亦是
-		// 针对dialog的callback
-		setUrlRequestToken("http://open.t.qq.com/cgi-bin/request_token");
-		setUrlAccessToken("http://open.t.qq.com/cgi-bin/access_token");
-		setUrlAccessAuthorize("http://open.t.qq.com/cgi-bin/authorize");
+		setAppKey("5V20v8ORzD8ie78k");
+		setAppSecret("O3iJyOQM5WQZD7tJjew7bpbHpQYt8VKy");
 		
-		setServerUrl("http://open.t.qq.com/api/");
+		setRedirectUrl("http://github.com/thomsen/Micro4blog");
 
+		setUrlRequestToken("http://api.t.163.com/oauth/request_token");
+		setUrlAccessToken("http://api.t.163.com/oauth/access_token");
+		setUrlAccessAuthorize("http://api.t.163.com/oauth/authenticate");
+
+//		setUrlAccessAuthorize("https://api.t.163.com/oauth2/authorize");
+//		setUrlAccessToken("https://api.t.163.com/oauth2/access_token");
+		
+		setServerUrl("http://api.t.163.com/");
+		
 	}
 
 	@Override
 	protected void authorize(Activity activity, String[] permissions,
 			int activityCode, Micro4blogDialogListener listener) {
-	
+		
 		mAuthDialogListener = listener;
-
+		
 		startDialogAuth(activity, permissions);
+		
 	}
 
 	@Override
 	protected void startDialogAuth(Activity activity, String[] permissions) {
-
+		
 		// 针对permissions，进行对参数设置
 		Micro4blogParameters params = new Micro4blogParameters();
 		
-		CookieSyncManager.createInstance(activity);
-
 		dialog(activity, params, new Micro4blogDialogListener() {
 
 			@Override
 			public void onComplete(Bundle values) {
 				
-				CookieSyncManager.getInstance().sync();
+				// ensure any cookies set by the dialog are saved
+                CookieSyncManager.getInstance().sync();
                 
                 // oauth第三步，换取access token				
-				getUserAccessToken(values);
-
-
-			}
+				getUserAccessToken(values);			
+                
+			}		
 
 			@Override
 			public void onError(DialogError error) {
-
+					
 			}
 
 			@Override
 			public void onCancel() {
-
+					
 			}
 
 			@Override
 			public void onMicro4blogException(Micro4blogException e) {
-
+					
 			}
-
+			
 		});
-
+		
 	}
 
 	@Override
 	protected void dialog(Context context, Micro4blogParameters parameters,
 			Micro4blogDialogListener listener) {
-
+		
 		// oauth第一步，获取request token
 		getAppRequestToken(context, parameters);
 		
+		parameters.add("client_type", "mobile");
+		
 		// oauth第二步，进行用户的授权认证
 		getAuthorization(context, parameters, listener);
-		
-
+	
 	}
 
+	
 	@Override
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {
-
+			
 	}
 
 	@Override
@@ -132,6 +132,5 @@ public class Micro4blogForTencent extends Micro4blog {
 		
 		return null;
 	}
-
 
 }

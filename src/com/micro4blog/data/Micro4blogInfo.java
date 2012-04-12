@@ -7,8 +7,8 @@ public class Micro4blogInfo {
 	private int m4bId;
 	private String m4bText;
 	private String m44Source;
-	private String m4bFovorited;
-	private String m4bTruncated;
+	private boolean m4bFovorited;
+	private boolean m4bTruncated;
 	private int m4bInReplyToStatusId;
 	private int m4bInReplyToUserId;
 	private String m4bInReplyToScreenName;
@@ -79,19 +79,19 @@ public class Micro4blogInfo {
 		this.m44Source = m44Source;
 	}
 
-	public String getM4bFovorited() {
+	public boolean getM4bFovorited() {
 		return m4bFovorited;
 	}
 
-	public void setM4bFovorited(String m4bFovorited) {
+	public void setM4bFovorited(boolean m4bFovorited) {
 		this.m4bFovorited = m4bFovorited;
 	}
 
-	public String getM4bTruncated() {
+	public boolean getM4bTruncated() {
 		return m4bTruncated;
 	}
 
-	public void setM4bTruncated(String m4bTruncated) {
+	public void setM4bTruncated(boolean m4bTruncated) {
 		this.m4bTruncated = m4bTruncated;
 	}
 

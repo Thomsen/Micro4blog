@@ -1,4 +1,4 @@
-package com.micro4blog.service;
+package com.micro4blog.server;
 
 import java.util.ArrayList;
 
@@ -15,45 +15,44 @@ import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.Micro4blogException;
 
-public class Micro4blogForNetease extends Micro4blog {
+public class Micro4blogForSohu extends Micro4blog {
 	
-	private static final String TAG = "Micro4blogForNetease";
+	private static final String TAG = "Micro4blogForSohu";
 	
-	private static Micro4blog m4bNetease;
+	private static Micro4blogForSohu m4bSohu;
 	
-	public Micro4blogForNetease() {
+	public Micro4blogForSohu() {
 		super();
 	}
 	
-	public synchronized static Micro4blog getInstance() {
-		if (m4bNetease == null) {
-			m4bNetease = new Micro4blogForNetease();
-		}		
-		return m4bNetease;
+	public synchronized static Micro4blogForSohu getInstance() {
+		if (m4bSohu == null) {
+			m4bSohu = new Micro4blogForSohu();
+		}
+		
+		return m4bSohu;
 	}
 
 	@Override
 	protected void initConfig() {
 		
-		setAppKey("5V20v8ORzD8ie78k");
-		setAppSecret("O3iJyOQM5WQZD7tJjew7bpbHpQYt8VKy");
+		setAppKey("xJjgBsXDO51ylviVj1zP");
+		setAppSecret("lu2BhNYtIpcGdRXJSg=CoElLbQlL0PJihDp1d44o");
 		
-		setRedirectUrl("http://github.com/thomsen/Micro4blog");
+		setRedirectUrl("micro4blog://TimelineActivity");
 
-		setUrlRequestToken("http://api.t.163.com/oauth/request_token");
-		setUrlAccessToken("http://api.t.163.com/oauth/access_token");
-		setUrlAccessAuthorize("http://api.t.163.com/oauth/authenticate");
-
-//		setUrlAccessAuthorize("https://api.t.163.com/oauth2/authorize");
-//		setUrlAccessToken("https://api.t.163.com/oauth2/access_token");
-		
-		setServerUrl("http://api.t.163.com/");
-		
+		setUrlRequestToken("http://api.t.sohu.com/oauth/request_token");
+		setUrlAccessToken("http://api.t.sohu.com/oauth/access_token");
+		setUrlAccessAuthorize("http://api.t.sohu.com/oauth/authorize");
+	
+		setServerUrl("http://api.t.sohu.com/");
 	}
 
 	@Override
 	protected void authorize(Activity activity, String[] permissions,
 			int activityCode, Micro4blogDialogListener listener) {
+
+		mContext = activity;
 		
 		mAuthDialogListener = listener;
 		
@@ -72,27 +71,26 @@ public class Micro4blogForNetease extends Micro4blog {
 			@Override
 			public void onComplete(Bundle values) {
 				
-				// ensure any cookies set by the dialog are saved
-                CookieSyncManager.getInstance().sync();
+				CookieSyncManager.getInstance().sync();
                 
                 // oauth第三步，换取access token				
-				getUserAccessToken(values);			
-                
-			}		
+				getUserAccessToken(values);
+														
+			}
 
 			@Override
 			public void onError(DialogError error) {
-					
+								
 			}
 
 			@Override
 			public void onCancel() {
-					
+							
 			}
 
 			@Override
 			public void onMicro4blogException(Micro4blogException e) {
-					
+							
 			}
 			
 		});
@@ -102,18 +100,18 @@ public class Micro4blogForNetease extends Micro4blog {
 	@Override
 	protected void dialog(Context context, Micro4blogParameters parameters,
 			Micro4blogDialogListener listener) {
-		
+	
 		// oauth第一步，获取request token
 		getAppRequestToken(context, parameters);
 		
-		parameters.add("client_type", "mobile");
+		parameters.add("clientType", "phone");
+		parameters.add("oauth_callback", getRedirectUrl());
 		
 		// oauth第二步，进行用户的授权认证
 		getAuthorization(context, parameters, listener);
-	
+		
 	}
 
-	
 	@Override
 	protected void authorizeCallBack(int requestCode, int resultCode,
 			Intent data) {
@@ -129,8 +127,9 @@ public class Micro4blogForNetease extends Micro4blog {
 	@Override
 	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
 		// TODO Auto-generated method stub
-		
+	
 		return null;
 	}
+
 
 }

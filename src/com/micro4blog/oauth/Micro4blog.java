@@ -22,10 +22,10 @@ import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Oauth2AccessTokenHeader;
 import com.micro4blog.http.RequestTokenHeader;
 import com.micro4blog.http.Utility;
-import com.micro4blog.service.Micro4blogForNetease;
-import com.micro4blog.service.Micro4blogForSina;
-import com.micro4blog.service.Micro4blogForSohu;
-import com.micro4blog.service.Micro4blogForTencent;
+import com.micro4blog.server.Micro4blogForNetease;
+import com.micro4blog.server.Micro4blogForSina;
+import com.micro4blog.server.Micro4blogForSohu;
+import com.micro4blog.server.Micro4blogForTencent;
 import com.micro4blog.tests.ShareActivity;
 import com.micro4blog.utils.Micro4blogException;
 
