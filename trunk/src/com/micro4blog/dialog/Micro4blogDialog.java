@@ -11,11 +11,9 @@ import java.net.URL;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +32,9 @@ import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.Micro4blogException;
 
+/**
+ * 用户授权的dialog
+ */
 public class Micro4blogDialog extends Dialog {
 
 	static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(
@@ -50,8 +51,9 @@ public class Micro4blogDialog extends Dialog {
     private RelativeLayout webViewContainer;
     private RelativeLayout mContent;
     
-    // 解决onPageStarted执行两次的问题
-	boolean isNoExecute = true;
+    // 防止handleRedirectUrl执行两次
+    // 因为sina存在隐式授权，所以加了这个，其他服务不行
+	boolean isHandled = true;
 
     public Micro4blogDialog(Micro4blog micro4blog, Context context, String url, Micro4blogDialogListener listener) {
         super(context, R.style.ContentOverlay);
@@ -71,12 +73,10 @@ public class Micro4blogDialog extends Dialog {
         mContent = new RelativeLayout(getContext());
 
         setUpWebView();
-
         // setUpCloseBtn();
 
         addContentView(mContent, new LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.FILL_PARENT));
-        
+                LayoutParams.FILL_PARENT));       
     }
    
 
@@ -97,9 +97,6 @@ public class Micro4blogDialog extends Dialog {
         mWebView.setLayoutParams(FILL);
         mWebView.setVisibility(View.INVISIBLE);
         
-        // 去横向滚动，不过不行，通过url参数是可以的 
-//        mWebView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
-        
         webViewContainer.addView(mWebView);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
@@ -114,6 +111,7 @@ public class Micro4blogDialog extends Dialog {
 
 
 
+	@SuppressWarnings("unused")
 	private void setUpCloseBtn() {
         mBtnClose = new ImageView(getContext());
         mBtnClose.setClickable(true);
@@ -145,18 +143,17 @@ public class Micro4blogDialog extends Dialog {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // 待后台增加对默认重定向地址的支持后修改下面的逻辑
-            if (url.startsWith(mMicro4blog.getRedirectUrl())  && isNoExecute) {
-                handleRedirectUrl(view, url);
-                
+            if (url.startsWith(mMicro4blog.getRedirectUrl())  && isHandled) {           
+        		handleRedirectUrl(view, url);               
 //                Micro4blogDialog.this.dismiss();
 //                return true;
             }
             
-            isNoExecute = true;
+            isHandled = true;
             Micro4blogDialog.this.dismiss();
             return true;
                                              
-            // launch non-dialog URLs in a full browser， TODO: 原来是在这里执行的
+//             launch non-dialog URLs in a full browser， TODO: 原来是在这里执行的
 //            getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 //            return true;
         }
@@ -177,9 +174,8 @@ public class Micro4blogDialog extends Dialog {
             if (url.startsWith(mMicro4blog.getRedirectUrl())) {
                 handleRedirectUrl(view, url);
                 view.stopLoading();
-                Micro4blogDialog.this.dismiss();
-                
-                isNoExecute = false;
+                Micro4blogDialog.this.dismiss();                
+                isHandled = false;
                 
                 return;
             }
@@ -195,12 +191,11 @@ public class Micro4blogDialog extends Dialog {
             mContent.setBackgroundColor(Color.TRANSPARENT);
             webViewContainer.setBackgroundResource(R.drawable.dialog_bg);
             
-        	mWebView.setVisibility(View.VISIBLE);
-        	
-            
+        	mWebView.setVisibility(View.VISIBLE);     	            
         }
 
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+        @SuppressWarnings("unused")
+		public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             handler.proceed();
             
         }
@@ -224,40 +219,30 @@ public class Micro4blogDialog extends Dialog {
         }
     }
 
-    private static String getHtml(String urlString) {
+    @SuppressWarnings("unused")
+	private static String getHtml(String urlString) {
 
         try {
 
             StringBuffer html = new StringBuffer();
-
             SocketAddress sa = new InetSocketAddress("10.75.0.103", 8093);
             Proxy proxy = new Proxy(java.net.Proxy.Type.HTTP, sa);
-
             URL url = new URL(urlString);
-
             HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
-
             InputStreamReader isr = new InputStreamReader(conn.getInputStream());
-
             BufferedReader br = new BufferedReader(isr);
-
             String temp;
 
             while ((temp = br.readLine()) != null) {
-
                 html.append(temp);
-
             }
 
             br.close();
-
             isr.close();
             return html.toString();
 
         } catch (Exception e) {
-
             e.printStackTrace();
-
             return null;
 
         }

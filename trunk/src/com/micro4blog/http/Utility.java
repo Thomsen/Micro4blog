@@ -78,11 +78,9 @@ import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.utils.Micro4blogException;
 
 /**
- * Utility class for Micro4blog object.
- * 
- * @author ZhangJie (zhangjie2@staff.sina.com.cn)
+ * 进行网络通信，url参数encode，通信结果解析的工具类
+ *
  */
-
 public class Utility {
 	
 	private static final String TAG = "Utility";
@@ -103,167 +101,10 @@ public class Utility {
 	private static final int SET_CONNECTION_TIMEOUT = 50000;
 	private static final int SET_SOCKET_TIMEOUT = 200000;
 
-	// 设置Token
-	public static void setTokenObject(OauthToken token) {
-		mToken = token;
-	}
 
-	public static void setAuthorization(HttpHeaderFactory auth) {
-		httpHeader = auth;
-	}
-
-	// 设置http头,如果authParam不为空，则表示当前有token认证信息需要加入到头中
-	public static void setHeader(Micro4blog micro4blog, String httpMethod, HttpUriRequest request,
-			Micro4blogParameters authParam, String url, OauthToken token)
-			throws Micro4blogException {
-		if (!isBundleEmpty(mRequestHeader)) {
-			for (int loc = 0; loc < mRequestHeader.size(); loc++) {
-				String key = mRequestHeader.getKey(loc);
-				request.setHeader(key, mRequestHeader.getValue(key));
-			}
-		}
-		if (!isBundleEmpty(authParam) && httpHeader != null 
-				&& ! (httpHeader instanceof ApiTokenHeader)
-				&& (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) ) {
-//		if (httpHeader != null) {
-			String authHeader = httpHeader.getMicro4blogAuthHeader(micro4blog, httpMethod,
-					url, authParam, micro4blog.getAppKey(),
-					micro4blog.getAppSecret(), token);
-			if (authHeader != null) {
-				
-				// Sohu的oauth中注意事项，要留意
-				// 不过这个注意事项有两个版本
-
-				request.setHeader("Authorization", authHeader);
-				
-				
-			}
-		}
-		request.setHeader("User-Agent",
-				System.getProperties().getProperty("http.agent")
-						+ " Micro4blogAndroidSDK");
-	}
-
-	public static boolean isBundleEmpty(Micro4blogParameters bundle) {
-		if (bundle == null || bundle.size() == 0) {
-			return true;
-		}
-		return false;
-	}
-
-	// 填充request bundle
-	public static void setRequestHeader(String key, String value) {
-		// mRequestHeader.clear();
-		mRequestHeader.add(key, value);
-	}
-
-	public static void setRequestHeader(Micro4blogParameters params) {
-		mRequestHeader.addAll(params);
-	}
-
-	public static void clearRequestHeader() {
-		mRequestHeader.clear();
-
-	}
-
-	public static String encodePostBody(Bundle parameters, String boundary) {
-		if (parameters == null)
-			return "";
-		StringBuilder sb = new StringBuilder();
-
-		for (String key : parameters.keySet()) {
-			if (parameters.getByteArray(key) != null) {
-				continue;
-			}
-
-			sb.append("Content-Disposition: form-data; name=\"" + key
-					+ "\"\r\n\r\n" + parameters.getString(key));
-			sb.append("\r\n" + "--" + boundary + "\r\n");
-		}
-
-		return sb.toString();
-	}
-
-	public static String encodeUrl(Micro4blogParameters parameters) {
-		if (parameters == null) {
-			return "";
-		}
-		StringBuilder sb = new StringBuilder();
-		boolean first = true;
-		for (int loc = 0; loc < parameters.size(); loc++) {
-			if (first)
-				first = false;
-			else
-				sb.append("&");
-			sb.append(URLEncoder.encode(parameters.getKey(loc)) + "="
-					+ URLEncoder.encode(parameters.getValue(loc)));
-		}
-		
-		return sb.toString();
-	}
-
-	public static Bundle decodeUrl(String s) {
-		Bundle params = new Bundle();
-		if (s != null) {
-			String array[] = s.split("&");
-			for (String parameter : array) {
-				String v[] = parameter.split("=");
-				params.putString(URLDecoder.decode(v[0]),
-						URLDecoder.decode(v[1]));
-			}
-		}
-		return params;
-	}
-
+	
 	/**
-	 * Parse a URL query and fragment parameters into a key-value bundle.
-	 * 
-	 * @param url
-	 *            the URL to parse
-	 * @return a dictionary bundle of keys and values
-	 */
-	public static Bundle parseUrl(String url) {
-		// hack to prevent MalformedURLException
-//		url = url.replace("weiboconnect", "http");
-		url = url.replace("micro4blog", "http");
-		try {
-			URL u = new URL(url);
-			Bundle b = decodeUrl(u.getQuery());
-			b.putAll(decodeUrl(u.getRef()));
-			return b;
-		} catch (MalformedURLException e) {
-			return new Bundle();
-		}
-	}
-
-	/**
-	 * Construct a url encoded entity by parameters .
-	 * 
-	 * @param bundle
-	 *            :parameters key pairs
-	 * @return UrlEncodedFormEntity: encoed entity
-	 */
-	public static UrlEncodedFormEntity getPostParamters(Bundle bundle)
-			throws Micro4blogException {
-		if (bundle == null || bundle.isEmpty()) {
-			return null;
-		}
-		try {
-			List<NameValuePair> form = new ArrayList<NameValuePair>();
-			for (String key : bundle.keySet()) {
-				form.add(new BasicNameValuePair(key, bundle.getString(key)));
-			}
-			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(form,
-					"UTF-8");
-			return entity;
-		} catch (UnsupportedEncodingException e) {
-			throw new Micro4blogException(e);
-		}
-	}
-
-	/**
-	 * Implement a weibo http request and return results .
-	 * 
+	 * 判断是否有带图片的网络通信，带图片（图片需要转换为字节流）
 	 * @param context
 	 *            : context of activity
 	 * @param url
@@ -276,7 +117,6 @@ public class Utility {
 	 *            : oauth token or accesstoken
 	 * @return UrlEncodedFormEntity: encoed entity
 	 */
-
 	public static String openUrl(Micro4blog micro4blog, Context context, String url, String method,
 			Micro4blogParameters params, OauthToken token)
 			throws Micro4blogException {
@@ -297,6 +137,18 @@ public class Utility {
 		return rlt;
 	}
 
+	/**
+	 * 实现网络通信的真实方法
+	 * @param micro4blog
+	 * @param context
+	 * @param url
+	 * @param method
+	 * @param params
+	 * @param file
+	 * @param token
+	 * @return
+	 * @throws Micro4blogException
+	 */
 	public static String openUrl(Micro4blog micro4blog, Context context, String url, String method,
 			Micro4blogParameters params, String file, OauthToken token)
 			throws Micro4blogException {
@@ -308,13 +160,13 @@ public class Utility {
 			if (method.equals("GET")) {				
 				// 明白，起初想要的是get方法用url参数形式，post方法用header形式
 				if (! isBundleEmpty(params)) {
-					
-					// 也可以经format传给params
-					if (url.contains("?")) {
-						url = url + "&" + encodeUrl(params);
-					} else {
-						url = url + "?" + encodeUrl(params);
-					}
+//					// 也可以经format传给params
+//					if (url.contains("?")) {
+//						url = url + "&" + encodeUrl(params);
+//					} else {
+//						url = url + "?" + encodeUrl(params);
+//					}
+					url = url + "?" + encodeUrl(params);
 				}
 				HttpGet get = new HttpGet(url);
 				request = get;
@@ -362,15 +214,161 @@ public class Utility {
 			}
 			// parse content stream from response
 			result = read(response);
-			
-			Log.d(TAG, "response result: " + result);
-			
+			Log.d(TAG, "response result: " + result);			
 			return result;
 		} catch (IOException e) {
 			throw new Micro4blogException(e);
 		}
 	}
 
+	/**
+	 *  设置http头,如果authParam不为空，则表示当前有token认证信息需要加入到头中
+	 * 	这里主要除去了tencent和netease sohu api调用的特例
+	 * @param micro4blog
+	 * @param httpMethod
+	 * @param request
+	 * @param authParam
+	 * @param url
+	 * @param token
+	 * @throws Micro4blogException
+	 */
+	public static void setHeader(Micro4blog micro4blog, String httpMethod, HttpUriRequest request,
+			Micro4blogParameters authParam, String url, OauthToken token)
+			throws Micro4blogException {
+		if (!isBundleEmpty(mRequestHeader)) {
+			for (int loc = 0; loc < mRequestHeader.size(); loc++) {
+				String key = mRequestHeader.getKey(loc);
+				request.setHeader(key, mRequestHeader.getValue(key));
+			}
+		}
+		if (!isBundleEmpty(authParam) && httpHeader != null 
+				&& ! (httpHeader instanceof ApiTokenHeader)
+				&& (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) ) {
+			String authHeader = httpHeader.getMicro4blogAuthHeader(micro4blog, httpMethod,
+					url, authParam, micro4blog.getAppKey(),
+					micro4blog.getAppSecret(), token);
+			if (authHeader != null) {
+				request.setHeader("Authorization", authHeader);		
+			}
+		}
+		request.setHeader("User-Agent",
+				System.getProperties().getProperty("http.agent")
+						+ " Micro4blogAndroidSDK");
+	}
+
+	/**
+	 * 编码POST请求方式的内容
+	 * @param parameters
+	 * @param boundary
+	 * @return
+	 */
+	public static String encodePostBody(Bundle parameters, String boundary) {
+		if (parameters == null)
+			return "";
+		StringBuilder sb = new StringBuilder();
+
+		for (String key : parameters.keySet()) {
+			if (parameters.getByteArray(key) != null) {
+				continue;
+			}
+			sb.append("Content-Disposition: form-data; name=\"" + key
+					+ "\"\r\n\r\n" + parameters.getString(key));
+			sb.append("\r\n" + "--" + boundary + "\r\n");
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * 编码url
+	 * @param parameters
+	 * @return
+	 */
+	public static String encodeUrl(Micro4blogParameters parameters) {
+		if (parameters == null) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for (int loc = 0; loc < parameters.size(); loc++) {
+			if (first)
+				first = false;
+			else
+				sb.append("&");
+			sb.append(URLEncoder.encode(parameters.getKey(loc)) + "="
+					+ URLEncoder.encode(parameters.getValue(loc)));
+		}
+		
+		return sb.toString();
+	}
+
+	/**
+	 * 反编码url
+	 * @param s
+	 * @return
+	 */
+	public static Bundle decodeUrl(String s) {
+		Bundle params = new Bundle();
+		if (s != null) {
+			String array[] = s.split("&");
+			for (String parameter : array) {
+				String v[] = parameter.split("=");
+				params.putString(URLDecoder.decode(v[0]),
+						URLDecoder.decode(v[1]));
+			}
+		}
+		return params;
+	}
+
+	/**
+	 * 解析服务器返回的结果
+	 * @param url
+	 *            the URL to parse
+	 * @return a dictionary bundle of keys and values
+	 */
+	public static Bundle parseUrl(String url) {
+		// hack to prevent MalformedURLException
+		url = url.replace("micro4blog", "http");
+		try {
+			URL u = new URL(url);
+			Bundle b = decodeUrl(u.getQuery());
+			b.putAll(decodeUrl(u.getRef()));
+			return b;
+		} catch (MalformedURLException e) {
+			return new Bundle();
+		}
+	}
+
+	/**
+	 * 得到POST通信方式的请求参数
+	 * @param bundle
+	 *            :parameters key pairs
+	 * @return UrlEncodedFormEntity: encoed entity
+	 */
+	public static UrlEncodedFormEntity getPostParamters(Bundle bundle)
+			throws Micro4blogException {
+		if (bundle == null || bundle.isEmpty()) {
+			return null;
+		}
+		try {
+			List<NameValuePair> form = new ArrayList<NameValuePair>();
+			for (String key : bundle.keySet()) {
+				form.add(new BasicNameValuePair(key, bundle.getString(key)));
+			}
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(form,
+					"UTF-8");
+			return entity;
+		} catch (UnsupportedEncodingException e) {
+			throw new Micro4blogException(e);
+		}
+	}
+
+
+	/**
+	 * 防止https通信时，由于证书安全的问题
+	 * @param context
+	 * @return
+	 */
 	public static HttpClient getNewHttpClient(Context context) {
 		try {
 			KeyStore trustStore = KeyStore.getInstance(KeyStore
@@ -467,8 +465,7 @@ public class Utility {
 	}
 
 	/**
-	 * Get a HttpClient object which is setting correctly .
-	 * 
+	 * 通过某种配置得到HttpClient对象
 	 * @param context
 	 *            : context of activity
 	 * @return HttpClient: HttpClient object
@@ -505,8 +502,7 @@ public class Utility {
 	}
 
 	/**
-	 * Upload image into output stream .
-	 * 
+	 * 向服务中写入带图片的内容
 	 * @param out
 	 *            : output stream for uploading weibo
 	 * @param imgpath
@@ -543,8 +539,7 @@ public class Utility {
 	}
 
 	/**
-	 * Upload weibo contents into output stream .
-	 * 
+	 * 向服务中写入内容
 	 * @param baos
 	 *            : output stream for uploading weibo
 	 * @param params
@@ -572,11 +567,9 @@ public class Utility {
 	}
 
 	/**
-	 * Read http requests result from response .
-	 * 
+	 * 从请求返回中读取字符串结果
 	 * @param response
 	 *            : http response by executing httpclient
-	 * 
 	 * @return String : http response content
 	 */
 	private static String read(HttpResponse response)
@@ -593,7 +586,6 @@ public class Utility {
 					&& header.getValue().toLowerCase().indexOf("gzip") > -1) {
 				inputStream = new GZIPInputStream(inputStream);
 			}
-
 			// Read response into a buffered stream
 			int readBytes = 0;
 			byte[] sBuffer = new byte[512];
@@ -611,11 +603,9 @@ public class Utility {
 	}
 
 	/**
-	 * Read http requests result from inputstream .
-	 * 
+	 * 从输入流中读取结果
 	 * @param inputstream
 	 *            : http inputstream from HttpConnection
-	 * 
 	 * @return String : http response content
 	 */
 	private static String read(InputStream in) throws IOException {
@@ -629,11 +619,9 @@ public class Utility {
 	}
 
 	/**
-	 * Clear current context cookies .
-	 * 
+	 * 清除当前场景的cookies
 	 * @param context
 	 *            : current activity context.
-	 * 
 	 * @return void
 	 */
 	public static void clearCookies(Context context) {
@@ -645,7 +633,7 @@ public class Utility {
 	}
 
 	/**
-	 * Display a simple alert dialog with the given text and title.
+	 * 显示一个自定义的显示对话框
 	 * 
 	 * @param context
 	 *            Android context in which the dialog should be displayed
@@ -661,6 +649,12 @@ public class Utility {
 		alertBuilder.create().show();
 	}
 
+	/**
+	 * 将参数转变成字符串形式
+	 * 注意：对于header中的参数过滤原因，如果参数的值没有给会出现null pointer
+	 * @param httpParams
+	 * @return
+	 */
 	public static String encodeParameters(Micro4blogParameters httpParams) {
 		if (null == httpParams || Utility.isBundleEmpty(httpParams)) {
 			return "";
@@ -669,11 +663,7 @@ public class Utility {
 		int j = 0;
 		for (int loc = 0; loc < httpParams.size(); loc++) {
 			String key = httpParams.getKey(loc);
-			
-//			if (httpParams.getValue(key) == null) {
-//				return "";
-//			}
-			
+					
 			if (j != 0) {
 				buf.append("&");
 			}
@@ -722,6 +712,60 @@ public class Utility {
 			out[index + 0] = alphabet[val & 0x3F];
 		}
 		return out;
+	}
+	
+	/**
+	 * 设置Token对象
+	 * @param token
+	 */
+	public static void setTokenObject(OauthToken token) {
+		mToken = token;
+	}
+
+	/**
+	 * 设置授权的不同阶段的头部参数类型
+	 * @param auth
+	 */
+	public static void setAuthorization(HttpHeaderFactory auth) {
+		httpHeader = auth;
+	}
+	
+	/**
+	 * 判断参数是否为空
+	 * @param bundle
+	 * @return
+	 */
+	public static boolean isBundleEmpty(Micro4blogParameters bundle) {
+		if (bundle == null || bundle.size() == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 添加额外的request bundle
+	 * @param key
+	 * @param value
+	 */
+	public static void setRequestHeader(String key, String value) {
+		// mRequestHeader.clear();
+		mRequestHeader.add(key, value);
+	}
+
+	/**
+	 * 添加request bundle
+	 * @param params
+	 */
+	public static void setRequestHeader(Micro4blogParameters params) {
+		mRequestHeader.addAll(params);
+	}
+
+	/**
+	 * 清除request bundle
+	 */
+	public static void clearRequestHeader() {
+		mRequestHeader.clear();
+
 	}
 
 }

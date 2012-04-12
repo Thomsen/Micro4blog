@@ -40,7 +40,6 @@ public abstract class HttpHeaderFactory {
     public static final String CONST_HMAC_SHA1 = "HmacSHA1";
     public static final String CONST_SIGNATURE_METHOD = "HMAC-SHA1";
     public static final String CONST_OAUTH_VERSION = "1.0";
-    public static final String CONST_OAUTH_VERSION_A = "1.0a";
     
     private Micro4blogParameters authParams;
     private Micro4blogParameters signatureParams;
@@ -53,9 +52,6 @@ public abstract class HttpHeaderFactory {
         
     	// step 1: generate timestamp and nonce
         final long timestamp = System.currentTimeMillis() / 1000;
-//        final long nonce = timestamp + (new Random()).nextInt();
-//        Random random = new Random();
-//        long nonce = (random.nextInt(9876599) + 123400);
         final String nonce = getRandomNonce();
         
         // step 2: authParams有两个用处：1.加密串一部分 2.生成最后Authorization头域
@@ -73,13 +69,11 @@ public abstract class HttpHeaderFactory {
         String signature = generateSignature(micro4blog, oauthBaseString, token);
         authParams.add("oauth_signature", signature);
         Log.d(TAG, "oauth signature : " + signature);
-        Log.d(TAG, "authParams after : " + Utility.encodeParameters(authParams));       
-        
+           
         // step 5: for additional parameters
         this.addAdditionalParams(authParams, params);
-        
-        // thom add
-//        authParams = generateSignatureList(authParams);
+
+        Log.d(TAG, "authParams after : " + Utility.encodeParameters(authParams));  
         
         return "OAuth " + encodeParameters(authParams, ",", true);
     }
@@ -120,15 +114,10 @@ public abstract class HttpHeaderFactory {
 
     private Micro4blogParameters generateAuthParameters(Micro4blog micro4blog, String nonce, long timestamp, OauthToken token) {
     	Micro4blogParameters authParams = new Micro4blogParameters();
-     	// 腾讯微博使用URL参数方式
-    	if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
-    	
-    		if (token == null) {
-    			authParams.add("oauth_callback", micro4blog.getRedirectUrl()); 
-    		} else {
-//    			authParams.add("oauth_verifier", token.getOauthVerifier());
-    		}
-          		
+     	// 腾讯微博使用URL参数方式，没有提供header方式
+    	// sohu netease 在使用api时采用URL参数方式，在getRequestToken中设置了oauth_callback
+    	if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT && token == null) {
+    		authParams.add("oauth_callback", micro4blog.getRedirectUrl());        		
     	}
     	authParams.add("oauth_consumer_key", micro4blog.getAppKey());
         authParams.add("oauth_nonce", String.valueOf(nonce));
@@ -136,14 +125,7 @@ public abstract class HttpHeaderFactory {
         authParams.add("oauth_timestamp", String.valueOf(timestamp));
         authParams.add("oauth_version", HttpHeaderFactory.CONST_OAUTH_VERSION);
         if (token != null) {
-            authParams.add("oauth_token", token.getOauthToken());
-            
-            // 为了使用access token，生成signature
-            // 不能在这里加，不能产生access token
-//            authParams.add("oauth_verifier", token.getOauthVerifier());
-            
-            // 放入generateSignatureParameters
-            
+            authParams.add("oauth_token", token.getOauthToken());           
         } else {
             authParams.add("source", micro4blog.getAppKey());
         }
@@ -253,10 +235,6 @@ public abstract class HttpHeaderFactory {
      */
     public static String encode(String value) {
         String encoded = null;
-        
-//        if (value == null) {
-//        	return "";
-//        }
                       
         try {
             encoded = URLEncoder.encode(value, "UTF-8");
