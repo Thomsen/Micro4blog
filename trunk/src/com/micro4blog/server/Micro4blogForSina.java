@@ -1,4 +1,4 @@
-package com.micro4blog.service;
+package com.micro4blog.server;
 
 import java.util.ArrayList;
 
@@ -27,8 +27,7 @@ import com.micro4blog.utils.Micro4blogException;
 public class Micro4blogForSina extends Micro4blog {
 	
 	private static final String TAG = "Micro4blogForSina";
-	
-	
+
 	private static Micro4blogForSina m4bSina;
 	
 	public Micro4blogForSina() {
@@ -152,10 +151,81 @@ public class Micro4blogForSina extends Micro4blog {
 
 	@Override
 	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
-		ArrayList<Micro4blogInfo> jsonInfoList = new ArrayList<Micro4blogInfo>();
+		ArrayList<Micro4blogInfo> m4bInfoList = new ArrayList<Micro4blogInfo>();
 		if(message == null) {
-			return jsonInfoList;
+			return m4bInfoList;
 		}
+		
+		try {
+			JSONObject jsonObject = new JSONObject(message);
+			JSONArray m4bArray = jsonObject.getJSONArray("statuses");
+			JSONObject m4bObject;
+			JSONObject userObject;
+			Micro4blogInfo m4bInfo;
+			UserInfo userInfo;
+			for (int i=0; i<m4bArray.length(); i++) {
+				m4bObject = (JSONObject) m4bArray.get(i);
+
+				userInfo = new UserInfo();
+				m4bInfo = new Micro4blogInfo();
+				
+				m4bInfo.setM4bCreateAt(m4bObject.getString("created_at"));
+				m4bInfo.setM4bId(m4bObject.getInt("id"));
+				m4bInfo.setM4bText(m4bObject.getString("text"));
+				m4bInfo.setM44Source(m4bObject.getString("source"));
+				m4bInfo.setM4bFovorited(m4bObject.getBoolean("favorited"));
+				m4bInfo.setM4bTruncated(m4bObject.getBoolean("truncated"));
+//				m4bInfo.setM4bInReplyToStatusId(m4bObject.getInt("in_replay_to_status_id"));
+//				m4bInfo.setM4bInReplyToUserId(m4bObject.getInt("in_replay_to_user_id"));
+//				m4bInfo.setM4bInReplyToScreenName(m4bObject.getString("in_reply_to_screen_name"));
+				m4bInfo.setM4bMid(m4bObject.getInt("mid"));
+//				m4bInfo.setM4bMiddlePicture(m4bObject.getString("bmiddle_pic"));
+//				m4bInfo.setM4bOriginPicture(m4bObject.getString("original_pic"));
+//				m4bInfo.setM4bThumbnailPic(m4bObject.getString("thumbnail_pic"));
+				m4bInfo.setM4bForwardingCount(m4bObject.getInt("reposts_count"));
+				m4bInfo.setM4bCommentCount(m4bObject.getInt("comments_count"));				
+				
+				userObject = m4bObject.getJSONObject("user");
+			
+				userInfo.setUserId(userObject.getLong("id"));
+				userInfo.setUserName(userObject.getString("name"));
+				userInfo.setUserName(userObject.getString("screen_name"));
+				userInfo.setProvince(userObject.getInt("province"));
+				userInfo.setCity(userObject.getInt("city"));
+				userInfo.setLocation(userObject.getString("location"));
+				userInfo.setDescription(userObject.getString("description"));
+				userInfo.setBlogUrl(userObject.getString("url"));
+				userInfo.setProfileImageUrl(userObject.getString("profile_image_url"));
+				userInfo.setDomain(userObject.getString("domain"));
+				userInfo.setGender(userObject.getString("gender"));
+				userInfo.setFollowersCount(userObject.getInt("followers_count"));
+				userInfo.setFriendsCount(userObject.getInt("friends_count"));
+				userInfo.setM4bCount(userObject.getInt("statuses_count"));
+				userInfo.setFavouritesCount(userObject.getInt("statuses_count"));
+				userInfo.setCreateAt(userObject.getString("created_at"));
+				userInfo.setFollowing(userObject.getBoolean("following"));
+				userInfo.setAllowAllActMsg(userObject.getBoolean("allow_all_act_msg"));
+				userInfo.setGeoEnabled(userObject.getBoolean("geo_enabled"));
+				userInfo.setVerified(userObject.getBoolean("verified"));
+				userInfo.setAllowAllComment(userObject.getBoolean("allow_all_comment"));
+				userInfo.setAvatarLarge(userObject.getString("avatar_large"));
+				userInfo.setVerifiedReason(userObject.getString("verified_reason"));
+				userInfo.setFollowMe(userObject.getBoolean("follow_me"));
+				userInfo.setOnlineStatus(userObject.getInt("online_status"));
+				userInfo.setBiFollowersCount(userObject.getInt("bi_followers_count"));
+								
+				m4bInfo.setUserInfo(userInfo);
+				
+				m4bInfoList.add(m4bInfo);		
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return m4bInfoList;
+		
 		
 //		JSONArray jArray = new JSONArray(message);
 //		
@@ -223,8 +293,6 @@ public class Micro4blogForSina extends Micro4blog {
 //		    
 //			
 //		}
-		
-		return jsonInfoList;
 		
 	}
 
