@@ -2,36 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:background="#ddf">
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/footer_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home" />
+        android:layout_weight="1"
+        android:text="主页" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/footer_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Message" />
+        android:layout_weight="1"
+        android:text="消息" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/footer_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Info" />
+        android:layout_weight="1"
+        android:text="资料" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/footer_square"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_weight="1"
+        android:text="广场" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/footer_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="More" />
+        android:layout_weight="1"
+        android:text="更多" />
 
 </LinearLayout>
