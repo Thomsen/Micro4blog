@@ -1,25 +1,15 @@
 package com.micro4blog.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.micro4blog.GlobalFramework;
 import com.micro4blog.R;
@@ -29,7 +19,7 @@ public class TimelineActivity extends GlobalFramework implements OnClickListener
 	Activity mActivity;
 	LayoutParams mParams;
 	
-	FrameLayout mLayoutContent;
+	RelativeLayout mLayoutContent;
 	ListView mListView;
 	
 	LinearLayout mLayoutFooter;
@@ -51,7 +41,7 @@ public class TimelineActivity extends GlobalFramework implements OnClickListener
 		
 		setContentView(R.layout.main_content);
 		
-		mLayoutContent = (FrameLayout) findViewById(R.id.content_main);
+		mLayoutContent = (RelativeLayout) findViewById(R.id.content_main);
 				
 		mLayoutFooter = (LinearLayout) findViewById(R.id.footer);
 		mLayoutFooter.setVisibility(View.GONE);
@@ -60,35 +50,7 @@ public class TimelineActivity extends GlobalFramework implements OnClickListener
 		setFooterUp();
 		
 	}
-
-	protected void setListUp() {
-		mListView = (ListView) findViewById(R.id.list_main);
-		
-		ListAdapter adapter = new SimpleAdapter(mActivity, getMapData(), 
-						R.layout.list_item_timeline, 
-						new String[] {"username", "content",  "forwarding_content"},
-						new int[] {R.id.username_textview, R.id.timeline_content, R.id.forwarding_content});
-		
-		mListView.setAdapter(adapter);
-		
-		
-		
-	}
-	
-	protected List<Map<String, Object>> getMapData() {
-		
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("username", "user name");
-		map.put("content", "content");
-		map.put("forwarding_content", "forwarding_content");
-		
-		list.add(map);
-		
-		return list;
-	}
-	
+			
 	protected void setFooterUp() {
 		mFooterHome = (Button) findViewById(R.id.footer_home);
 		mFooterMessage = (Button) findViewById(R.id.footer_message);
@@ -147,6 +109,7 @@ public class TimelineActivity extends GlobalFramework implements OnClickListener
 			mLayoutContent.addView(view);
 			break;
 		}
+		
 		default :
 			break;
 		}
@@ -183,10 +146,12 @@ public class TimelineActivity extends GlobalFramework implements OnClickListener
 			ib = true;
 		}
 		
-		
-		
 		return false; // true open system menu
 	}
+
+
+
+
 
 		
 }
