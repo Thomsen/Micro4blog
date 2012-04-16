@@ -43,6 +43,7 @@ public class UserInfo {
 	
 	private Micro4blogInfo m4bInfo;  // 用户最近一条微博信息段
 
+	
 	public long getUserId() {
 		return userId;
 	}

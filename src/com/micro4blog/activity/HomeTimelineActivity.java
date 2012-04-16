@@ -2,6 +2,9 @@ package com.micro4blog.activity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,6 +22,8 @@ import com.micro4blog.utils.Micro4blogException;
 public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro4blogRunner.RequestListener {
 	
 	private Activity mActivity;
+	
+	ArrayList<Micro4blogInfo> m4bList;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,11 +48,32 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 		
 //		Log.i("thom", m4b.getHomeTimeline(mThis));
 		
-		ArrayList<Micro4blogInfo> m4bList = m4b.parseHomeTimeline(m4b.getHomeTimeline(mActivity));
+		m4bList = m4b.parseHomeTimeline(m4b.getHomeTimeline(mActivity));
 	
 		for (Micro4blogInfo m4bInfo : m4bList) {
 			Log.i("thom", m4bInfo.getM4bCreateAt());
 		}
+		
+		setUp();
+	}
+	
+	protected List<Map<String, Object>> getMapData() {
+		
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		
+		for (Micro4blogInfo m4bInfo : m4bList) {
+		
+			Map<String, Object> map = new HashMap<String, Object>();
+			
+			map.put("username", m4bInfo.getUserInfo().getUserName());
+			map.put("content", m4bInfo.getM4bText());
+			map.put("forwarding_content", "forwarding_content");
+			
+			list.add(map);
+		
+		}
+		
+		return list;
 	}
 
 	@Override
