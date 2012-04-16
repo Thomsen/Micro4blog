@@ -2,23 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
-    android:orientation="vertical" >
+    android:background="#fff">
 
     <!-- 用户头像及名称 -->
 
     <LinearLayout
         android:id="@+id/image_and_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="30dp"
         android:orientation="vertical" >
 
         <WebView
+            android:id="@+id/userimage_webview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
         </WebView>
 
         <TextView
+            android:id="@+id/username_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -48,6 +49,7 @@
            
         </LinearLayout>
 
+        <!--  
         <LinearLayout
             android:id="@+id/forwarding_content"
             android:layout_width="fill_parent"
@@ -60,6 +62,8 @@
             <include layout="@layout/timeline_content" ></include>
             
         </LinearLayout>
+        
+        -->
     </RelativeLayout>
 
 </RelativeLayout>

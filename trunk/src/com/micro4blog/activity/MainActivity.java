@@ -33,12 +33,10 @@ import com.micro4blog.utils.Micro4blogException;
 
 public class MainActivity extends GlobalFramework {
 	
-	
 	private final String TAG = "MainActivity";
 	
 	private GridView mGridView;
-	private Activity mThis;
-	
+	private Activity mActivity;
 	
 	private boolean isSinaOauthed = false;
 	private boolean isSohuOauthed = false;
@@ -57,7 +55,7 @@ public class MainActivity extends GlobalFramework {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		mThis = this;
+		mActivity = this;
 		
 		setContentView(R.layout.main_login);
 		
@@ -198,15 +196,16 @@ public class MainActivity extends GlobalFramework {
 	protected void loginServer(int serverType) {
 		
 		micro4blog = Micro4blog.getInstance(serverType);
-		Intent intent = new Intent(mThis, HomeTimelineActivity.class);
+		Intent intent = new Intent(mActivity, HomeTimelineActivity.class);
 //		Intent intent = new Intent(mThis, ShareActivity.class);
 		
 		readPreferences();
 				
 		switch (serverType) {
 		case Micro4blog.SERVER_SINA: {
-			
-			if (isSinaOauthed) {
+						
+			if (isSinaOauthed && 
+					(System.currentTimeMillis() < mAccessToken.getExpiresIn())) {
 					
 //				try {
 //					mMicro4blog.share2weibo(mThis, mAccessToken.getOauthToken(), mMicro4blog.getAppSecret(), "adbds", null);
@@ -219,7 +218,8 @@ public class MainActivity extends GlobalFramework {
 				startActivity(intent);
 				
 			} else {
-				Toast.makeText(mThis,  "请长按进行新浪授权", Toast.LENGTH_SHORT).show();
+				isSinaOauthed = false;
+				Toast.makeText(mActivity,  "请长按进行新浪授权", Toast.LENGTH_SHORT).show();
 			}
 			
 			break;
@@ -229,7 +229,7 @@ public class MainActivity extends GlobalFramework {
 			if (isTencentOauthed ) {
 				startActivity(intent);
 			} else {
-				Toast.makeText(mThis,  "请长按进行腾讯授权", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity,  "请长按进行腾讯授权", Toast.LENGTH_SHORT).show();
 			}
 			
 			break;
@@ -239,7 +239,7 @@ public class MainActivity extends GlobalFramework {
 			if (isNeteaseOauthed ) {
 				startActivity(intent);
 			} else {
-				Toast.makeText(mThis,  "请长按进行网易授权", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity,  "请长按进行网易授权", Toast.LENGTH_SHORT).show();
 			}
 			
 			break;
@@ -249,7 +249,7 @@ public class MainActivity extends GlobalFramework {
 			if (isSohuOauthed ) {
 				startActivity(intent);
 			} else {
-				Toast.makeText(mThis,  "请长按进行搜狐授权", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity,  "请长按进行搜狐授权", Toast.LENGTH_SHORT).show();
 			}
 			
 			break;
@@ -270,28 +270,28 @@ public class MainActivity extends GlobalFramework {
 		switch (serverType) {
 		case Micro4blog.SERVER_SINA: {
 			if (isSinaOauthed) {
-				Toast.makeText(mThis, "已经授权新浪服务了", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity, "已经授权新浪服务了", Toast.LENGTH_SHORT).show();
 				return ;
 			}
 			break;
 		}
 		case Micro4blog.SERVER_TENCENT: {
 			if (isTencentOauthed) {
-				Toast.makeText(mThis, "已经授权腾讯服务了", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity, "已经授权腾讯服务了", Toast.LENGTH_SHORT).show();
 				return ;
 			}
 			break;
 		}
 		case Micro4blog.SERVER_NETEASE: {
 			if (isNeteaseOauthed) {
-				Toast.makeText(mThis, "已经授权网易服务了", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity, "已经授权网易服务了", Toast.LENGTH_SHORT).show();
 				return ;
 			}
 			break;
 		}
 		case Micro4blog.SERVER_SOHU: {
 			if (isSohuOauthed) {
-				Toast.makeText(mThis, "已经授权搜狐服务了", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity, "已经授权搜狐服务了", Toast.LENGTH_SHORT).show();
 				return ;
 			}
 			break;
@@ -302,7 +302,7 @@ public class MainActivity extends GlobalFramework {
 		}	
 		
 		micro4blog = Micro4blog.getInstance(serverType);
-		micro4blog.authorize(mThis, new MainAuthDialogListener());
+		micro4blog.authorize(mActivity, new MainAuthDialogListener());
 		
 	}
 
@@ -403,7 +403,7 @@ public class MainActivity extends GlobalFramework {
 				
 			}
 			
-			Toast.makeText(mThis, mAccessToken.getOauthToken() + "\n" + mAccessToken.getOauthTokenSecret(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(mActivity, mAccessToken.getOauthToken() + "\n" + mAccessToken.getOauthTokenSecret(), Toast.LENGTH_SHORT).show();
 			
 			editor.commit();
 		}
@@ -434,7 +434,7 @@ public class MainActivity extends GlobalFramework {
 	private void setUp() {
 		mGridView = (GridView) findViewById(R.id.main_grid);
 		
-		ListAdapter adapter = new SimpleAdapter(mThis, getMapData(), 
+		ListAdapter adapter = new SimpleAdapter(mActivity, getMapData(), 
 							R.layout.gird_cell, 
 							new String[] {"image", "text"},
 							new int[] {R.id.grid_image, R.id.grid_text});

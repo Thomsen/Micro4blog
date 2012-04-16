@@ -3,6 +3,7 @@ package com.micro4blog;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
 
 /**
  * 全局界面结构，控制全局的界面基调
@@ -19,11 +20,12 @@ public class GlobalFramework extends Activity {
 		gSharedPreferences = getSharedPreferences("micro4blog", 0);
 		
 	}
+
 	
-	//===================================================
-	/*
-	 * 添加菜单
-	 */
-	//===================================================
+	
+	
+	
+	
+	
 
 }

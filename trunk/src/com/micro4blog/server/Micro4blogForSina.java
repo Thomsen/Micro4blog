@@ -216,7 +216,7 @@ public class Micro4blogForSina extends Micro4blog {
 								
 				m4bInfo.setUserInfo(userInfo);
 				
-				m4bInfoList.add(m4bInfo);		
+				m4bInfoList.add(m4bInfo);	
 			}
 			
 		} catch (JSONException e) {
