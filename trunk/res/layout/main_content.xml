@@ -19,7 +19,7 @@
         layout="@layout/footer" />       
 
     
-    <FrameLayout 
+    <RelativeLayout 
         android:id="@+id/content_main"
         android:layout_below="@+id/header"
         android:layout_above="@+id/footer"
@@ -29,9 +29,10 @@
          <ListView
 	        android:id="@+id/list_main"        
 	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent" >
+	        android:layout_height="fill_parent"
+	        android:descendantFocusability="blocksDescendants" >
    		 </ListView>
         
-    </FrameLayout>
+    </RelativeLayout>
     
 </RelativeLayout>

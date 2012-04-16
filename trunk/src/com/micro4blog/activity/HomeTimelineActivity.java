@@ -9,6 +9,12 @@ import java.util.Map;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.micro4blog.R;
@@ -19,7 +25,7 @@ import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.AsyncMicro4blogRunner;
 import com.micro4blog.utils.Micro4blogException;
 
-public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro4blogRunner.RequestListener {
+public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro4blogRunner.RequestListener, OnItemClickListener {
 	
 	private Activity mActivity;
 	
@@ -57,6 +63,20 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 		setListUp();
 	}
 	
+	protected void setListUp() {
+		mListView = (ListView) findViewById(R.id.list_main);
+		
+		ListAdapter adapter = new SimpleAdapter(mActivity, getMapData(), 
+						R.layout.list_item_timeline, 
+						new String[] {"username", "content",  "forwarding_content"},
+						new int[] {R.id.username_textview, R.id.timeline_content, R.id.forwarding_content});
+		
+		mListView.setAdapter(adapter);
+		
+		mListView.setOnItemClickListener(this);
+
+	}
+	
 	protected List<Map<String, Object>> getMapData() {
 		
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -74,6 +94,13 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 		}
 		
 		return list;
+	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		
+		Toast.makeText(mActivity, "item : " + arg2, Toast.LENGTH_SHORT).show();
+		
 	}
 
 	@Override
