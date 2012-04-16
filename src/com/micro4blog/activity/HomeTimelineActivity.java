@@ -54,7 +54,7 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 			Log.i("thom", m4bInfo.getM4bCreateAt());
 		}
 		
-		setUp();
+		setListUp();
 	}
 	
 	protected List<Map<String, Object>> getMapData() {

@@ -5,8 +5,10 @@
 
     <include
         android:id="@+id/header"
-        layout="@layout/header"
-        android:layout_alignParentTop="true" />
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" 
+        layout="@layout/header" />
 
   
     <include
@@ -15,92 +17,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         layout="@layout/footer" />       
+
     
-    <!--     
-    <RelativeLayout
-        android:id="@+id/header"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="#ddf" >
-
-        <Button
-            android:id="@+id/header_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="@string/header_left"
-            android:textColor="#588792" />
-
-        <TextView
-            android:id="@+id/header_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/header_content"
-            android:textColor="#778742" />
-
-        <Button
-            android:id="@+id/header_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="@string/header_right"
-            android:textColor="#588792" />
-    </RelativeLayout>
-    --> 
- 
-    <ListView
-        android:id="@+id/list_main"
+    <FrameLayout 
+        android:id="@+id/content_main"
         android:layout_below="@+id/header"
         android:layout_above="@+id/footer"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
-    </ListView>
+        android:layout_height="fill_parent">
+        
+         <ListView
+	        android:id="@+id/list_main"        
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent" >
+   		 </ListView>
+        
+    </FrameLayout>
     
-    <!-- 
-    <LinearLayout 
-        android:id="@+id/footer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:background="#ddf">
-        <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Home" />
-
-	    <Button
-	        android:id="@+id/button2"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:text="Message" />
-	
-	    <Button
-	        android:id="@+id/button3"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:text="Info" />
-	
-	    <Button
-	        android:id="@+id/button4"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:text="Button" />
-	
-	    <Button
-	        android:id="@+id/button5"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:text="More" />
-    </LinearLayout>
-     -->
-
 </RelativeLayout>
