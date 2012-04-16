@@ -3,18 +3,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <!--
     <include
-        layout="@layout/header" />
-   		-->
+        android:id="@+id/header"
+        layout="@layout/header"
+        android:layout_alignParentTop="true" />
 
-    <!--  
+  
     <include
         android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         layout="@layout/footer" />       
-        -->
-        
+    
+    <!--     
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="fill_parent"
@@ -46,15 +48,17 @@
             android:text="@string/header_right"
             android:textColor="#588792" />
     </RelativeLayout>
+    --> 
  
     <ListView
         android:id="@+id/list_main"
         android:layout_below="@+id/header"
+        android:layout_above="@+id/footer"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
     </ListView>
     
-    
+    <!-- 
     <LinearLayout 
         android:id="@+id/footer"
         android:layout_width="fill_parent"
@@ -97,5 +101,6 @@
 	        android:layout_weight="1"
 	        android:text="More" />
     </LinearLayout>
+     -->
 
 </RelativeLayout>
