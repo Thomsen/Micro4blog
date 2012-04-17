@@ -91,7 +91,10 @@ public abstract class Micro4blog {
 			micro4blogInstance = Micro4blogForSohu.getInstance();
 		}
 		micro4blogInstance.initConfig();
-
+		
+		apiParameters = new Micro4blogParameters();
+		apiHeader = new ApiTokenHeader();
+		
 		return micro4blogInstance;
 	}
 

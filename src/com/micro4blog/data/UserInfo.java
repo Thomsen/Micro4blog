@@ -3,6 +3,7 @@ package com.micro4blog.data;
 public class UserInfo {
 	
 	private long userId;
+	private String userStrId;
 	private String userScreenName;
 	private String userName;
 	private int province;		// 用户所在地区ID
@@ -50,6 +51,14 @@ public class UserInfo {
 
 	public void setUserId(long userId) {
 		this.userId = userId;
+	}
+	
+	public String getUserStrId() {
+		return userStrId;
+	}
+
+	public void setUserStrId(String userStrId) {
+		this.userStrId = userStrId;
 	}
 
 	public String getUserScreenName() {
@@ -202,6 +211,15 @@ public class UserInfo {
 
 	public void setVerified(boolean verified) {
 		this.verified = verified;
+	}
+	
+	// Tencent
+	public void setVerified(int verified) {
+		if (verified == 0) {
+			setVerified(false);
+		} else {
+			setVerified(true);
+		}
 	}
 
 	public boolean isEnterpriseVerified() {
