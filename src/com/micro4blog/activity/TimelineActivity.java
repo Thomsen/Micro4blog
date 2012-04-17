@@ -104,7 +104,7 @@ public class TimelineActivity extends GlobalFramework implements OnClickListener
 		case R.id.footer_more: {
 			mLayoutContent.removeAllViews();
 			
-			View view = getLayoutInflater().inflate(R.layout.list_item_timeline, null);
+			View view = getLayoutInflater().inflate(R.layout.list_item_content, null);
 			
 			mLayoutContent.addView(view);
 			break;
@@ -115,13 +115,7 @@ public class TimelineActivity extends GlobalFramework implements OnClickListener
 		}
 		
 	}
-	
-	//================================================================
-	/*
-	 * 添加菜单
-	 */
-	//================================================================
-	
+		
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
 		menu.add("menu1");

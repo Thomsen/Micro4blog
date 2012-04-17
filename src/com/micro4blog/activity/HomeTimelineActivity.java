@@ -23,6 +23,7 @@ import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.AsyncMicro4blogRunner;
+import com.micro4blog.utils.Micro4blogAdapter;
 import com.micro4blog.utils.Micro4blogException;
 
 public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro4blogRunner.RequestListener, OnItemClickListener {
@@ -30,6 +31,8 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 	private Activity mActivity;
 	
 	ArrayList<Micro4blogInfo> m4bList;
+	
+	Micro4blogAdapter mMicro4blogAdapter;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,12 +69,28 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 	protected void setListUp() {
 		mListView = (ListView) findViewById(R.id.list_main);
 		
-		ListAdapter adapter = new SimpleAdapter(mActivity, getMapData(), 
-						R.layout.list_item_timeline, 
-						new String[] {"username", "content",  "forwarding_content"},
-						new int[] {R.id.username_textview, R.id.timeline_content, R.id.forwarding_content});
+//		ListAdapter adapter = new SimpleAdapter(mActivity, getMapData(), 
+//						R.layout.list_item_content, 
+//						new String[] {"username", "content",  "forwarding_content"},
+//						new int[] {R.id.username_textview, R.id.timeline_content, R.id.forwarding_content});
+//		
+//		mListView.setAdapter(adapter);
 		
-		mListView.setAdapter(adapter);
+		// 设置item之间的分割线
+		mListView.setDivider(null);
+		
+		// 触发状态
+//		mListView.setClickable(true);
+		
+		// WebView对click的影响, 暂时改成ImgeView
+		mMicro4blogAdapter = new Micro4blogAdapter(mActivity, getMapData(), 
+				R.layout.list_item_content, 
+				new String[] {"userimage", "username", "content",  "forwarding_content"},
+				new int[] {R.id.userimage_imageview, R.id.username_textview, R.id.timeline_content, R.id.forwarding_content});
+
+		mMicro4blogAdapter.setViewBinder(mMicro4blogAdapter.getViewBinder());
+		
+		mListView.setAdapter(mMicro4blogAdapter);
 		
 		mListView.setOnItemClickListener(this);
 
@@ -85,6 +104,7 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 		
 			Map<String, Object> map = new HashMap<String, Object>();
 			
+			map.put("userimage", String.valueOf(R.drawable.ic_launcher));			
 			map.put("username", m4bInfo.getUserInfo().getUserName());
 			map.put("content", m4bInfo.getM4bText());
 			map.put("forwarding_content", "forwarding_content");

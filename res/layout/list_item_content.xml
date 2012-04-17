@@ -8,15 +8,15 @@
 
     <LinearLayout
         android:id="@+id/image_and_name"
-        android:layout_width="40dp"
-        android:layout_height="30dp"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <WebView
-            android:id="@+id/userimage_webview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-        </WebView>
+        <ImageView
+            android:id="@+id/userimage_imageview"
+            android:layout_width="56dp"
+            android:layout_height="48dp" >
+        </ImageView>
 
         <TextView
             android:id="@+id/username_textview"
@@ -34,9 +34,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/image_and_name"
-        android:layout_marginLeft="20dp"
         android:background="#323234" >
 
+        <include
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" 
+            layout="@layout/timeline_content"></include>
+        
+        <!--
         <LinearLayout
             android:id="@+id/sending_content"
             android:layout_width="fill_parent"
@@ -48,22 +53,8 @@
             <include layout="@layout/timeline_content" ></include>
            
         </LinearLayout>
-
-        <!--  
-        <LinearLayout
-            android:id="@+id/forwarding_content"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:layout_centerInParent="true"
-            android:layout_below="@+id/sending_content"
-            android:paddingLeft="20dp"
-            >
-            
-            <include layout="@layout/timeline_content" ></include>
-            
-        </LinearLayout>
-        
         -->
+
     </RelativeLayout>
 
 </RelativeLayout>
