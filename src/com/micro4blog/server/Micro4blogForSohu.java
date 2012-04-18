@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.CookieSyncManager;
 
 import com.micro4blog.data.Micro4blogInfo;
@@ -123,33 +124,7 @@ public class Micro4blogForSohu extends Micro4blog {
 			Intent data) {
 			
 	}
-
-	@Override
-	public String getHomeTimeline(Context context) {
-		serverUrl = getServerUrl() + "statuses/friends_timeline.json";
-		
-		// TODO 解决带参数的未授权问题
-//		apiParameters.add("count", "20");
-		
-//		serverResult = request(context, serverUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
-		
-		serverResult = request(apiHeader, Utility.HTTPMETHOD_GET, serverUrl, apiParameters, accessToken);
-		
-		return serverResult;
-	}
-
-	@Override
-	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
-		ArrayList<Micro4blogInfo> m4bInfoList = new ArrayList<Micro4blogInfo>();
-		if(message == null) {
-			return m4bInfoList;
-		}
-		
-		setMicro4blogList(message, m4bInfoList);
-		
-		
-		return m4bInfoList;
-	}
+	
 	
 	
 	private void setMicro4blogList(String message,
@@ -188,6 +163,13 @@ public class Micro4blogForSohu extends Micro4blog {
 				
 				setUserInfo(m4bObject, m4bInfo, userInfo);
 				
+				
+				if (m4bObject.has("retweeted_status")
+						&& (m4bObject.getString("retweeted_status") != null)) {
+					
+					Log.i(TAG, "retweeted status");
+					
+				}
 				
 				
 				m4bInfoList.add(m4bInfo);	
@@ -234,5 +216,34 @@ public class Micro4blogForSohu extends Micro4blog {
 		return userObject;
 	}
 
+	@Override
+	public String getHomeTimeline(Context context) {
+		apiUrl = getServerUrl() + "statuses/friends_timeline.json";
+		
+		// TODO 解决带参数的未授权问题
+//		apiParameters.add("count", "20");
+		
+//		serverResult = request(context, serverUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
+		
+		apiResult = request(apiHeader, Utility.HTTPMETHOD_GET, apiUrl, apiParameters, accessToken);
+		
+		return apiResult;
+	}
+
+	@Override
+	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
+		ArrayList<Micro4blogInfo> m4bInfoList = new ArrayList<Micro4blogInfo>();
+		if(message == null) {
+			return m4bInfoList;
+		}
+		
+		setMicro4blogList(message, m4bInfoList);
+		
+		
+		return m4bInfoList;
+	}
+	
+	
+	
 
 }

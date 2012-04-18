@@ -137,97 +137,8 @@ public class Micro4blogForSina extends Micro4blog {
 		
 	}
 
-	@Override
-	public String getHomeTimeline(Context context) {
-		
-		serverUrl = getServerUrl() + "statuses/home_timeline.json";
-		apiParameters.add("count", "20");
-		serverResult = request(context, serverUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
-		
-		return serverResult;
-	}
-
-	@Override
-	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
-		ArrayList<Micro4blogInfo> m4bInfoList = new ArrayList<Micro4blogInfo>();
-		if(message == null) {
-			return m4bInfoList;
-		}
-		
-		setMicro4blogList(message, m4bInfoList);
-		
-		
-		return m4bInfoList;
-		
-		
-//		JSONArray jArray = new JSONArray(message);
-//		
-//		JSONObject jObject ;
-//		JSONObject userObject;
-//		UserInfo userInfo = null ;
-//		Micro4blogInfo timeLineInfo = null ;
-//		for (int i = 0; i < jArray.length(); i++) {
-//			
-//			jObject = (JSONObject) jArray.get(i);
-//			userInfo = new UserInfo();
-//			timeLineInfo = new Micro4blogInfo();
-//			
-//			timeLineInfo.setTime(jObject.getString("created_at"));
-//			timeLineInfo.setMessageId(jObject.getString("id"));
-//			
-//			// Status And Image URL
-//			String imageUrl = "";
-//			if(!jObject.isNull("thumbnail_pic")){
-//				imageUrl = "\n" + jObject.getString("thumbnail_pic");
-//			}
-//			timeLineInfo.setStatus(jObject.getString("text") + imageUrl);
-//			timeLineInfo.setFavorite(jObject.getString("favorited"));
-//			
-//		    userObject = jObject.getJSONObject("user");
-//			
-//			userInfo.setUid(userObject.getString("id"));
-//		    userInfo.setScreenName(userObject.getString("screen_name"));
-//		    userInfo.setDescription(userObject.getString("description"));
-//		    userInfo.setUserImageURL(userObject.getString("profile_image_url"));
-//		    userInfo.setFollowerCount(userObject.getString("followers_count"));
-//		    userInfo.setFollowCount(userObject.getString("friends_count"));
-//			userInfo.setVerified(userObject.getString("verified"));
-//		    try {
-//		    	
-//		    	if (jObject.has("retweeted_status")) {
-//		        	if (jObject.getString("retweeted_status") != null) {
-//				    	JSONObject retweetObject = jObject.getJSONObject("retweeted_status");
-//				    	timeLineInfo.setRetweeted(true);
-//				    	
-//						// Status And Image URL
-//						String retweetedImageUrl = "";
-//						if(!retweetObject.isNull("thumbnail_pic")){
-//							retweetedImageUrl = "\n" + retweetObject.getString("thumbnail_pic");
-//						}
-//				    	timeLineInfo.setRetweetedStatus(retweetObject.getString("text") + retweetedImageUrl);
-//				    	
-//				    	JSONObject originalUserObject = retweetObject.getJSONObject("user");
-//				    	userInfo.setRetweetedScreenName(originalUserObject.getString("screen_name"));
-//				    	userInfo.setRetweetUserId(originalUserObject.getString("id"));
-//				    	
-//				    	//userInfo.setScreenName(originalUserObject.getString("screen_name") + " RT by " + userObject.getString("screen_name"));
-//				    }
-//		        }
-//		    	
-//		    } catch (JSONException e) {
-//		    	
-//		    	e.printStackTrace();
-//		    	
-//		    }
-//		    
-//			timeLineInfo.setUserInfo(userInfo);
-//		    
-//		    jsonInfoList.add(timeLineInfo);
-//		    
-//			
-//		}
-		
-	}
+	
+	
 
 	private void setMicro4blogList(String message,
 			ArrayList<Micro4blogInfo> m4bInfoList) {
@@ -245,7 +156,8 @@ public class Micro4blogForSina extends Micro4blog {
 				m4bInfo = new Micro4blogInfo();
 				
 				m4bInfo.setM4bCreateAt(m4bObject.getString("created_at"));
-				m4bInfo.setM4bId(m4bObject.getInt("id"));
+//				m4bInfo.setM4bId(m4bObject.getInt("id"));
+				m4bInfo.setM4bStrId(m4bObject.getString("idstr"));
 				m4bInfo.setM4bText(m4bObject.getString("text"));
 				m4bInfo.setM44Source(m4bObject.getString("source"));
 				m4bInfo.setM4bFovorited(m4bObject.getBoolean("favorited"));
@@ -262,7 +174,16 @@ public class Micro4blogForSina extends Micro4blog {
 				
 				userObject = setUserInfo(m4bObject, m4bInfo, userInfo);
 				
-				m4bInfoList.add(m4bInfo);	
+				
+				if (m4bObject.has("retweeted_status")
+						&& ! m4bObject.isNull("retweeted_status")) {
+					Log.i(TAG, "sina retweeted_status");
+				}
+				
+//				getRepostTimeline(m4bInfo.getM4bId());
+//				getRepostTimeline(m4bInfo.getM4bStrId());
+								
+				m4bInfoList.add(m4bInfo);				
 			}
 			
 		} catch (JSONException e) {
@@ -305,6 +226,47 @@ public class Micro4blogForSina extends Micro4blog {
 		m4bInfo.setUserInfo(userInfo);
 		return userObject;
 	}
+	
+	@Override
+	public String getHomeTimeline(Context context) {
+		
+		mContext = context;
+		
+		apiUrl = getServerUrl() + "statuses/home_timeline.json";
+		apiParameters.add("count", "20");
+		apiResult = request(context, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
+		
+		return apiResult;
+	}
+
+	@Override
+	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
+		ArrayList<Micro4blogInfo> m4bInfoList = new ArrayList<Micro4blogInfo>();
+		if(message == null) {
+			return m4bInfoList;
+		}
+		
+		setMicro4blogList(message, m4bInfoList);
+		
+		
+		return m4bInfoList;
+
+		
+	}
+	
+	public String getRepostTimeline(String strId) {
+		
+		apiUrl = getServerUrl() + "statuses/repost_timeline.json";
+		
+		apiParameters.clear();
+		apiParameters.add("id", strId);
+		
+		apiResult = request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
+		
+		return apiResult;
+		
+	}
+
 
 
 }

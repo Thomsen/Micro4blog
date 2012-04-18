@@ -51,10 +51,10 @@ public class Micro4blogAdapter extends SimpleAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
 		// 优化
-		ViewHodler hodler;
+		Micro4blogHodler hodler;
 		
 		if (convertView == null) {
-			hodler = new ViewHodler();
+			hodler = new Micro4blogHodler();
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.list_item_content, null);
 			
@@ -64,7 +64,7 @@ public class Micro4blogAdapter extends SimpleAdapter {
 		
 			convertView.setTag(hodler);
 		} else {
-			hodler = (ViewHodler) convertView.getTag();
+			hodler = (Micro4blogHodler) convertView.getTag();
 		}
 		
 		hodler.userTextView.setText(mListData.get(position).get("username").toString());
@@ -88,9 +88,12 @@ public class Micro4blogAdapter extends SimpleAdapter {
 	}
 
 
-	class ViewHodler {
+	class Micro4blogHodler {
 		TextView userTextView;
 		ImageView userImageView;
+		
+		TextView contentView;
+		TextView forwardContentView;
 	}
 
 
