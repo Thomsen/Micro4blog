@@ -125,33 +125,7 @@ public class Micro4blogForNetease extends Micro4blog {
 			Intent data) {
 			
 	}
-
-	@Override
-	public String getHomeTimeline(Context context) {
-		serverUrl = getServerUrl() + "statuses/home_timeline.json";
-		
-		// TODO 解决带参数的未授权问题
-//		apiParameters.add("count", "20");
-		
-//		serverResult = request(context, serverUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
-		
-		serverResult = request(apiHeader, Utility.HTTPMETHOD_GET, serverUrl, apiParameters, accessToken);
-		
-		return serverResult;
-	}
-
-	@Override
-	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
-		ArrayList<Micro4blogInfo> m4bInfoList = new ArrayList<Micro4blogInfo>();
-		if(message == null) {
-			return m4bInfoList;
-		}
-		
-		setMicro4blogList(message, m4bInfoList);
-		
-		
-		return m4bInfoList;
-	}
+	
 	
 	
 	private void setMicro4blogList(String message,
@@ -235,5 +209,34 @@ public class Micro4blogForNetease extends Micro4blog {
 		m4bInfo.setUserInfo(userInfo);
 		return userObject;
 	}
+
+	@Override
+	public String getHomeTimeline(Context context) {
+		apiUrl = getServerUrl() + "statuses/home_timeline.json";
+		
+		// TODO 解决带参数的未授权问题
+//		apiParameters.add("count", "20");
+		
+//		serverResult = request(context, serverUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
+		
+		apiResult = request(apiHeader, Utility.HTTPMETHOD_GET, apiUrl, apiParameters, accessToken);
+		
+		return apiResult;
+	}
+
+	@Override
+	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
+		ArrayList<Micro4blogInfo> m4bInfoList = new ArrayList<Micro4blogInfo>();
+		if(message == null) {
+			return m4bInfoList;
+		}
+		
+		setMicro4blogList(message, m4bInfoList);
+		
+		
+		return m4bInfoList;
+	}
+	
+
 
 }

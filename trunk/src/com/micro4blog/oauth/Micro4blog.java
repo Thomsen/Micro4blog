@@ -46,12 +46,14 @@ public abstract class Micro4blog {
 	public static final int SERVER_SOHU = 3;
 
 	private static int currentServer = -1;
+	
+	private String serverUrl = "";
 
 	// 应用于Api的调用参数
-	protected static String serverUrl = "";
-	protected static String serverResult = "";
-	protected static Micro4blogParameters apiParameters;
-	protected static ApiTokenHeader apiHeader;
+	protected String apiUrl = "";
+	protected String apiResult = "";
+	protected Micro4blogParameters apiParameters;
+	protected ApiTokenHeader apiHeader;
 
 	public static int DEFAULT_AUTH_ACTIVITY_CODE = 0;
 
@@ -92,8 +94,8 @@ public abstract class Micro4blog {
 		}
 		micro4blogInstance.initConfig();
 		
-		apiParameters = new Micro4blogParameters();
-		apiHeader = new ApiTokenHeader();
+		micro4blogInstance.apiParameters = new Micro4blogParameters();
+		micro4blogInstance.apiHeader = new ApiTokenHeader();
 		
 		return micro4blogInstance;
 	}
@@ -460,8 +462,8 @@ public abstract class Micro4blog {
 		return redirectUrl;
 	}
 
-	public void setRedirectUrl(String redirectUrl) {
-		Micro4blog.redirectUrl = redirectUrl;
+	public void setRedirectUrl(String url) {
+		redirectUrl = url;
 	}
 
 	public String getUrlRequestToken() {
@@ -484,12 +486,12 @@ public abstract class Micro4blog {
 		return currentServer;
 	}
 
-	public static void setCurrentServer(int currentServer) {
-		Micro4blog.currentServer = currentServer;
+	public static void setCurrentServer(int server) {
+		currentServer = server;
 	}
 
-	public static void setServerUrl(String serverUrl) {
-		Micro4blog.serverUrl = serverUrl;
+	public void setServerUrl(String serverUrl) {
+		this.serverUrl = serverUrl;
 	}
 
 	public String getServerUrl() {

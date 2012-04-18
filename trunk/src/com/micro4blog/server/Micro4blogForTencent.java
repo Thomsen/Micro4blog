@@ -127,34 +127,7 @@ public class Micro4blogForTencent extends Micro4blog {
 
 	}
 
-	@Override
-	public String getHomeTimeline(Context context) {
 	
-		apiParameters.add("format", "json");
-		apiParameters.add("pageflag", "0");
-		apiParameters.add("pagetime", "0");
-		apiParameters.add("reqnum", "20");
-  	
-    	serverUrl = getServerUrl() + "statuses/home_timeline";
-    	
-    	serverResult = request(new ApiTokenHeader(), Utility.HTTPMETHOD_GET, serverUrl, apiParameters, accessToken);
-	
-    	return serverResult;
-	}
-
-	@Override
-	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
-		ArrayList<Micro4blogInfo> m4bInfoList = new ArrayList<Micro4blogInfo>();
-		if(message == null) {
-			return m4bInfoList;
-		}
-		
-		setMicro4blogList(message, m4bInfoList);
-		
-		
-		return m4bInfoList;
-	}
-
 	
 	private void setMicro4blogList(String message,
 			ArrayList<Micro4blogInfo> m4bInfoList) {
@@ -246,5 +219,36 @@ public class Micro4blogForTencent extends Micro4blog {
 		m4bInfo.setUserInfo(userInfo);
 		return userObject;
 	}
+	
+	@Override
+	public String getHomeTimeline(Context context) {
+	
+		apiParameters.add("format", "json");
+		apiParameters.add("pageflag", "0");
+		apiParameters.add("pagetime", "0");
+		apiParameters.add("reqnum", "20");
+  	
+    	apiUrl = getServerUrl() + "statuses/home_timeline";
+    	
+    	apiResult = request(new ApiTokenHeader(), Utility.HTTPMETHOD_GET, apiUrl, apiParameters, accessToken);
+	
+    	return apiResult;
+	}
+
+	@Override
+	public ArrayList<Micro4blogInfo> parseHomeTimeline(String message) {
+		ArrayList<Micro4blogInfo> m4bInfoList = new ArrayList<Micro4blogInfo>();
+		if(message == null) {
+			return m4bInfoList;
+		}
+		
+		setMicro4blogList(message, m4bInfoList);
+		
+		
+		return m4bInfoList;
+	}
+
+	
+
 
 }
