@@ -104,7 +104,7 @@ public class TimelineActivity extends GlobalFramework implements OnClickListener
 		case R.id.footer_more: {
 			mLayoutContent.removeAllViews();
 			
-			View view = getLayoutInflater().inflate(R.layout.list_item_content, null);
+			View view = getLayoutInflater().inflate(R.layout.timeline_list, null);
 			
 			mLayoutContent.addView(view);
 			break;

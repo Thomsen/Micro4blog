@@ -12,13 +12,14 @@
     </TextView>
 
     <LinearLayout
+        android:id="@+id/retweet_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="20dp"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/forwarding_content"
+            android:id="@+id/timeline_retweet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="微博发送的信息" >
@@ -45,7 +46,7 @@
             </TextView>
 
             <TextView
-                android:id="@+id/origin_forwarding_count"
+                android:id="@+id/origin_retweet_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="100" >
@@ -105,7 +106,7 @@
         </TextView>
 
         <TextView
-            android:id="@+id/forwarding_count"
+            android:id="@+id/retweet_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="100" >

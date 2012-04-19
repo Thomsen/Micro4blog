@@ -158,7 +158,7 @@ public class Micro4blogForNetease extends Micro4blog {
 //				m4bInfo.setM4bThumbnailPic(m4bObject.getString("thumbnail_pic"));
 				
 //				m4bInfo.setM4bForwardingCount(m4bObject.getInt("reposts_count"));
-				m4bInfo.setM4bForwardingCount(m4bObject.getInt("retweet_count"));
+				m4bInfo.setM4bRetweetCount(m4bObject.getInt("retweet_count"));
 				
 				m4bInfo.setM4bCommentCount(m4bObject.getInt("comments_count"));				
 				

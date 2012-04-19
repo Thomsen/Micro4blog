@@ -161,7 +161,7 @@ public class Micro4blogForTencent extends Micro4blog {
 //				m4bInfo.setM4bForwardingCount(m4bObject.getInt("reposts_count"));
 				
 				
-				m4bInfo.setM4bForwardingCount(m4bObject.getInt("count"));
+				m4bInfo.setM4bRetweetCount(m4bObject.getInt("count"));
 				
 				m4bInfo.setM4bCommentCount(m4bObject.getInt("mcount"));				
 				
