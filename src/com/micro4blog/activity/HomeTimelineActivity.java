@@ -23,16 +23,18 @@ import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.AsyncMicro4blogRunner;
-import com.micro4blog.utils.Micro4blogAdapter;
+import com.micro4blog.utils.Micro4blogBaseAdapter;
+import com.micro4blog.utils.Micro4blogSimpleAdapter;
 import com.micro4blog.utils.Micro4blogException;
 
-public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro4blogRunner.RequestListener, OnItemClickListener {
+public class HomeTimelineActivity extends TimelineActivity 
+		implements AsyncMicro4blogRunner.RequestListener, OnItemClickListener {
 	
 	private Activity mActivity;
 	
 	ArrayList<Micro4blogInfo> m4bList;
 	
-	Micro4blogAdapter mMicro4blogAdapter;
+	Micro4blogBaseAdapter mMicro4blogAdapter;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,16 +85,23 @@ public class HomeTimelineActivity extends TimelineActivity implements AsyncMicro
 //		mListView.setClickable(true);
 		
 		// WebView对click的影响, 暂时改成ImgeView
-		mMicro4blogAdapter = new Micro4blogAdapter(mActivity, getMapData(), 
-				R.layout.list_item_content, 
-				new String[] {"userimage", "username", "content",  "forwarding_content"},
-				new int[] {R.id.userimage_imageview, R.id.username_textview, R.id.timeline_content, R.id.forwarding_content});
-
-		mMicro4blogAdapter.setViewBinder(mMicro4blogAdapter.getViewBinder());
+//		mMicro4blogAdapter = new Micro4blogSimpleAdapter(mActivity, getMapData(), 
+//				R.layout.timeline_list, 
+//				new String[] {"userimage", "username", "content", "forwarding_content"},
+//				new int[] {R.id.userimage_imageview, R.id.username_textview, R.id.timeline_content, R.id.forwarding_content});
+//
+//		mMicro4blogAdapter.setViewBinder(mMicro4blogAdapter.getViewBinder());
+		
+		mMicro4blogAdapter = new Micro4blogBaseAdapter(mActivity, m4bList);
 		
 		mListView.setAdapter(mMicro4blogAdapter);
 		
 		mListView.setOnItemClickListener(this);
+		
+		// 防止getCount返回0时，没有执行getView
+		// 重新加载适配器，执行getView
+//		mMicro4blogAdapter.notifyDataSetChanged();
+		
 
 	}
 	

@@ -16,7 +16,7 @@ public class Micro4blogInfo {
 	private String m4bMiddlePicture;
 	private String m4bOriginPicture;
 	private String m4bThumbnailPic;
-	private int m4bForwardingCount;
+	private int m4bRetweetCount;
 	private int m4bCommentCount;
 	private int m4bType;
 	private int m4bStatus;
@@ -29,7 +29,22 @@ public class Micro4blogInfo {
 	private EmotionInfo emotionInfo;	
 	private UserInfo userInfo;
 	
+	private Micro4blogInfo m4bRetweetInfo;
+	private boolean hasRetweet;
 	
+	
+	public boolean isHasRetweet() {
+		return hasRetweet;
+	}
+	public void setHasRetweet(boolean hasRetweet) {
+		this.hasRetweet = hasRetweet;
+	}
+	public Micro4blogInfo getM4bRetweetInfo() {
+		return m4bRetweetInfo;
+	}
+	public void setM4bRetweetInfo(Micro4blogInfo m4bRetweetInfo) {
+		this.m4bRetweetInfo = m4bRetweetInfo;
+	}
 	public String getM4bStrId() {
 		return m4bStrId;
 	}
@@ -114,11 +129,11 @@ public class Micro4blogInfo {
 	public void setM4bThumbnailPic(String m4bThumbnailPic) {
 		this.m4bThumbnailPic = m4bThumbnailPic;
 	}
-	public int getM4bForwardingCount() {
-		return m4bForwardingCount;
+	public int getM4bRetweetCount() {
+		return m4bRetweetCount;
 	}
-	public void setM4bForwardingCount(int m4bForwardingCount) {
-		this.m4bForwardingCount = m4bForwardingCount;
+	public void setM4bRetweetCount(int m4bRetweetCount) {
+		this.m4bRetweetCount = m4bRetweetCount;
 	}
 	public int getM4bCommentCount() {
 		return m4bCommentCount;
