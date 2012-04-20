@@ -14,56 +14,22 @@ import android.widget.RelativeLayout;
 import com.micro4blog.GlobalFramework;
 import com.micro4blog.R;
 
-public class TimelineActivity extends GlobalFramework implements OnClickListener {
+public class TimelineActivity extends GlobalFramework {
 	
 	Activity mActivity;
-	LayoutParams mParams;
 	
 	RelativeLayout mLayoutContent;
 	ListView mListView;
 	
-	LinearLayout mLayoutFooter;
-	Button mFooterHome;
-	Button mFooterMessage;
-	Button mFooterProfile;
-	Button mFooterSquare;
-	Button mFooterMore;
-
 	boolean ib = true;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		mActivity = this;
-		
-		mParams = new LayoutParams(LayoutParams.FILL_PARENT, 
-				LayoutParams.WRAP_CONTENT);
-		
-		setContentView(R.layout.main_content);
-		
+
 		mLayoutContent = (RelativeLayout) findViewById(R.id.content_main);
-				
-		mLayoutFooter = (LinearLayout) findViewById(R.id.footer);
-		mLayoutFooter.setVisibility(View.GONE);
-		
-		// 设置导航栏
-		setFooterUp();
-		
-	}
-			
-	protected void setFooterUp() {
-		mFooterHome = (Button) findViewById(R.id.footer_home);
-		mFooterMessage = (Button) findViewById(R.id.footer_message);
-		mFooterProfile = (Button) findViewById(R.id.footer_profile);
-		mFooterSquare = (Button) findViewById(R.id.footer_square);
-		mFooterMore = (Button) findViewById(R.id.footer_more);
-		
-		mFooterHome.setOnClickListener(this);
-		mFooterMessage.setOnClickListener(this);
-		mFooterProfile.setOnClickListener(this);
-		mFooterSquare.setOnClickListener(this);
-		mFooterMore.setOnClickListener(this);
-	
+						
 	}
 	
 	@Override
@@ -129,14 +95,12 @@ public class TimelineActivity extends GlobalFramework implements OnClickListener
 	}
 	
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		
-		
-		
+	
 		if (ib) {
-			mLayoutFooter.setVisibility(View.VISIBLE);
+			gFooterLayout.setVisibility(View.VISIBLE);
 			ib = false;
 		} else {
-			mLayoutFooter.setVisibility(View.GONE);
+			gFooterLayout.setVisibility(View.GONE);
 			ib = true;
 		}
 		

@@ -143,32 +143,42 @@ public class Micro4blogForNetease extends Micro4blog {
 				userInfo = new UserInfo();
 				m4bInfo = new Micro4blogInfo();
 				
-				m4bInfo.setM4bCreateAt(m4bObject.getString("created_at"));
-				m4bInfo.setM4bId(m4bObject.getInt("id"));
-				m4bInfo.setM4bText(m4bObject.getString("text"));
-				m4bInfo.setM44Source(m4bObject.getString("source"));
-				m4bInfo.setM4bFovorited(m4bObject.getBoolean("favorited"));
-				m4bInfo.setM4bTruncated(m4bObject.getBoolean("truncated"));
-//				m4bInfo.setM4bInReplyToStatusId(m4bObject.getInt("in_replay_to_status_id"));
-//				m4bInfo.setM4bInReplyToUserId(m4bObject.getInt("in_replay_to_user_id"));
-//				m4bInfo.setM4bInReplyToScreenName(m4bObject.getString("in_reply_to_screen_name"));
-//				m4bInfo.setM4bMid(m4bObject.getInt("mid"));
-//				m4bInfo.setM4bMiddlePicture(m4bObject.getString("bmiddle_pic"));
-//				m4bInfo.setM4bOriginPicture(m4bObject.getString("original_pic"));
-//				m4bInfo.setM4bThumbnailPic(m4bObject.getString("thumbnail_pic"));
+				setMicro4blogInfo(m4bObject, m4bInfo);		
 				
-//				m4bInfo.setM4bForwardingCount(m4bObject.getInt("reposts_count"));
-				m4bInfo.setM4bRetweetCount(m4bObject.getInt("retweet_count"));
-				
-				m4bInfo.setM4bCommentCount(m4bObject.getInt("comments_count"));				
+				setRetweetMicro4blogInfo(m4bObject, m4bInfo);
 				
 				setUserInfo(m4bObject, m4bInfo, userInfo);
-				
-				
-				
+			
 				m4bInfoList.add(m4bInfo);	
 			}
 			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void setMicro4blogInfo(JSONObject m4bObject, Micro4blogInfo m4bInfo) {
+		
+		try {
+			m4bInfo.setM4bCreateAt(m4bObject.getString("created_at"));
+//			m4bInfo.setM4bId(m4bObject.getInt("id"));
+			m4bInfo.setM4bStrId(m4bObject.getString("id"));
+			m4bInfo.setM4bText(m4bObject.getString("text"));
+			m4bInfo.setM44Source(m4bObject.getString("source"));
+			m4bInfo.setM4bFovorited(m4bObject.getBoolean("favorited"));
+			m4bInfo.setM4bTruncated(m4bObject.getBoolean("truncated"));
+//			m4bInfo.setM4bInReplyToStatusId(m4bObject.getInt("in_replay_to_status_id"));
+//			m4bInfo.setM4bInReplyToUserId(m4bObject.getInt("in_replay_to_user_id"));
+//			m4bInfo.setM4bInReplyToScreenName(m4bObject.getString("in_reply_to_screen_name"));
+//			m4bInfo.setM4bMid(m4bObject.getInt("mid"));
+//			m4bInfo.setM4bMiddlePicture(m4bObject.getString("bmiddle_pic"));
+//			m4bInfo.setM4bOriginPicture(m4bObject.getString("original_pic"));
+//			m4bInfo.setM4bThumbnailPic(m4bObject.getString("thumbnail_pic"));
+//		
+//			m4bInfo.setM4bForwardingCount(m4bObject.getInt("reposts_count"));
+			m4bInfo.setM4bRetweetCount(m4bObject.getInt("retweet_count"));
+			
+			m4bInfo.setM4bCommentCount(m4bObject.getInt("comments_count"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

@@ -65,7 +65,7 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        
-//	        this.setContentView(R.layout.share_mblog_view);
+//	        this.setContentView(R.layout.main_send);
 
 //	        Intent in = this.getIntent();
 //	        mPicPath = in.getStringExtra(EXTRA_PIC_URI);

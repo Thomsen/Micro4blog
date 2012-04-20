@@ -7,24 +7,20 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.micro4blog.R;
 import com.micro4blog.data.Micro4blogInfo;
-import com.micro4blog.http.Micro4blogParameters;
-import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.AsyncMicro4blogRunner;
 import com.micro4blog.utils.Micro4blogBaseAdapter;
-import com.micro4blog.utils.Micro4blogSimpleAdapter;
 import com.micro4blog.utils.Micro4blogException;
 
 public class HomeTimelineActivity extends TimelineActivity 
@@ -66,6 +62,8 @@ public class HomeTimelineActivity extends TimelineActivity
 		}
 		
 		setListUp();
+		
+		setHeaderUp();
 	}
 	
 	protected void setListUp() {
@@ -80,6 +78,9 @@ public class HomeTimelineActivity extends TimelineActivity
 		
 		// 设置item之间的分割线
 		mListView.setDivider(null);
+		
+		// 防止滚动时，显示内容跟背景进行混合运算
+		mListView.setCacheColorHint(Color.TRANSPARENT);
 		
 		// 触发状态
 //		mListView.setClickable(true);
@@ -125,10 +126,32 @@ public class HomeTimelineActivity extends TimelineActivity
 		return list;
 	}
 	
+	protected void setHeaderUp() {
+		super.setHeaderUp();
+		
+		gHeaderRightButton.setText("发布");
+		
+	}
+	
+	public void onClick(View v) {
+		super.onClick(v);
+		
+		switch (v.getId()) {
+		case R.id.header_right: {
+			Toast.makeText(mActivity, "发布", Toast.LENGTH_SHORT).show();
+			break;
+		}
+		default :
+			break;
+		}
+	}
+	
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		
-		Toast.makeText(mActivity, "item : " + arg2, Toast.LENGTH_SHORT).show();
+		Micro4blogInfo m4bInfo = (Micro4blogInfo) arg0.getAdapter().getItem(arg2);
+		
+		Toast.makeText(mActivity, "item : " + m4bInfo.getM4bStrId(), Toast.LENGTH_SHORT).show();
 		
 	}
 
