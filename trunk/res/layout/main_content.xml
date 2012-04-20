@@ -24,12 +24,18 @@
         android:layout_below="@+id/header"
         android:layout_above="@+id/footer"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent" >
         
+        <!--
+        cacheColorHint 解决滚动时的颜色混合运算 
+        fastScrollEnabled 能够出现向官方客户端那样的大型拖动物, 快速拖动时 
+        -->
          <ListView
 	        android:id="@+id/list_main"        
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
+	        android:cacheColorHint="@color/transparent"
+	        android:fastScrollEnabled="true"  
 	        android:descendantFocusability="blocksDescendants" >
    		 </ListView>
         

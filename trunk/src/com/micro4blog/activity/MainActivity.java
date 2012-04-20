@@ -59,19 +59,20 @@ public class MainActivity extends GlobalFramework {
 		
 		setContentView(R.layout.main_login);
 		
-		setUp();
-		
+		setContentUp();
 		setListener();
+		
+		setHeaderUp();
 		
 	}
 	
 	public void onResume() {
 		super.onStart();
 		
-		isSinaOauthed = gSharedPreferences.getBoolean("is_sina_oauthed", false);
-		isSohuOauthed = gSharedPreferences.getBoolean("is_sohu_oauthed", false);
-		isTencentOauthed = gSharedPreferences.getBoolean("is_tencent_oauthed", false);
-		isNeteaseOauthed = gSharedPreferences.getBoolean("is_netease_oauthed", false);
+		isSinaOauthed = gShared.getBoolean("is_sina_oauthed", false);
+		isSohuOauthed = gShared.getBoolean("is_sohu_oauthed", false);
+		isTencentOauthed = gShared.getBoolean("is_tencent_oauthed", false);
+		isNeteaseOauthed = gShared.getBoolean("is_netease_oauthed", false);
 		
 //		mAccessToken = new OauthToken();
 //		mAccessToken.setOauthToken(gSharedPreferences.getString("sina_access_token", ""));
@@ -86,19 +87,19 @@ public class MainActivity extends GlobalFramework {
 						
 		if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SINA) {
 			
-			mAccessToken = new AccessToken(gSharedPreferences.getString("sina_access_token", null), micro4blog.getAppSecret());
+			mAccessToken = new AccessToken(gShared.getString("sina_access_token", null), micro4blog.getAppSecret());
 					
 //			mAccessToken.setOauthToken(gSharedPreferences.getString("sina_access_token", null));
-			mAccessToken.setExpiresIn(gSharedPreferences.getString("sina_expires_in", null));
+			mAccessToken.setExpiresIn(gShared.getString("sina_expires_in", null));
 			
 			Utility.setAuthorization(new Oauth2AccessTokenHeader());
 						
 		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
 			
-			mAccessToken.setOauthVerifier(gSharedPreferences.getString("tencent_oauth_verifier", null));
+			mAccessToken.setOauthVerifier(gShared.getString("tencent_oauth_verifier", null));
 			
-			mAccessToken.setOauthToken(gSharedPreferences.getString("tencent_access_token", null));
-			mAccessToken.setOauthTokenSecret(gSharedPreferences.getString("tencent_oauth_token_sercet", null));
+			mAccessToken.setOauthToken(gShared.getString("tencent_access_token", null));
+			mAccessToken.setOauthTokenSecret(gShared.getString("tencent_oauth_token_sercet", null));
 			
 			Utility.setAuthorization(new ApiTokenHeader());
 			
@@ -106,8 +107,8 @@ public class MainActivity extends GlobalFramework {
 			
 //			mAccessToken.setOauthVerifier(gSharedPreferences.getString("sohu_oauth_verifier", null));
 			
-			mAccessToken.setOauthToken(gSharedPreferences.getString("netease_access_token", null));
-			mAccessToken.setOauthTokenSecret(gSharedPreferences.getString("netease_oauth_token_sercet", null));
+			mAccessToken.setOauthToken(gShared.getString("netease_access_token", null));
+			mAccessToken.setOauthTokenSecret(gShared.getString("netease_oauth_token_sercet", null));
 			
 			Utility.setAuthorization(new ApiTokenHeader());
 			
@@ -127,10 +128,10 @@ public class MainActivity extends GlobalFramework {
 						
 //			mRequestToken.setOauthToken(gSharedPreferences.getString("sohu_oauth_token", ""));
 			
-			mAccessToken.setOauthVerifier(gSharedPreferences.getString("sohu_oauth_verifier", null));
+			mAccessToken.setOauthVerifier(gShared.getString("sohu_oauth_verifier", null));
 			
-			mAccessToken.setOauthToken(gSharedPreferences.getString("sohu_access_token", null));
-			mAccessToken.setOauthTokenSecret(gSharedPreferences.getString("sohu_oauth_token_sercet", null));
+			mAccessToken.setOauthToken(gShared.getString("sohu_access_token", null));
+			mAccessToken.setOauthTokenSecret(gShared.getString("sohu_oauth_token_sercet", null));
 			
 			Utility.setAuthorization(new ApiTokenHeader());
 			
@@ -313,7 +314,7 @@ public class MainActivity extends GlobalFramework {
 	 */
 	public class MainAuthDialogListener implements Micro4blogDialogListener {
 				
-		SharedPreferences.Editor editor = gSharedPreferences.edit();
+		SharedPreferences.Editor editor = gShared.edit();
 		
 		// Syntax error on token ";", , expected TODO why
 //		mAccessToken = new AccessToken();
@@ -431,7 +432,7 @@ public class MainActivity extends GlobalFramework {
 		
 	}
 
-	private void setUp() {
+	private void setContentUp() {
 		mGridView = (GridView) findViewById(R.id.main_grid);
 		
 		ListAdapter adapter = new SimpleAdapter(mActivity, getMapData(), 
@@ -470,6 +471,23 @@ public class MainActivity extends GlobalFramework {
 		}
 		
 		return list;
+	}
+	
+	protected void setHeaderUp() {
+		super.setHeaderUp();
+		
+		gHeaderLeftButton.setText("作者微博");
+	}
+	
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.header_left: {
+			Toast.makeText(mActivity, "作者微博", Toast.LENGTH_SHORT).show();
+			break;
+		}
+		default :
+			break;
+		}
 	}
 
 }

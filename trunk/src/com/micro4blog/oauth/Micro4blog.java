@@ -2,6 +2,9 @@ package com.micro4blog.oauth;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -569,6 +572,8 @@ public abstract class Micro4blog {
 	 */
 	protected abstract void authorizeCallBack(int requestCode, int resultCode,
 			Intent data);
+	
+
 
 	//---------------------------------------------------------------------
 	/*
@@ -576,7 +581,28 @@ public abstract class Micro4blog {
 	 */
 	//---------------------------------------------------------------------
 	
+	protected void setRetweetMicro4blogInfo(JSONObject m4bObject, Micro4blogInfo m4bInfo)
+	throws JSONException {
+		if (m4bObject.has("retweeted_status")
+				&& ! m4bObject.isNull("retweeted_status")) {
+			
+			m4bInfo.setHasRetweet(true);
+			
+			Micro4blogInfo retweetInfo = new Micro4blogInfo();
+			JSONObject retweetObject = m4bObject.getJSONObject("retweeted_status");
+			
+			setMicro4blogInfo(retweetObject, retweetInfo);
+			
+			m4bInfo.setM4bRetweetInfo(retweetInfo);
+	
+		}
+	}
+	
+	protected abstract void setMicro4blogInfo(JSONObject m4bObject, Micro4blogInfo m4bInfo);
+	
 	public abstract String getHomeTimeline(Context context);
 	
 	public abstract ArrayList<Micro4blogInfo> parseHomeTimeline(String message);
+
+
 }

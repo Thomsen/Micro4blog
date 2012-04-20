@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#fff">
+    android:background="@drawable/list_item_color_bg">
 
     <!-- 用户头像及名称 -->
 
@@ -33,12 +33,11 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/image_and_name"
-        android:background="#323234" >
+        android:layout_toRightOf="@+id/image_and_name" >
 
         <include
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
+            android:layout_height="wrap_content"
             layout="@layout/timeline_content"></include>
         
         <!--

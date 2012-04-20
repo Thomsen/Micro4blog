@@ -5,8 +5,10 @@ import java.util.Map;
 
 import com.micro4blog.R;
 import com.micro4blog.data.Micro4blogInfo;
+import com.micro4blog.utils.AsyncMicro4blogImage.ImageCallback;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,24 +25,28 @@ public class Micro4blogBaseAdapter extends BaseAdapter {
 	private Context mContext;
 	private List<Micro4blogInfo> mListData;
 	
+	private AsyncMicro4blogImage mAsyncImage;
+	
 	public Micro4blogBaseAdapter(Context mContext,
 			List<Micro4blogInfo> mListData) {
 		super();
 		this.mContext = mContext;
 		this.mListData = mListData;
+		
+		mAsyncImage = new AsyncMicro4blogImage();
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
 		// 优化
-		Micro4blogHodler hodler;
+		final Micro4blogHodler hodler;
 		
 		if (convertView == null) {
 			hodler = new Micro4blogHodler();
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.timeline_list, null);
-			
+		
 			hodler.userTextView = (TextView) convertView.findViewById(R.id.username_textview);
 			hodler.userImageView = (ImageView) convertView.findViewById(R.id.userimage_imageview);
 			
@@ -56,6 +62,7 @@ public class Micro4blogBaseAdapter extends BaseAdapter {
 			hodler.originalCommentCount = (TextView) convertView.findViewById(R.id.origin_comment_count);
 			
 			convertView.setTag(hodler);
+	
 		} else {
 			hodler = (Micro4blogHodler) convertView.getTag();
 		}
@@ -71,13 +78,28 @@ public class Micro4blogBaseAdapter extends BaseAdapter {
 		}
 		
 		hodler.userTextView.setText(m4bInfo.getUserInfo().getUserName());
-		hodler.userImageView.setBackgroundResource(R.drawable.ic_launcher);
+//		hodler.userImageView.setBackgroundResource(R.drawable.ic_launcher);
 		
 		hodler.contentView.setText(m4bInfo.getM4bText());
 		hodler.retweetCount.setText(String.valueOf(m4bInfo.getM4bRetweetCount()));
 		hodler.commentCount.setText(String.valueOf(m4bInfo.getM4bCommentCount()));
 				
 		// TODO 图片的异步加载
+		Drawable cachedImage = mAsyncImage.loadDrawable(m4bInfo.getUserInfo().getProfileImageUrl(), new ImageCallback() {
+
+			@Override
+			public void imageLoaded(Drawable imageDrawable, String imageUrl) {
+				
+				// 这里起作用了
+				hodler.userImageView.setImageDrawable(imageDrawable);
+								
+			}
+			
+		});
+		
+		// 这里没看出效果
+		hodler.userImageView.setImageDrawable(cachedImage);
+		
 		
 		return convertView;
 
@@ -111,8 +133,9 @@ public class Micro4blogBaseAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// 在长按的时候获取该微博对象
+		return mListData.get(position);
 	}
 
 
