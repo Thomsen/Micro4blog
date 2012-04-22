@@ -4,12 +4,16 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+   	 <!-- 
+    	加了android:focusable="true"无法进行点击
+     -->
     <ImageView
         android:id="@+id/grid_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="60dp" />
+
 
     <TextView
         android:id="@+id/grid_text"
