@@ -45,7 +45,7 @@ public class TimelineActivity extends GlobalFramework {
 		case R.id.footer_message: {
 			mLayoutContent.removeAllViews();
 			
-			View view = getLayoutInflater().inflate(R.layout.gird_cell, null);
+			View view = getLayoutInflater().inflate(R.layout.gird_server, null);
 			
 			mLayoutContent.addView(view);
 			
