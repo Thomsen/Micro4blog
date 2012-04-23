@@ -38,6 +38,7 @@ import com.micro4blog.oauth.AccessToken;
 import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.oauth.RequestToken;
+import com.micro4blog.plugin.PluginImpl;
 import com.micro4blog.tests.ShareActivity;
 import com.micro4blog.utils.Micro4blogException;
 
@@ -72,6 +73,14 @@ public class MainActivity extends GlobalFramework {
 		setListener();
 
 		setHeaderUp();
+		
+		// test 
+		// 无法找到与intellij idea中的相同配置
+		// 暂时只有在intellij中进行插件开发
+		// 通过idea中设置scope，只要不是compile即可运行
+		// 这种方式不知到发布正常apk是否可以？
+//		PluginImpl pi = new PluginImpl(mActivity);
+//		pi.useDexClassLoader2();
 
 	}
 

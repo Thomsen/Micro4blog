@@ -1,5 +1,7 @@
 package com.micro4blog;
 
+import com.micro4blog.plugin.PluginImpl;
+
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
@@ -8,11 +10,16 @@ import android.widget.Toast;
 public class Micro4blogApplication extends Application {
 	
 	private static Context m4bContext;
+	
+//	PluginImpl mPluginImpl;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate();
 		
 		m4bContext = this;
+		
+//		mPluginImpl = new PluginImpl(m4bContext);
+//		mPluginImpl.useDexClassLoader2();
 	}
 	
 	
