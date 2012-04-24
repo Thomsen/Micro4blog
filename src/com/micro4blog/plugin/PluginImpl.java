@@ -101,8 +101,11 @@ public class PluginImpl {
 	            e.printStackTrace();
 	        }
 	        int id = 0;
+	        String version = "0";
 	        id = res.getIdentifier("version", "string", packageName);
-	        String version = res.getString(id);
+	        if (id != 0) {
+	        	 version = res.getString(id);
+	        }
 	        
 	        Log.i("thom", "id " + id + " verison " + version);
 	        
