@@ -10,4 +10,6 @@
 	<dimen name="dialog_title_height">30dp</dimen>
 	
 	<dimen name="widget_margin">8dp</dimen>
+	
+	<dimen name="micro4blog_text_size">16sp</dimen>
 </resources>

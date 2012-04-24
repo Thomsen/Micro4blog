@@ -30,7 +30,7 @@
         </activity>
         <activity android:name=".activity.HomeTimelineActivity" />
         <activity
-            android:name=".activity.ShareActivity"
+            android:name=".activity.TweetActivity"
             android:windowSoftInputMode="adjustResize" />
 
         <receiver

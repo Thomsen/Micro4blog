@@ -102,10 +102,10 @@ public class Micro4blogDialog extends Dialog {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT);
         Resources resources = getContext().getResources();
-        lp.leftMargin = resources.getDimensionPixelSize(R.dimen.dialog_left_margin);
-        lp.topMargin = resources.getDimensionPixelSize(R.dimen.dialog_top_margin);
-        lp.rightMargin = resources.getDimensionPixelSize(R.dimen.dialog_right_margin);
-        lp.bottomMargin = resources.getDimensionPixelSize(R.dimen.dialog_bottom_margin);
+//        lp.leftMargin = resources.getDimensionPixelSize(R.dimen.dialog_left_margin);
+//        lp.topMargin = resources.getDimensionPixelSize(R.dimen.dialog_top_margin);
+//        lp.rightMargin = resources.getDimensionPixelSize(R.dimen.dialog_right_margin);
+//        lp.bottomMargin = resources.getDimensionPixelSize(R.dimen.dialog_bottom_margin);
         mContent.addView(webViewContainer, lp);
     }
 

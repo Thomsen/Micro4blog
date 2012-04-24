@@ -561,6 +561,7 @@ public class MainActivity extends GlobalFramework {
 		super.setHeaderUp();
 
 		gHeaderLeftButton.setText("作者微博");
+		gHeaderContent.setText("服务");
 	}
 
 	public void onClick(View v) {
