@@ -142,54 +142,54 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 	        
 	    }
 
-	    public void onClick(View v) {
-	        int viewId = v.getId();
-
-	        if (viewId == R.id.btnClose) {
-	            finish();
-	        } else if (viewId == R.id.btnSend) {
-	            Micro4blog micro4blog = Micro4blog.getInstance(Micro4blog.SERVER_SINA); // TODO four instance
-	            try {
-	            	// XXX 判断是否登录
-	                if (!TextUtils.isEmpty((String) (micro4blog.getAccessToken().getOauthToken()))) {
-	                    this.mContent = mEdit.getText().toString();
-	                    if (!TextUtils.isEmpty(mPicPath)) {
-	                        upload(micro4blog, micro4blog.getAppKey(), this.mPicPath, this.mContent, "", "");
-
-	                    } else {
-	                        // Just update a text Micro4blog!
-	                        update(micro4blog, micro4blog.getAppKey(), mContent, "", "");
-	                    }
-	                } else {
-	                    Toast.makeText(this, this.getString(R.string.please_login), Toast.LENGTH_LONG).show();
-	                }
-	            } catch (MalformedURLException e) {
-	                e.printStackTrace();
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	            } catch (Micro4blogException e) {
-	                e.printStackTrace();
-	            }
-	        } else if (viewId == R.id.ll_text_limit_unit) {
-	            Dialog dialog = new AlertDialog.Builder(this).setTitle(R.string.attention)
-	                    .setMessage(R.string.delete_all)
-	                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-	                        public void onClick(DialogInterface dialog, int which) {
-	                            mEdit.setText("");
-	                        }
-	                    }).setNegativeButton(R.string.cancel, null).create();
-	            dialog.show();
-	        } else if (viewId == R.id.ivDelPic) {
-	            Dialog dialog = new AlertDialog.Builder(this).setTitle(R.string.attention)
-	                    .setMessage(R.string.del_pic)
-	                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-	                        public void onClick(DialogInterface dialog, int which) {
-	                            mPiclayout.setVisibility(View.GONE);
-	                        }
-	                    }).setNegativeButton(R.string.cancel, null).create();
-	            dialog.show();
-	        }
-	    }
+//	    public void onClick(View v) {
+//	        int viewId = v.getId();
+//
+//	        if (viewId == R.id.btnClose) {
+//	            finish();
+//	        } else if (viewId == R.id.btnSend) {
+//	            Micro4blog micro4blog = Micro4blog.getInstance(Micro4blog.SERVER_SINA); // TODO four instance
+//	            try {
+//	            	// XXX 判断是否登录
+//	                if (!TextUtils.isEmpty((String) (micro4blog.getAccessToken().getOauthToken()))) {
+//	                    this.mContent = mEdit.getText().toString();
+//	                    if (!TextUtils.isEmpty(mPicPath)) {
+//	                        upload(micro4blog, micro4blog.getAppKey(), this.mPicPath, this.mContent, "", "");
+//
+//	                    } else {
+//	                        // Just update a text Micro4blog!
+//	                        update(micro4blog, micro4blog.getAppKey(), mContent, "", "");
+//	                    }
+//	                } else {
+//	                    Toast.makeText(this, this.getString(R.string.please_login), Toast.LENGTH_LONG).show();
+//	                }
+//	            } catch (MalformedURLException e) {
+//	                e.printStackTrace();
+//	            } catch (IOException e) {
+//	                e.printStackTrace();
+//	            } catch (Micro4blogException e) {
+//	                e.printStackTrace();
+//	            }
+//	        } else if (viewId == R.id.ll_text_limit_unit) {
+//	            Dialog dialog = new AlertDialog.Builder(this).setTitle(R.string.attention)
+//	                    .setMessage(R.string.delete_all)
+//	                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+//	                        public void onClick(DialogInterface dialog, int which) {
+//	                            mEdit.setText("");
+//	                        }
+//	                    }).setNegativeButton(R.string.cancel, null).create();
+//	            dialog.show();
+//	        } else if (viewId == R.id.ivDelPic) {
+//	            Dialog dialog = new AlertDialog.Builder(this).setTitle(R.string.attention)
+//	                    .setMessage(R.string.del_pic)
+//	                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+//	                        public void onClick(DialogInterface dialog, int which) {
+//	                            mPiclayout.setVisibility(View.GONE);
+//	                        }
+//	                    }).setNegativeButton(R.string.cancel, null).create();
+//	            dialog.show();
+//	        }
+//	    }
 
 	    private String upload(Micro4blog micro4blog, String source, String file, String status, String lon,
 	            String lat) throws Micro4blogException {
@@ -305,5 +305,11 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 		    }
 		    	
 		    return rlt;
-	    } 
+	    }
+
+		@Override
+		public void onClick(View arg0) {
+			// TODO Auto-generated method stub
+			
+		} 
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -65,6 +66,8 @@ public class HomeTimelineActivity extends TimelineActivity
 		
 		setHeaderUp();
 	}
+	
+	
 	
 	protected void setListUp() {
 		mListView = (ListView) findViewById(R.id.list_main);
@@ -129,7 +132,9 @@ public class HomeTimelineActivity extends TimelineActivity
 	protected void setHeaderUp() {
 		super.setHeaderUp();
 		
+		gHeaderLeftButton.setText("服务");
 		gHeaderRightButton.setText("发布");
+		gHeaderContent.setText("主页");
 		
 	}
 	
@@ -139,6 +144,11 @@ public class HomeTimelineActivity extends TimelineActivity
 		switch (v.getId()) {
 		case R.id.header_right: {
 			Toast.makeText(mActivity, "发布", Toast.LENGTH_SHORT).show();
+			
+			Intent intent = new Intent(mActivity, TweetActivity.class);
+			
+			startActivity(intent);
+			
 			break;
 		}
 		default :

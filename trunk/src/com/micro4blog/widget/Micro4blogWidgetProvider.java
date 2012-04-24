@@ -1,7 +1,7 @@
 package com.micro4blog.widget;
 
 import com.micro4blog.R;
-import com.micro4blog.activity.ShareActivity;
+import com.micro4blog.activity.TweetActivity;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;

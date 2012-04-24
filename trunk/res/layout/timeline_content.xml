@@ -8,6 +8,9 @@
         android:id="@+id/timeline_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/micro4blog_text_size"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:text="微博发送的信息" >
     </TextView>
 

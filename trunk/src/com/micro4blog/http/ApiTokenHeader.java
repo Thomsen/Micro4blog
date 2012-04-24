@@ -61,15 +61,16 @@ public class ApiTokenHeader extends HttpHeaderFactory {
 			Mac mac = Mac.getInstance(CONST_HMAC_SHA1);
 			SecretKeySpec spec = null;		
 			// 判断token中是否已有了密钥提供者
-			if(null == token.getSecretKeySpec()) {
-				String oauthSignature = encode(micro4blog.getAppSecret()) + "&"
-						+ encode(token.getOauthTokenSecret());
-				
-				Log.d(TAG, "api oauth signature: " + oauthSignature);
-				
-				spec = new SecretKeySpec(oauthSignature.getBytes(), CONST_HMAC_SHA1);
-				token.setSecretKeySpec(spec);
-			}
+			// 由于在调用API是，若登录了netease后，再登录sohu，则判断不成立
+			// 去判断
+			String oauthSignature = encode(micro4blog.getAppSecret()) + "&"
+					+ encode(token.getOauthTokenSecret());
+			
+			Log.d(TAG, "api oauth signature: " + oauthSignature);
+			
+			spec = new SecretKeySpec(oauthSignature.getBytes(), CONST_HMAC_SHA1);
+			token.setSecretKeySpec(spec);
+
 			
 			Log.d(TAG, "api oauth data: " + data);
 			
