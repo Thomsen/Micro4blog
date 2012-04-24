@@ -79,8 +79,9 @@ public class MainActivity extends GlobalFramework {
 		// 暂时只有在intellij中进行插件开发
 		// 通过idea中设置scope，只要不是compile即可运行
 		// 这种方式不知到发布正常apk是否可以？
-//		PluginImpl pi = new PluginImpl(mActivity);
-//		pi.useDexClassLoader2();
+		// eclipse中以工程依赖，不以库依赖开发插件
+		PluginImpl pi = new PluginImpl(mActivity);
+		pi.useDexClassLoader2();
 
 	}
 
