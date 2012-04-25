@@ -17,9 +17,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.micro4blog.Micro4blog;
 import com.micro4blog.R;
 import com.micro4blog.data.Micro4blogInfo;
-import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.AsyncMicro4blogRunner;
 import com.micro4blog.utils.Micro4blogBaseAdapter;
 import com.micro4blog.utils.Micro4blogException;

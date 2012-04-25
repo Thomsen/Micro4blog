@@ -1,4 +1,4 @@
-package com.micro4blog.oauth;
+package com.micro4blog;
 
 import java.util.ArrayList;
 
@@ -25,6 +25,10 @@ import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Oauth2AccessTokenHeader;
 import com.micro4blog.http.RequestTokenHeader;
 import com.micro4blog.http.Utility;
+import com.micro4blog.oauth.AccessToken;
+import com.micro4blog.oauth.Oauth2AccessToken;
+import com.micro4blog.oauth.OauthToken;
+import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.server.Micro4blogForNetease;
 import com.micro4blog.server.Micro4blogForSina;
 import com.micro4blog.server.Micro4blogForSohu;
@@ -604,5 +608,8 @@ public abstract class Micro4blog {
 	
 	public abstract ArrayList<Micro4blogInfo> parseHomeTimeline(String message);
 
+	public abstract String update(String status, String lon, String lat);
+	
+//	public abstract String upload(String file, String status, String lon, String lat);
 
 }

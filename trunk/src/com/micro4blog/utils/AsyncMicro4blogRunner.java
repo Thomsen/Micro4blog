@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import android.content.Context;
 
+import com.micro4blog.Micro4blog;
 import com.micro4blog.http.Micro4blogParameters;
-import com.micro4blog.oauth.Micro4blog;
 
 /**
  * 

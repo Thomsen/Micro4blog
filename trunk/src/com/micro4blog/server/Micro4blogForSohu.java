@@ -13,13 +13,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.CookieSyncManager;
 
+import com.micro4blog.Micro4blog;
 import com.micro4blog.data.Micro4blogInfo;
 import com.micro4blog.data.UserInfo;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Utility;
-import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.Micro4blogException;
 
 public class Micro4blogForSohu extends Micro4blog {
@@ -243,6 +243,12 @@ public class Micro4blogForSohu extends Micro4blog {
 		
 		
 		return m4bInfoList;
+	}
+
+	@Override
+	public String update(String status, String lon, String lat) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

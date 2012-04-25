@@ -21,7 +21,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Random;
 
-import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.utils.Micro4blogException;
 

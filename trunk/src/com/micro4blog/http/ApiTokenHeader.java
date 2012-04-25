@@ -8,7 +8,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import android.util.Log;
 
-import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.utils.Micro4blogException;
 
