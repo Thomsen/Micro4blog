@@ -1,5 +1,6 @@
 package com.micro4blog.server;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -13,7 +14,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.CookieSyncManager;
+import android.widget.Toast;
 
+import com.micro4blog.Micro4blog;
+import com.micro4blog.activity.HomeTimelineActivity;
 import com.micro4blog.data.Micro4blogInfo;
 import com.micro4blog.data.UserInfo;
 import com.micro4blog.dialog.DialogError;
@@ -21,7 +25,8 @@ import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.ApiTokenHeader;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Utility;
-import com.micro4blog.oauth.Micro4blog;
+import com.micro4blog.utils.AsyncMicro4blogRunner;
+import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;
 import com.micro4blog.utils.Micro4blogException;
 
 public class Micro4blogForSina extends Micro4blog {
@@ -271,6 +276,45 @@ public class Micro4blogForSina extends Micro4blog {
 		
 		return apiResult;
 		
+	}
+
+	@Override
+	public String update(String status, String lon, String lat) {
+        apiParameters.add("status", status);
+        if (!TextUtils.isEmpty(lon)) {
+            apiParameters.add("lon", lon);
+        }
+        if (!TextUtils.isEmpty(lat)) {
+            apiParameters.add("lat", lat);
+        }
+        String rlt = "";
+        String url = getServerUrl() + "statuses/update.json";
+        AsyncMicro4blogRunner micro4blogRunner = new AsyncMicro4blogRunner(this);
+        micro4blogRunner.request(mContext, url, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
+
+			@Override
+			public void onComplete(String response) {
+				Toast.makeText(mContext, "send success", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(mContext, HomeTimelineActivity.class);
+				mContext.startActivity(intent);
+				
+			}
+
+			@Override
+			public void onIOException(IOException e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onError(Micro4blogException e) {
+				// TODO Auto-generated method stub
+				
+			}
+        	
+        });
+     
+        return rlt;
 	}
 
 

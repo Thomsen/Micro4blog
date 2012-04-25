@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import com.micro4blog.Micro4blog;
 import com.micro4blog.R;
 import com.micro4blog.http.AccessTokenHeader;
 import com.micro4blog.http.ApiTokenHeader;
@@ -13,7 +14,6 @@ import com.micro4blog.http.Oauth2AccessTokenHeader;
 import com.micro4blog.http.RequestTokenHeader;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.AccessToken;
-import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.AsyncMicro4blogRunner;
 import com.micro4blog.utils.Micro4blogException;
 import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;

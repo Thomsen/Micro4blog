@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.micro4blog.GlobalFramework;
+import com.micro4blog.Micro4blog;
 import com.micro4blog.R;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
@@ -35,7 +36,6 @@ import com.micro4blog.http.ApiTokenHeader;
 import com.micro4blog.http.Oauth2AccessTokenHeader;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.AccessToken;
-import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.plugin.PluginImpl;

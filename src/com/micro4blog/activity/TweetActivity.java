@@ -1,14 +1,21 @@
 package com.micro4blog.activity;
 
 import com.micro4blog.GlobalFramework;
+import com.micro4blog.Micro4blog;
 import com.micro4blog.R;
-import com.micro4blog.oauth.Micro4blog;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 
 public class TweetActivity extends GlobalFramework {
+	
+	private EditText mTweetContent;
+	
+	private Micro4blog micro4blog;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -16,6 +23,38 @@ public class TweetActivity extends GlobalFramework {
 		setContentView(R.layout.main_send);
 		
 		setHeaderUp();
+		
+		setTweetContent();
+		
+		micro4blog = Micro4blog.getInstance(Micro4blog.getCurrentServer());
+	}
+
+	private void setTweetContent() {
+		mTweetContent = (EditText) findViewById(R.id.tweet_content);
+		
+		mTweetContent.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 	}
 	
 	public void setHeaderUp() {
@@ -51,11 +90,19 @@ public class TweetActivity extends GlobalFramework {
 			break;
 		}
 		case R.id.header_right: {
+			tweet();
 			break;
 		}
 		default :
 			break;
 		}
+	}
+
+	private void tweet() {
+		String status = mTweetContent.getText().toString();
+		
+		micro4blog.update(status, null, null);
+		
 	}
 
 }

@@ -1,11 +1,11 @@
 package com.micro4blog.tests;
 
+import com.micro4blog.Micro4blog;
 import com.micro4blog.R;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.AccessToken;
-import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.Micro4blogException;
 
 import android.app.Activity;

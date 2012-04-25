@@ -26,10 +26,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.micro4blog.Micro4blog;
 import com.micro4blog.R;
 import com.micro4blog.android.SslError;
 import com.micro4blog.http.Utility;
-import com.micro4blog.oauth.Micro4blog;
 import com.micro4blog.utils.Micro4blogException;
 
 /**
