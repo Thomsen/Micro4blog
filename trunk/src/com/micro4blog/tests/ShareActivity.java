@@ -287,7 +287,7 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 		    		bundle.add("count", "20");
 			    	rlt = micro4blog.request(this, url, bundle, Utility.HTTPMETHOD_GET, micro4blog.getAccessToken());
 		    	} else {
-			    	rlt = micro4blog.request(new ApiTokenHeader(), Utility.HTTPMETHOD_GET,  url, bundle, micro4blog.getAccessToken());
+			    	rlt = micro4blog.request(new ApiTokenHeader(),  url, bundle, Utility.HTTPMETHOD_GET, micro4blog.getAccessToken());
 		    	}
 
 		    			    	
@@ -301,7 +301,7 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 		    	url = micro4blog.getServerUrl() + "statuses/home_timeline?format=json";
 //		    	url = micro4blog.getServerUrl() + "statuses/home_timeline";
 		    	
-		    	rlt = micro4blog.request(new ApiTokenHeader(), Utility.HTTPMETHOD_GET, url, bundle, micro4blog.getAccessToken());
+		    	rlt = micro4blog.request(new ApiTokenHeader(), url, bundle, Utility.HTTPMETHOD_GET, micro4blog.getAccessToken());
 		    }
 		    	
 		    return rlt;

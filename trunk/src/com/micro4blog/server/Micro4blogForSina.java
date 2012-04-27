@@ -287,10 +287,9 @@ public class Micro4blogForSina extends Micro4blog {
         if (!TextUtils.isEmpty(lat)) {
             apiParameters.add("lat", lat);
         }
-        String rlt = "";
-        String url = getServerUrl() + "statuses/update.json";
+        apiUrl = getServerUrl() + "statuses/update.json";
         AsyncMicro4blogRunner micro4blogRunner = new AsyncMicro4blogRunner(this);
-        micro4blogRunner.request(mContext, url, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
+        micro4blogRunner.request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
 
 			@Override
 			public void onComplete(String response) {
@@ -314,7 +313,7 @@ public class Micro4blogForSina extends Micro4blog {
         	
         });
      
-        return rlt;
+        return apiResult;
 	}
 
 

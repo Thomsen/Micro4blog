@@ -1,6 +1,11 @@
 package com.micro4blog.server;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,16 +15,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.CookieSyncManager;
+import android.widget.Toast;
 
 import com.micro4blog.Micro4blog;
+import com.micro4blog.activity.HomeTimelineActivity;
 import com.micro4blog.data.Micro4blogInfo;
 import com.micro4blog.data.UserInfo;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.ApiTokenHeader;
+import com.micro4blog.http.HttpHeaderFactory;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Utility;
+import com.micro4blog.utils.AsyncMicro4blogRunner;
+import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;
 import com.micro4blog.utils.Micro4blogException;
 
 public class Micro4blogForTencent extends Micro4blog {
@@ -238,7 +250,7 @@ public class Micro4blogForTencent extends Micro4blog {
   	
     	apiUrl = getServerUrl() + "statuses/home_timeline";
     	
-    	apiResult = request(new ApiTokenHeader(), Utility.HTTPMETHOD_GET, apiUrl, apiParameters, accessToken);
+    	apiResult = request(new ApiTokenHeader(), apiUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
 	
     	return apiResult;
 	}
@@ -258,11 +270,68 @@ public class Micro4blogForTencent extends Micro4blog {
 
 	@Override
 	public String update(String status, String lon, String lat) {
-		// TODO Auto-generated method stub
-		return null;
+
+		HttpHeaderFactory hhf = new ApiTokenHeader();
+		Utility.setAuthorization(hhf);
+		
+		apiUrl = getServerUrl() + "t/add";
+		
+		apiParameters.add("format", "json");
+		apiParameters.add("content", status);
+		apiParameters.add("clientip", getLocalIpAddress());
+		if (!TextUtils.isEmpty(lon)) {
+            apiParameters.add("jing", lon);
+        }
+        if (!TextUtils.isEmpty(lat)) {
+            apiParameters.add("wei", lat);
+        }
+		
+		
+		AsyncMicro4blogRunner micro4blogRunner = new AsyncMicro4blogRunner(this);
+		micro4blogRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
+
+			@Override
+			public void onComplete(String response) {
+				Toast.makeText(mContext, "send success", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(mContext, HomeTimelineActivity.class);
+				mContext.startActivity(intent);
+			}
+
+			@Override
+			public void onIOException(IOException e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onError(Micro4blogException e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+
+		return apiResult;
 	}
 
-	
+	private static String getLocalIpAddress() {
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface
+					.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf
+						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress()) {
+						return inetAddress.getHostAddress().toString();
+					}
+				}
+			}
+		} catch (SocketException ex) {
+			Log.e("WifiPreference IpAddress", ex.toString());
+		}
+		return null;
+	}
 
 
 }
