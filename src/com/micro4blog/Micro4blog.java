@@ -131,8 +131,8 @@ public abstract class Micro4blog {
 			}
 		} else {
 			// tencent
-			String result = request(header, Utility.HTTPMETHOD_GET, getUrlRequestToken(),
-					parameters, requestToken);
+			String result = request(header, getUrlRequestToken(),
+					parameters, Utility.HTTPMETHOD_GET, requestToken);
 			requestToken = new RequestToken(result);
 		}
 		
@@ -235,8 +235,8 @@ public abstract class Micro4blog {
 			AccessTokenHeader header = new AccessTokenHeader();
 			Micro4blogParameters parameters = new Micro4blogParameters();
 			parameters.add("oauth_verifier", requestToken.getOauthVerifier());
-			String result = request(header, Utility.HTTPMETHOD_GET, getUrlAccessToken(),
-					parameters, requestToken);
+			String result = request(header,  getUrlAccessToken(),
+					parameters, Utility.HTTPMETHOD_GET, requestToken);
 			accessToken = new OauthToken(result);
 			setAccessToken(accessToken);
 			mAuthDialogListener.onComplete(values);
@@ -252,8 +252,8 @@ public abstract class Micro4blog {
 	 * @param token	请求的oauth token
 	 * @return
 	 */
-	public String request(HttpHeaderFactory header, String httpMethod, String url,
-			Micro4blogParameters parameters, OauthToken token) {
+	public String request(HttpHeaderFactory header,  String url,
+			Micro4blogParameters parameters, String httpMethod, OauthToken token) {
 
 		String result = "";
 		try {

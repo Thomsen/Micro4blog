@@ -157,7 +157,8 @@ public class Utility {
 			HttpClient client = getNewHttpClient(context);
 			HttpUriRequest request = null;
 			ByteArrayOutputStream bos = null;
-			if (method.equals("GET")) {				
+			if (method.equals("GET")
+					|| Micro4blog.getCurrentServer() != Micro4blog.SERVER_SINA) {				
 				// 明白，起初想要的是get方法用url参数形式，post方法用header形式
 				if (! isBundleEmpty(params)) {
 //					// 也可以经format传给params
@@ -170,7 +171,8 @@ public class Utility {
 				}
 				HttpGet get = new HttpGet(url);
 				request = get;
-			} else if (method.equals("POST")) {		
+			} else if (method.equals("POST") 
+					&& Micro4blog.getCurrentServer() == Micro4blog.SERVER_SINA) {		
 				HttpPost post = new HttpPost(url);
 				byte[] data = null;
 				bos = new ByteArrayOutputStream(1024 * 50);
