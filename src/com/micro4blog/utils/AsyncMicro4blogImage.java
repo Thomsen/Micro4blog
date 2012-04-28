@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.micro4blog.Micro4blog;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -62,6 +64,10 @@ public class AsyncMicro4blogImage {
 
 		URL fileUrl = null;
 		Drawable drawable = null;
+		
+		if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
+			imageUrl = imageUrl + "/40";  // 加上一个比例
+		}
 		
 		try {
 			fileUrl = new URL(imageUrl);

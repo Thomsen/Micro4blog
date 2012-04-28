@@ -130,7 +130,7 @@ public class ShareActivity extends Activity implements OnClickListener, RequestL
 //	            }
 //	        }
 	        
-	        Micro4blog micro4blog = Micro4blog.getInstance(Micro4blog.getCurrentServer());
+	        Micro4blog micro4blog = Micro4blog.getInstance(this, Micro4blog.getCurrentServer());
 	        
 	        try {
 				Log.i(TAG, getPublicTimeline(micro4blog));

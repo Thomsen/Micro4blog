@@ -20,8 +20,12 @@ public class AuthActivity extends Activity {
 
 	Micro4blog m4b;
 	
+	Activity mActivity;
+	
 	public void onCreate(Bundle savedInstanceState) {
 	
+		mActivity = this;
+		
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.main_test);
@@ -37,7 +41,7 @@ public class AuthActivity extends Activity {
 			
 			public void onClick(View v) {
 				
-				m4b = Micro4blog.getInstance(Micro4blog.SERVER_SINA);
+				m4b = Micro4blog.getInstance(mActivity, Micro4blog.SERVER_SINA);
 
 				m4b.authorize(AuthActivity.this, new AuthDialogListener());
 				
@@ -48,7 +52,7 @@ public class AuthActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				m4b = Micro4blog.getInstance(Micro4blog.SERVER_TENCENT);
+				m4b = Micro4blog.getInstance(mActivity, Micro4blog.SERVER_TENCENT);
 				
 				m4b.authorize(AuthActivity.this, new AuthDialogListener());
 				
@@ -59,7 +63,7 @@ public class AuthActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				m4b = Micro4blog.getInstance(Micro4blog.SERVER_NETEASE);
+				m4b = Micro4blog.getInstance(mActivity, Micro4blog.SERVER_NETEASE);
 				
 				m4b.authorize(AuthActivity.this, new AuthDialogListener());
 				
@@ -70,7 +74,7 @@ public class AuthActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				m4b = Micro4blog.getInstance(Micro4blog.SERVER_SOHU);
+				m4b = Micro4blog.getInstance(mActivity, Micro4blog.SERVER_SOHU);
 				
 				m4b.authorize(AuthActivity.this, new AuthDialogListener());
 				

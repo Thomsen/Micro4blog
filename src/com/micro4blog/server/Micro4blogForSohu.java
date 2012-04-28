@@ -227,8 +227,9 @@ public class Micro4blogForSohu extends Micro4blog {
 	public String getHomeTimeline(Context context) {
 		apiUrl = getServerUrl() + "statuses/friends_timeline.json";
 		
-		// TODO 解决带参数的未授权问题
-//		apiParameters.add("count", "20");
+		// 解决带参数的未授权问题
+		// 通过在Micro4blogParameters中添加了sort方法，解决了该问题
+		apiParameters.add("count", "20");
 		
 //		serverResult = request(context, serverUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
 		

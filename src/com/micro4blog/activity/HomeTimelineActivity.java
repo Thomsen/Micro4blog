@@ -38,7 +38,7 @@ public class HomeTimelineActivity extends TimelineActivity
 			
 		mActivity = this;
 		
-		Micro4blog m4b = Micro4blog.getInstance(Micro4blog.getCurrentServer());
+		Micro4blog m4b = Micro4blog.getInstance(mActivity, Micro4blog.getCurrentServer());
 		
 //		Micro4blogParameters m4bParams = new Micro4blogParameters();
 	

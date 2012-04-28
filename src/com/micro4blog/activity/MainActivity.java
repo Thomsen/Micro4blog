@@ -245,7 +245,7 @@ public class MainActivity extends GlobalFramework {
 	 */
 	protected void loginServer(int serverType) {
 
-		micro4blog = Micro4blog.getInstance(serverType);
+		micro4blog = Micro4blog.getInstance(mActivity, serverType);
 		Intent intent = new Intent(mActivity, HomeTimelineActivity.class);
 		// Intent intent = new Intent(mThis, ShareActivity.class);
 
@@ -361,7 +361,7 @@ public class MainActivity extends GlobalFramework {
 		}
 		}
 
-		micro4blog = Micro4blog.getInstance(serverType);
+		micro4blog = Micro4blog.getInstance(mActivity, serverType);
 		micro4blog.authorize(mActivity, new MainAuthDialogListener());
 
 	}

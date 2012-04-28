@@ -74,6 +74,33 @@ public class Micro4blogParameters {
 		return "";
 	}
 	
+	public void sort() {
+		
+		for (int i=0; i<size()-1; i++) {
+			for (int j=i+1; j<size(); j++) {
+				if (getKey(i).compareToIgnoreCase(getKey(j)) > 0) {
+					swap(i, j, getKey(i), getKey(j));
+				}
+			}
+		}
+		
+	}
+	
+	public void swap(int a, int b, String source, String dest) {
+
+		remove(source);
+		remove(dest);
+		
+		listKeys.add(a, dest);
+		listKeys.add(b, source);
+
+//		String tmpValue = getValue(source);
+//		mBundleParameters.putString(source, getValue(dest));
+//		mBundleParameters.putString(dest, getValue(tmpValue));
+//		add(source, getValue(dest));
+//		add(dest, tmpValue);
+	}
+	
 	public void clear() {
 		this.listKeys.clear();
 		this.mBundleParameters.clear();
