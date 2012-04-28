@@ -229,8 +229,8 @@ public class Micro4blogForNetease extends Micro4blog {
 	public String getHomeTimeline(Context context) {
 		apiUrl = getServerUrl() + "statuses/home_timeline.json";
 		
-		// TODO 解决带参数的未授权问题
-//		apiParameters.add("count", "20");
+		// 解决带参数的未授权问题
+		apiParameters.add("count", "16");
 		
 //		serverResult = request(context, serverUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
 		

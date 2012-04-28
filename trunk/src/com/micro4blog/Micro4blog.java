@@ -80,15 +80,17 @@ public abstract class Micro4blog {
 
 	protected Micro4blogDialogListener mAuthDialogListener;
 
-	protected Context mContext;
+	protected static Context mContext;
 
 	public Micro4blog() {
 		Utility.setRequestHeader("Accept-Encoding", "gzip");
 		Utility.setTokenObject(this.requestToken);
 	}
 
-	public static Micro4blog getInstance(int serverType) {
+	public static Micro4blog getInstance(Context context, int serverType) {
 
+		mContext = context;
+		
 		currentServer = serverType;
 		if (serverType == SERVER_SINA) {
 			micro4blogInstance = Micro4blogForSina.getInstance();
@@ -263,10 +265,15 @@ public abstract class Micro4blog {
 			params = header.getAuthParams();
 			params.addAll(parameters);
 			
-			Log.d(TAG, "request with get params: " + Utility.encodeParameters(params));
+			Log.d(TAG, "request with get params source ：：：：" + Utility.encodeParameters(params));
+			
+			// TODO 需要重新设计
+			params.sort();
+			
+			Log.d(TAG, "request with get params dest ：：：：" + Utility.encodeParameters(params));
 			
 			result = Utility.openUrl(micro4blogInstance, mContext, url,
-					Utility.HTTPMETHOD_GET, params, token);
+					httpMethod, params, token);
 
 		} catch (Micro4blogException e) {
 			e.printStackTrace();

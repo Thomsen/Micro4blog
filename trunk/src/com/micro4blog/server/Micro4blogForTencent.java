@@ -208,7 +208,7 @@ public class Micro4blogForTencent extends Micro4blog {
 		userInfo.setUserStrId(userObject.getString("openid"));
 		userInfo.setUserName(userObject.getString("name"));
 		userInfo.setUserName(userObject.getString("nick"));
-		userInfo.setProvince(userObject.getInt("province_code"));
+//		userInfo.setProvince(userObject.getInt("province_code"));
 //		userInfo.setCity(userObject.getInt("city_code"));
 		userInfo.setLocation(userObject.getString("location"));
 //		userInfo.setDescription(userObject.getString("description"));
@@ -278,18 +278,16 @@ public class Micro4blogForTencent extends Micro4blog {
 		
 		apiParameters.add("format", "json");
 		apiParameters.add("content", status);
-		apiParameters.add("clientip", getLocalIpAddress());
-		if (!TextUtils.isEmpty(lon)) {
-            apiParameters.add("jing", lon);
-        }
-        if (!TextUtils.isEmpty(lat)) {
-            apiParameters.add("wei", lat);
-        }
+//		apiParameters.add("clientip", getLocalIpAddress());
+		apiParameters.add("clientip", "127.0.0.1");
+
+	    apiParameters.add("jing", lon);
+	    apiParameters.add("wei", lat);
 		
 		
 		AsyncMicro4blogRunner micro4blogRunner = new AsyncMicro4blogRunner(this);
 		micro4blogRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
-
+			
 			@Override
 			public void onComplete(String response) {
 				Toast.makeText(mContext, "send success", Toast.LENGTH_SHORT).show();

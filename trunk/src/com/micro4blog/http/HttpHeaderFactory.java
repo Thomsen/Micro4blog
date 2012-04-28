@@ -61,7 +61,8 @@ public abstract class HttpHeaderFactory {
         signatureParams = this.generateSignatureParameters(micro4blog, authParams, params, url);
         Log.d(TAG, "signatureParams: " + Utility.encodeParameters(signatureParams));
         
-        // step 3: 生成用于签名的base String
+        // step 3: 生成用于签名的base String      
+        signatureParams.sort();
         String oauthBaseString = this.generateAuthSignature(method, signatureParams, url, token);
         Log.d(TAG, "all oauth base string : " + oauthBaseString);
         

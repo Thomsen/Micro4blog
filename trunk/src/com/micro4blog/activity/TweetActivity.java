@@ -17,8 +17,12 @@ public class TweetActivity extends GlobalFramework {
 	
 	private Micro4blog micro4blog;
 	
+	private Activity mActivity;
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		mActivity = this;
 		
 		setContentView(R.layout.main_send);
 		
@@ -26,7 +30,7 @@ public class TweetActivity extends GlobalFramework {
 		
 		setTweetContent();
 		
-		micro4blog = Micro4blog.getInstance(Micro4blog.getCurrentServer());
+		micro4blog = Micro4blog.getInstance(mActivity, Micro4blog.getCurrentServer());
 	}
 
 	private void setTweetContent() {
@@ -101,7 +105,7 @@ public class TweetActivity extends GlobalFramework {
 	private void tweet() {
 		String status = mTweetContent.getText().toString();
 		
-		micro4blog.update(status, null, null);
+		micro4blog.update(status, "", "");
 		
 	}
 
