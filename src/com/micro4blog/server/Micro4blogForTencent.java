@@ -15,7 +15,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.CookieSyncManager;
 import android.widget.Toast;
@@ -30,7 +29,6 @@ import com.micro4blog.http.ApiTokenHeader;
 import com.micro4blog.http.HttpHeaderFactory;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Utility;
-import com.micro4blog.utils.AsyncMicro4blogRunner;
 import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;
 import com.micro4blog.utils.Micro4blogException;
 
@@ -242,16 +240,37 @@ public class Micro4blogForTencent extends Micro4blog {
 	
 	@Override
 	public String getHomeTimeline(Context context) {
+		
+		apiUrl = getServerUrl() + "statuses/home_timeline";
 	
 		apiParameters.add("format", "json");
 		apiParameters.add("pageflag", "0");
 		apiParameters.add("pagetime", "0");
 		apiParameters.add("reqnum", "20");
-  	
-    	apiUrl = getServerUrl() + "statuses/home_timeline";
+  
+    	apiRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, new RequestListener() {
+
+			@Override
+			public void onComplete(String response) {
+				
+				apiResult = response;
+				
+			}
+
+			@Override
+			public void onIOException(IOException e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onError(Micro4blogException e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
     	
-    	apiResult = request(new ApiTokenHeader(), apiUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
-	
     	return apiResult;
 	}
 
@@ -278,15 +297,13 @@ public class Micro4blogForTencent extends Micro4blog {
 		
 		apiParameters.add("format", "json");
 		apiParameters.add("content", status);
-//		apiParameters.add("clientip", getLocalIpAddress());
-		apiParameters.add("clientip", "127.0.0.1");
+		apiParameters.add("clientip", getLocalIpAddress());
+//		apiParameters.add("clientip", "127.0.0.1");
 
 	    apiParameters.add("jing", lon);
 	    apiParameters.add("wei", lat);
 		
-		
-		AsyncMicro4blogRunner micro4blogRunner = new AsyncMicro4blogRunner(this);
-		micro4blogRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
+		apiRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
 			
 			@Override
 			public void onComplete(String response) {
@@ -312,24 +329,7 @@ public class Micro4blogForTencent extends Micro4blog {
 		return apiResult;
 	}
 
-	private static String getLocalIpAddress() {
-		try {
-			for (Enumeration<NetworkInterface> en = NetworkInterface
-					.getNetworkInterfaces(); en.hasMoreElements();) {
-				NetworkInterface intf = en.nextElement();
-				for (Enumeration<InetAddress> enumIpAddr = intf
-						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-					InetAddress inetAddress = enumIpAddr.nextElement();
-					if (!inetAddress.isLoopbackAddress()) {
-						return inetAddress.getHostAddress().toString();
-					}
-				}
-			}
-		} catch (SocketException ex) {
-			Log.e("WifiPreference IpAddress", ex.toString());
-		}
-		return null;
-	}
+
 
 
 }

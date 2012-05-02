@@ -1,24 +1,20 @@
 package com.micro4blog.utils;
 
 import java.util.List;
-import java.util.Map;
-
-import com.micro4blog.R;
-import com.micro4blog.data.Micro4blogInfo;
-import com.micro4blog.utils.AsyncMicro4blogImage.ImageCallback;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
-import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.TextView;
+
+import com.micro4blog.R;
+import com.micro4blog.data.Micro4blogInfo;
+import com.micro4blog.utils.AsyncMicro4blogImage.ImageCallback;
 
 public class Micro4blogBaseAdapter extends BaseAdapter {
 	

@@ -22,9 +22,8 @@ import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Utility;
-import com.micro4blog.utils.AsyncMicro4blogRunner;
-import com.micro4blog.utils.Micro4blogException;
 import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;
+import com.micro4blog.utils.Micro4blogException;
 
 public class Micro4blogForNetease extends Micro4blog {
 	
@@ -227,14 +226,34 @@ public class Micro4blogForNetease extends Micro4blog {
 
 	@Override
 	public String getHomeTimeline(Context context) {
+		
 		apiUrl = getServerUrl() + "statuses/home_timeline.json";
 		
 		// 解决带参数的未授权问题
 		apiParameters.add("count", "16");
-		
-//		serverResult = request(context, serverUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
-		
-		apiResult = request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
+
+		apiRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, new RequestListener() {
+
+			@Override
+			public void onComplete(String response) {
+				
+				apiResult = response;
+				
+			}
+
+			@Override
+			public void onIOException(IOException e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onError(Micro4blogException e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
 		return apiResult;
 	}
@@ -247,15 +266,18 @@ public class Micro4blogForNetease extends Micro4blog {
 		}
 		
 		setMicro4blogList(message, m4bInfoList);
-		
-		
+				
 		return m4bInfoList;
 	}
 
 	@Override
 	public String update(String status, String lon, String lat) {
-		AsyncMicro4blogRunner micro4blogRunner = new AsyncMicro4blogRunner(this);
-		micro4blogRunner.request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
+		
+		apiUrl = getServerUrl() + "statuses/update.json";
+		
+		apiParameters.add("status", status);
+				
+		apiRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
 
 			@Override
 			public void onComplete(String response) {

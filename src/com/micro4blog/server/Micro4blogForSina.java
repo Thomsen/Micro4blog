@@ -22,10 +22,8 @@ import com.micro4blog.data.Micro4blogInfo;
 import com.micro4blog.data.UserInfo;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
-import com.micro4blog.http.ApiTokenHeader;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Utility;
-import com.micro4blog.utils.AsyncMicro4blogRunner;
 import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;
 import com.micro4blog.utils.Micro4blogException;
 
@@ -272,7 +270,30 @@ public class Micro4blogForSina extends Micro4blog {
 		apiParameters.clear();
 		apiParameters.add("id", strId);
 		
-		apiResult = request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
+//		apiResult = request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
+		
+		apiRunner.request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, new RequestListener() {
+
+			@Override
+			public void onComplete(String response) {
+				
+				apiResult = response;
+				
+			}
+
+			@Override
+			public void onIOException(IOException e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onError(Micro4blogException e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
 		return apiResult;
 		
@@ -280,6 +301,9 @@ public class Micro4blogForSina extends Micro4blog {
 
 	@Override
 	public String update(String status, String lon, String lat) {
+        
+        apiUrl = getServerUrl() + "statuses/update.json";
+        
         apiParameters.add("status", status);
         if (!TextUtils.isEmpty(lon)) {
             apiParameters.add("lon", lon);
@@ -287,9 +311,13 @@ public class Micro4blogForSina extends Micro4blog {
         if (!TextUtils.isEmpty(lat)) {
             apiParameters.add("lat", lat);
         }
-        apiUrl = getServerUrl() + "statuses/update.json";
-        AsyncMicro4blogRunner micro4blogRunner = new AsyncMicro4blogRunner(this);
-        micro4blogRunner.request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
+        
+        // 由于线程的问题，多服务使用apiRunner会出现
+        // Launch timeout has expired giving up wake lock
+        // 但是，这样没法解决发布后的跳转问题
+        // 错了， 问题的核心不是这个问题，而是在timeline时出现的
+        // 这样，是因为线程耗时超过了10秒，为了更好的操作新建一个线程
+        apiRunner.request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
 
 			@Override
 			public void onComplete(String response) {

@@ -1,15 +1,10 @@
 package com.micro4blog.widget;
 
-import com.micro4blog.R;
-import com.micro4blog.activity.TweetActivity;
-
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 public class Micro4blogWidgetProvider extends AppWidgetProvider {
 

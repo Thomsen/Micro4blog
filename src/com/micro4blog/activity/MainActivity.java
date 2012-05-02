@@ -9,10 +9,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ResolveInfo;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +21,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,9 +34,7 @@ import com.micro4blog.http.Oauth2AccessTokenHeader;
 import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.AccessToken;
 import com.micro4blog.oauth.OauthToken;
-import com.micro4blog.oauth.RequestToken;
 import com.micro4blog.plugin.PluginImpl;
-import com.micro4blog.tests.ShareActivity;
 import com.micro4blog.utils.Micro4blogException;
 
 public class MainActivity extends GlobalFramework {
@@ -531,10 +526,9 @@ public class MainActivity extends GlobalFramework {
 
 	/**
 	 * 登录显示界面
-	 * 
+	 * 数据
 	 * @return
 	 */
-
 	private List<Map<String, Object>> getMapData() {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
@@ -568,6 +562,11 @@ public class MainActivity extends GlobalFramework {
 		switch (v.getId()) {
 		case R.id.header_left: {
 			Toast.makeText(mActivity, "作者微博", Toast.LENGTH_SHORT).show();
+			
+			Uri uri = Uri.parse("http://weibo.com/thomsen");
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+			startActivity(intent);
+			
 			break;
 		}
 		default:
@@ -576,8 +575,6 @@ public class MainActivity extends GlobalFramework {
 	}
 
 	class ServerAdapter extends BaseAdapter {
-
-		private List<ResolveInfo> mApps;
 		
 		String[] text = new String[] { "Sina", "Tencent", "Netease", "Sohu",
 									"More" };

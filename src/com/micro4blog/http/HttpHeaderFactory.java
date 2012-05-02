@@ -56,10 +56,7 @@ public abstract class HttpHeaderFactory {
         
         // step 2: authParams有两个用处：1.加密串一部分 2.生成最后Authorization头域
         authParams = this.generateAuthParameters(micro4blog, nonce, timestamp, token);
-        Log.d(TAG, "authParams before : " + Utility.encodeParameters(authParams));
-
         signatureParams = this.generateSignatureParameters(micro4blog, authParams, params, url);
-        Log.d(TAG, "signatureParams: " + Utility.encodeParameters(signatureParams));
         
         // step 3: 生成用于签名的base String      
         signatureParams.sort();
@@ -69,12 +66,9 @@ public abstract class HttpHeaderFactory {
         // step 4: 生成oauth_signature
         String signature = generateSignature(micro4blog, oauthBaseString, token);
         authParams.add("oauth_signature", signature);
-        Log.d(TAG, "oauth signature : " + signature);
            
         // step 5: for additional parameters
         this.addAdditionalParams(authParams, params);
-
-        Log.d(TAG, "authParams after : " + Utility.encodeParameters(authParams));  
         
         return "OAuth " + encodeParameters(authParams, ",", true);
     }
@@ -271,16 +265,7 @@ public abstract class HttpHeaderFactory {
             }
         return sb.toString();
     }
-    
-    // 生成用于哈希的base string串，注意要按顺序，按需文档需求参数生成，否则40107错误
-    public abstract Micro4blogParameters generateSignatureList(Micro4blogParameters bundle);
 
-    public abstract String generateSignature(Micro4blog micro4blog, String data, OauthToken token) throws Micro4blogException;
-
- // add additional parameters to des key-value pairs,support to expanding
-    // params
-    public abstract void addAdditionalParams(Micro4blogParameters des, Micro4blogParameters src);
-    
 	public Micro4blogParameters getAuthParams() {
 		return authParams;
 	}
@@ -297,6 +282,14 @@ public abstract class HttpHeaderFactory {
 		this.signatureParams = signatureParams;
 	}
     
+    // 生成用于哈希的base string串，注意要按顺序，按需文档需求参数生成，否则40107错误
+    public abstract Micro4blogParameters generateSignatureList(Micro4blogParameters bundle);
+
+    public abstract String generateSignature(Micro4blog micro4blog, String data, OauthToken token) throws Micro4blogException;
+
+ // add additional parameters to des key-value pairs,support to expanding
+    // params
+    public abstract void addAdditionalParams(Micro4blogParameters des, Micro4blogParameters src);
     
 
 

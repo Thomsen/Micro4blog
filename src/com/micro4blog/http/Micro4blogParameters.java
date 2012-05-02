@@ -14,19 +14,19 @@ public class Micro4blogParameters {
 		
 	}
 	
-	public void add(String string, String signature) {
+	public void add(String string, String value) {
 		if (this.listKeys.contains(string)) {
-			this.mBundleParameters.putString(string, signature);
+			this.mBundleParameters.putString(string, value);
 		} else {
 			this.listKeys.add(string);
-			this.mBundleParameters.putString(string, signature);
+			this.mBundleParameters.putString(string, value);
 		}
 		
 	}
 
-	public void addAll(Micro4blogParameters authParams) {
-		for(int i=0; i<authParams.size(); i++) {
-			this.add(authParams.getKey(i), authParams.getValue(i));
+	public void addAll(Micro4blogParameters params) {
+		for(int i=0; i<params.size(); i++) {
+			this.add(params.getKey(i), params.getValue(i));
 		}
 		
 	}

@@ -11,7 +11,6 @@ import java.net.URL;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -101,7 +100,7 @@ public class Micro4blogDialog extends Dialog {
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT);
-        Resources resources = getContext().getResources();
+//        Resources resources = getContext().getResources();
 //        lp.leftMargin = resources.getDimensionPixelSize(R.dimen.dialog_left_margin);
 //        lp.topMargin = resources.getDimensionPixelSize(R.dimen.dialog_top_margin);
 //        lp.rightMargin = resources.getDimensionPixelSize(R.dimen.dialog_right_margin);

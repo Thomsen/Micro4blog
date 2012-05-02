@@ -3,9 +3,6 @@ package com.micro4blog.plugin;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import dalvik.system.DexClassLoader;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -13,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.util.Log;
+import dalvik.system.DexClassLoader;
 
 public class PluginImpl {
 	
