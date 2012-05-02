@@ -5,6 +5,7 @@ import com.micro4blog.Micro4blog;
 import com.micro4blog.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -90,6 +91,8 @@ public class TweetActivity extends GlobalFramework {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.header_left: {
+			Intent intent = new Intent(mActivity, HomeTimelineActivity.class);
+			startActivity(intent);
 			finish();
 			break;
 		}

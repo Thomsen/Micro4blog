@@ -1,6 +1,10 @@
 package com.micro4blog;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +37,7 @@ import com.micro4blog.server.Micro4blogForNetease;
 import com.micro4blog.server.Micro4blogForSina;
 import com.micro4blog.server.Micro4blogForSohu;
 import com.micro4blog.server.Micro4blogForTencent;
-import com.micro4blog.tests.ShareActivity;
+import com.micro4blog.utils.AsyncMicro4blogRunner;
 import com.micro4blog.utils.Micro4blogException;
 
 public abstract class Micro4blog {
@@ -61,6 +65,7 @@ public abstract class Micro4blog {
 	protected String apiResult = "";
 	protected Micro4blogParameters apiParameters;
 	protected ApiTokenHeader apiHeader;
+	protected static AsyncMicro4blogRunner apiRunner;
 
 	public static int DEFAULT_AUTH_ACTIVITY_CODE = 0;
 
@@ -105,6 +110,7 @@ public abstract class Micro4blog {
 		
 		micro4blogInstance.apiParameters = new Micro4blogParameters();
 		micro4blogInstance.apiHeader = new ApiTokenHeader();
+		apiRunner = new AsyncMicro4blogRunner(micro4blogInstance);
 		
 		return micro4blogInstance;
 	}
@@ -264,13 +270,8 @@ public abstract class Micro4blog {
 					parameters, getAppKey(), getAppSecret(), token);
 			params = header.getAuthParams();
 			params.addAll(parameters);
-			
-			Log.d(TAG, "request with get params source ：：：：" + Utility.encodeParameters(params));
-			
-			// TODO 需要重新设计
+						
 			params.sort();
-			
-			Log.d(TAG, "request with get params dest ：：：：" + Utility.encodeParameters(params));
 			
 			result = Utility.openUrl(micro4blogInstance, mContext, url,
 					httpMethod, params, token);
@@ -432,6 +433,29 @@ public abstract class Micro4blog {
 		return false;
 	}
 
+	/**
+	 * 获取ip地址
+	 * @return
+	 */
+	protected static String getLocalIpAddress() {
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface
+					.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf
+						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress()) {
+						return inetAddress.getHostAddress().toString();
+					}
+				}
+			}
+		} catch (SocketException ex) {
+			Log.e("WifiPreference IpAddress", ex.toString());
+		}
+		return null;
+	}
+	
 	public String getUrlAccessToken() {
 		return urlAccessToken;
 	}
@@ -512,36 +536,6 @@ public abstract class Micro4blog {
 		return serverUrl;
 	}
 	
-	/**
-	 * sina oauth2.0 发布微博的例子
-	 * @param activity
-	 * @param accessToken
-	 * @param tokenSecret
-	 * @param content
-	 * @param picPath
-	 * @return
-	 * @throws Micro4blogException
-	 */
-	public boolean share2weibo(Activity activity, String accessToken,
-			String tokenSecret, String content, String picPath)
-			throws Micro4blogException {
-		if (TextUtils.isEmpty(accessToken)) {
-			throw new Micro4blogException("token can not be null!");
-		}
-
-		if (TextUtils.isEmpty(content) && TextUtils.isEmpty(picPath)) {
-			throw new Micro4blogException("weibo content can not be null!");
-		}
-		Intent i = new Intent(activity, ShareActivity.class);
-		i.putExtra(ShareActivity.EXTRA_ACCESS_TOKEN, accessToken);
-		i.putExtra(ShareActivity.EXTRA_TOKEN_SECRET, tokenSecret);
-		i.putExtra(ShareActivity.EXTRA_MICRO4BLOG_CONTENT, content);
-		i.putExtra(ShareActivity.EXTRA_PIC_URI, picPath);
-		activity.startActivity(i);
-
-		return true;
-	}
-
 	/**
 	 * 初始化每个服务的不同常量
 	 */

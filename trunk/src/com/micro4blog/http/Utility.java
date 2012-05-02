@@ -71,7 +71,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-import android.widget.Toast;
 
 import com.micro4blog.Micro4blog;
 import com.micro4blog.oauth.OauthToken;

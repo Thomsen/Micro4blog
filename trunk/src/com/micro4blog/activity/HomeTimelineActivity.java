@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -40,62 +39,22 @@ public class HomeTimelineActivity extends TimelineActivity
 		
 		Micro4blog m4b = Micro4blog.getInstance(mActivity, Micro4blog.getCurrentServer());
 		
-//		Micro4blogParameters m4bParams = new Micro4blogParameters();
-	
-//		String result = "";
-//		try {
-//			result = m4b.request(this, "https://api.weibo.com/2/statuses/home_timeline.json", m4bParams, Utility.HTTPMETHOD_GET, null);
-//		} catch (Micro4blogException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}	
-//		String url = m4b.getServerUrl() + "statuses/home_timeline.json";	
-//		AsyncMicro4blogRunner Micro4blogRunner = new AsyncMicro4blogRunner(m4b);
-//		Micro4blogRunner.request(mThis, url, m4bParams, Utility.HTTPMETHOD_POST, this);		
-//		Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
-		
-//		Log.i("thom", m4b.getHomeTimeline(mThis));
-		
 		m4bList = m4b.parseHomeTimeline(m4b.getHomeTimeline(mActivity));
 	
-		for (Micro4blogInfo m4bInfo : m4bList) {
-			Log.i("thom", m4bInfo.getM4bCreateAt());
-		}
-		
 		setListUp();
 		
 		setHeaderUp();
 	}
 	
-	
-	
 	protected void setListUp() {
-		mListView = (ListView) findViewById(R.id.list_main);
-		
-//		ListAdapter adapter = new SimpleAdapter(mActivity, getMapData(), 
-//						R.layout.list_item_content, 
-//						new String[] {"username", "content",  "forwarding_content"},
-//						new int[] {R.id.username_textview, R.id.timeline_content, R.id.forwarding_content});
-//		
-//		mListView.setAdapter(adapter);
+		mListView = (ListView) findViewById(R.id.list_main);		
 		
 		// 设置item之间的分割线
 		mListView.setDivider(null);
 		
 		// 防止滚动时，显示内容跟背景进行混合运算
 		mListView.setCacheColorHint(Color.TRANSPARENT);
-		
-		// 触发状态
-//		mListView.setClickable(true);
-		
-		// WebView对click的影响, 暂时改成ImgeView
-//		mMicro4blogAdapter = new Micro4blogSimpleAdapter(mActivity, getMapData(), 
-//				R.layout.timeline_list, 
-//				new String[] {"userimage", "username", "content", "forwarding_content"},
-//				new int[] {R.id.userimage_imageview, R.id.username_textview, R.id.timeline_content, R.id.forwarding_content});
-//
-//		mMicro4blogAdapter.setViewBinder(mMicro4blogAdapter.getViewBinder());
-		
+				
 		mMicro4blogAdapter = new Micro4blogBaseAdapter(mActivity, m4bList);
 		
 		mListView.setAdapter(mMicro4blogAdapter);
@@ -142,6 +101,12 @@ public class HomeTimelineActivity extends TimelineActivity
 		super.onClick(v);
 		
 		switch (v.getId()) {
+		case R.id.header_left: {
+			Intent intent = new Intent(mActivity, MainActivity.class);
+			startActivity(intent);
+			finish();
+			break;
+		}
 		case R.id.header_right: {
 			Toast.makeText(mActivity, "发布", Toast.LENGTH_SHORT).show();
 			

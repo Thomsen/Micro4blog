@@ -1,7 +1,5 @@
 package com.micro4blog;
 
-import com.micro4blog.plugin.PluginImpl;
-
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
