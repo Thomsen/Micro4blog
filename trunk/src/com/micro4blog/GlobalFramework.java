@@ -18,8 +18,8 @@ import android.widget.TextView;
  */
 public class GlobalFramework extends Activity  implements OnClickListener{
 	
-	protected SharedPreferences gShared;
-	protected LayoutParams gParams;
+	public static SharedPreferences gShared;
+	public static LayoutParams gParams;
 	
 	protected RelativeLayout gHeaderLayout;
 	protected Button gHeaderLeftButton;
