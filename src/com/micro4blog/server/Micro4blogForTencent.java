@@ -36,16 +36,13 @@ public class Micro4blogForTencent extends Micro4blog {
 	
 	private static final String TAG = "Micro4blogForTencent";
 	
-	private static Micro4blogForTencent m4bTencent;
+	private static Micro4blogForTencent m4bTencent = new Micro4blogForTencent();
 	
 	public Micro4blogForTencent() {
 		super();
 	}
 	
 	public synchronized static Micro4blogForTencent getInstance() {
-		if (m4bTencent == null) {
-			m4bTencent = new Micro4blogForTencent();
-		}
 		
 		return m4bTencent;
 	}

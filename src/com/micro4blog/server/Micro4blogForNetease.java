@@ -29,16 +29,13 @@ public class Micro4blogForNetease extends Micro4blog {
 	
 	private static final String TAG = "Micro4blogForNetease";
 	
-	private static Micro4blog m4bNetease;
+	private static Micro4blog m4bNetease = new Micro4blogForNetease();
 	
 	public Micro4blogForNetease() {
 		super();
 	}
 	
-	public synchronized static Micro4blog getInstance() {
-		if (m4bNetease == null) {
-			m4bNetease = new Micro4blogForNetease();
-		}		
+	public synchronized static Micro4blog getInstance() {		
 		return m4bNetease;
 	}
 
