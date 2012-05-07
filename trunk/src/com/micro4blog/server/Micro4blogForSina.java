@@ -31,16 +31,13 @@ public class Micro4blogForSina extends Micro4blog {
 	
 	private static final String TAG = "Micro4blogForSina";
 
-	private static Micro4blog m4bSina;
+	private static Micro4blog m4bSina = new Micro4blogForSina();
 	
 	public Micro4blogForSina() {
 		super();
 	}
 	
 	public static Micro4blog getInstance() {
-		if (m4bSina == null) {
-			m4bSina = new Micro4blogForSina();
-		}
 		return m4bSina;
 	}
 	

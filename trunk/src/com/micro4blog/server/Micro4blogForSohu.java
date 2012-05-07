@@ -29,7 +29,7 @@ public class Micro4blogForSohu extends Micro4blog {
 	
 	private static final String TAG = "Micro4blogForSohu";
 	
-	private static Micro4blogForSohu m4bSohu;
+	private static Micro4blogForSohu m4bSohu = new Micro4blogForSohu();
 	
 	public Micro4blogForSohu() {
 		super();
