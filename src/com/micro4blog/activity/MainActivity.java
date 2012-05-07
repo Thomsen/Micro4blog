@@ -35,6 +35,7 @@ import com.micro4blog.http.Utility;
 import com.micro4blog.oauth.AccessToken;
 import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.plugin.PluginImpl;
+import com.micro4blog.tests.PluginTest;
 import com.micro4blog.utils.Micro4blogException;
 
 public class MainActivity extends GlobalFramework {
@@ -50,10 +51,6 @@ public class MainActivity extends GlobalFramework {
 	private boolean isNeteaseOauthed = false;
 
 	Micro4blog micro4blog;
-
-	// RequestToken mRequestToken = new RequestToken();
-	// OauthToken mAccessToken;
-
 	OauthToken mAccessToken;
 
 	@Override
@@ -88,10 +85,6 @@ public class MainActivity extends GlobalFramework {
 		isTencentOauthed = gShared.getBoolean("is_tencent_oauthed", false);
 		isNeteaseOauthed = gShared.getBoolean("is_netease_oauthed", false);
 
-		// mAccessToken = new OauthToken();
-		// mAccessToken.setOauthToken(gSharedPreferences.getString("sina_access_token",
-		// ""));
-
 	}
 
 	private void readPreferences() {
@@ -104,9 +97,6 @@ public class MainActivity extends GlobalFramework {
 
 			mAccessToken = new AccessToken(gShared.getString(
 					"sina_access_token", null), micro4blog.getAppSecret());
-
-			// mAccessToken.setOauthToken(gSharedPreferences.getString("sina_access_token",
-			// null));
 			mAccessToken.setExpiresIn(gShared
 					.getString("sina_expires_in", null));
 
@@ -116,7 +106,6 @@ public class MainActivity extends GlobalFramework {
 
 			mAccessToken.setOauthVerifier(gShared.getString(
 					"tencent_oauth_verifier", null));
-
 			mAccessToken.setOauthToken(gShared.getString(
 					"tencent_access_token", null));
 			mAccessToken.setOauthTokenSecret(gShared.getString(
@@ -125,9 +114,6 @@ public class MainActivity extends GlobalFramework {
 			Utility.setAuthorization(new ApiTokenHeader());
 
 		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_NETEASE) {
-
-			// mAccessToken.setOauthVerifier(gSharedPreferences.getString("sohu_oauth_verifier",
-			// null));
 
 			mAccessToken.setOauthToken(gShared.getString(
 					"netease_access_token", null));
@@ -138,27 +124,8 @@ public class MainActivity extends GlobalFramework {
 
 		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SOHU) {
 
-			// try {
-			// mRequestToken = mMicro4blog.getRequestToken(mThis,
-			// Utility.HTTPMETHOD_GET, mMicro4blog.getAppKey(),
-			// mMicro4blog.getAppSecret(), mMicro4blog.getRedirectUrl());
-			//
-			// mRequestToken.setOauthVerifier(gSharedPreferences.getString("sohu_oauth_verifier",
-			// ""));
-			//
-			// mAccessToken = mMicro4blog.generateAccessToken(mThis,
-			// Utility.HTTPMETHOD_GET, mRequestToken);
-			//
-			// } catch (Micro4blogException e) {
-			// e.printStackTrace();
-			// }
-
-			// mRequestToken.setOauthToken(gSharedPreferences.getString("sohu_oauth_token",
-			// ""));
-
 			mAccessToken.setOauthVerifier(gShared.getString(
 					"sohu_oauth_verifier", null));
-
 			mAccessToken.setOauthToken(gShared.getString("sohu_access_token",
 					null));
 			mAccessToken.setOauthTokenSecret(gShared.getString(
@@ -170,10 +137,6 @@ public class MainActivity extends GlobalFramework {
 
 		Log.d(TAG, "token: " + mAccessToken.getOauthToken() + "\n" + "secret: "
 				+ mAccessToken.getOauthTokenSecret());
-
-		// mMicro4blog.setRequestToken(mRequestToken);
-
-		// mAccessToken.setOauthTokenSecret(mMicro4blog.getAppSecret());
 
 		micro4blog.setAccessToken(mAccessToken);
 	}
@@ -188,16 +151,6 @@ public class MainActivity extends GlobalFramework {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-
-				// ImageView imageView = (ImageView) arg1;
-				// imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-				// LinearLayout ll = (LinearLayout) arg1;
-				// ImageView imageView = (ImageView) ll.getChildAt(0);
-				//
-				// imageView.setAdjustViewBounds(false);
-				// imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				// imageView.setPadding(8, 8, 8, 8);
 
 				// 登录服务器
 				loginServer(arg2);
@@ -252,15 +205,7 @@ public class MainActivity extends GlobalFramework {
 			if (isSinaOauthed
 					&& (System.currentTimeMillis() < mAccessToken
 							.getExpiresIn())) {
-
-				// try {
-				// mMicro4blog.share2weibo(mThis, mAccessToken.getOauthToken(),
-				// mMicro4blog.getAppSecret(), "adbds", null);
-				// } catch (Micro4blogException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-
+				
 				// TODO 传递数据到timeline中显示，这时候就需要通信
 				startActivity(intent);
 
@@ -372,7 +317,7 @@ public class MainActivity extends GlobalFramework {
 		SharedPreferences.Editor editor = gShared.edit();
 
 		// Syntax error on token ";", , expected TODO why
-		// mAccessToken = new AccessToken();
+//		 mAccessToken = new AccessToken();
 
 		@Override
 		public void onComplete(Bundle values) {
@@ -383,18 +328,10 @@ public class MainActivity extends GlobalFramework {
 
 				isSinaOauthed = true;
 				editor.putBoolean("is_sina_oauthed", isSinaOauthed);
-
 				editor.putString("sina_access_token",
 						values.getString("access_token"));
 				editor.putString("sina_expires_in",
 						values.getString("expires_in"));
-
-				// mAccessToken = new
-				// AccessToken(values.getString("access_token"),
-				// micro4blog.getAppSecret());
-				//
-				// mAccessToken.setExpiresIn(values.getString("expires_in"));
-				// mAccessToken.setOauthToken(values.getString("access_token"));
 
 				Log.d(TAG, values.toString());
 
@@ -411,7 +348,6 @@ public class MainActivity extends GlobalFramework {
 				editor.putString("tencent_oauth_verifier",
 						values.getString("oauth_verifier"));
 
-				// mRequestToken.setOauthToken(values.getString("oauth_token"));
 
 			} else if (Micro4blog.SERVER_NETEASE == Micro4blog
 					.getCurrentServer()) {
@@ -425,52 +361,16 @@ public class MainActivity extends GlobalFramework {
 				editor.putString("netease_oauth_token_sercet",
 						mAccessToken.getOauthTokenSecret());
 
-				// oauth第三步，换取access token
-				// RequestToken requestToken = micro4blog.getRequestToken();
-				// //
-				// requestToken.setOauthVerifier(values.getString("oauth_verifier"));
-				// try {
-				// mAccessToken = micro4blog.generateAccessToken(mThis,
-				// Utility.HTTPMETHOD_GET,
-				// requestToken);
-				// } catch (Micro4blogException e) {
-				// e.printStackTrace();
-				// }
-
-				// Toast.makeText(mThis, mAccessToken.getOauthToken() + "\n" +
-				// mAccessToken.getOauthTokenSecret(),
-				// Toast.LENGTH_SHORT).show();
 
 			} else if (Micro4blog.SERVER_SOHU == Micro4blog.getCurrentServer()) {
 
 				isSohuOauthed = true;
 				mAccessToken = (AccessToken) micro4blog.getAccessToken();
 
-				// Toast.makeText(mThis, values.toString(),
-				// Toast.LENGTH_SHORT).show();
-
-				// RequestToken requestToken = mMicro4blog.getRequestToken();
-				// requestToken.setOauthVerifier(values.getString("oauth_verifier"));
-				// try {
-				// mAccessToken = mMicro4blog.generateAccessToken(mThis,
-				// Utility.HTTPMETHOD_GET,
-				// requestToken);
-				// } catch (Micro4blogException e) {
-				// e.printStackTrace();
-				// }
 
 				editor.putBoolean("is_sohu_oauthed", isSohuOauthed);
-				// editor.putString("sohu_oauth_token",
-				// values.getString("oauth_token"));
-				// editor.putString("sohu_oauth_verifier",
-				// values.getString("oauth_verifier"));
-				//
-				// mRequestToken.setOauthToken(values.getString("oauth_token"));
-				// mAccessToken.setOauthVerifier(values.getString("oauth_verifier"));
-
 				editor.putString("sohu_oauth_verifier", micro4blog
 						.getRequestToken().getOauthVerifier());
-
 				editor.putString("sohu_access_token",
 						mAccessToken.getOauthToken());
 
@@ -529,7 +429,7 @@ public class MainActivity extends GlobalFramework {
 	 * 数据
 	 * @return
 	 */
-	private List<Map<String, Object>> getMapData() {
+	protected List<Map<String, Object>> getAdapterData() {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
 		// Map<String, Object> map = new HashMap<String, Object>();
@@ -569,6 +469,15 @@ public class MainActivity extends GlobalFramework {
 			
 			break;
 		}
+		case R.id.header_right: {
+			// test
+			Intent intent = new Intent();
+//			intent.setClass(mActivity, PluginTest.class);
+			intent.setClassName(mActivity, "com.micro4blog.tests.SwipeTest");
+			startActivity(intent);
+			
+			break;
+		}
 		default:
 			break;
 		}
@@ -583,9 +492,7 @@ public class MainActivity extends GlobalFramework {
 				R.drawable.sohu_logo, R.drawable.ic_launcher };
 
 		public ServerAdapter() {
-			// Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-			// mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-			// mApps = getPackageManager().queryIntentActivities(mainIntent, 0);
+
 		}
 
 		@Override
@@ -608,24 +515,17 @@ public class MainActivity extends GlobalFramework {
 			
 			
 			if (arg1 == null) {
-//				i = new ImageView(mActivity);
-//				i.setScaleType(ImageView.ScaleType.FIT_CENTER);
-//				i.setLayoutParams(new GridView.LayoutParams(50, 50));
 				
 				arg1 = (LinearLayout) getLayoutInflater().inflate(R.layout.gird_server, null);
 				arg1.setTag(R.id.grid_image, arg1.findViewById(R.id.grid_image));
 				arg1.setTag(R.id.grid_text, arg1.findViewById(R.id.grid_text));
 				
 			} 
-//			ResolveInfo info = mApps.get(arg0);
-//			i.setImageDrawable(info.activityInfo.loadIcon(getPackageManager()));
 			
 			ImageView imageView = ((ImageView) arg1.getTag(R.id.grid_image));
-//			ServerImageView imageView = (ServerImageView) arg1.getTag(R.id.grid_image);
 			imageView.setAdjustViewBounds(false);
 			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 			imageView.setPadding(8, 8, 8, 8);
-//			imageView.setImageResource(imageId[arg0]);
 			
 			ServerImageView serverImageView = new ServerImageView(mActivity);
 			
@@ -651,9 +551,7 @@ public class MainActivity extends GlobalFramework {
 			
 			Drawable drawable = getResources().getDrawable(id);
 			
-			Drawable pressed = getResources().getDrawable(R.drawable.ic_launcher);
-//			pressed.setBounds(10, 10, 10, 10);
-			
+			Drawable pressed = getResources().getDrawable(R.drawable.ic_launcher);		
 			
 			// 单独使用View无法找到PRESSED，因其保护权限，顾可通过继承来访问
 			bg.addState(View.PRESSED_ENABLED_STATE_SET, pressed);

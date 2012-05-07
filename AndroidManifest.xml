@@ -41,6 +41,18 @@
 
         <service android:name=".widget.WidgetUpdateService" >
         </service>
+        
+        <!-- test -->
+        
+        <activity android:name=".tests.PluginTest" >
+
+        </activity>
+        
+         <activity android:name=".tests.SwipeTest" >
+             
+         </activity>
+        
+        <!-- end -->
 
     </application>
     
