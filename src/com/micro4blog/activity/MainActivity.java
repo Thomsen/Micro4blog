@@ -31,11 +31,10 @@ import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.ApiTokenHeader;
 import com.micro4blog.http.Oauth2AccessTokenHeader;
-import com.micro4blog.http.Utility;
+import com.micro4blog.http.HttpUtility;
 import com.micro4blog.oauth.AccessToken;
 import com.micro4blog.oauth.OauthToken;
 import com.micro4blog.plugin.PluginImpl;
-import com.micro4blog.tests.PluginTest;
 import com.micro4blog.utils.Micro4blogException;
 
 public class MainActivity extends GlobalFramework {
@@ -100,7 +99,7 @@ public class MainActivity extends GlobalFramework {
 			mAccessToken.setExpiresIn(gShared
 					.getString("sina_expires_in", null));
 
-			Utility.setAuthorization(new Oauth2AccessTokenHeader());
+			HttpUtility.setAuthorization(new Oauth2AccessTokenHeader());
 
 		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_TENCENT) {
 
@@ -111,7 +110,7 @@ public class MainActivity extends GlobalFramework {
 			mAccessToken.setOauthTokenSecret(gShared.getString(
 					"tencent_oauth_token_sercet", null));
 
-			Utility.setAuthorization(new ApiTokenHeader());
+			HttpUtility.setAuthorization(new ApiTokenHeader());
 
 		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_NETEASE) {
 
@@ -120,7 +119,7 @@ public class MainActivity extends GlobalFramework {
 			mAccessToken.setOauthTokenSecret(gShared.getString(
 					"netease_oauth_token_sercet", null));
 
-			Utility.setAuthorization(new ApiTokenHeader());
+			HttpUtility.setAuthorization(new ApiTokenHeader());
 
 		} else if (Micro4blog.getCurrentServer() == Micro4blog.SERVER_SOHU) {
 
@@ -131,7 +130,7 @@ public class MainActivity extends GlobalFramework {
 			mAccessToken.setOauthTokenSecret(gShared.getString(
 					"sohu_oauth_token_sercet", null));
 
-			Utility.setAuthorization(new ApiTokenHeader());
+			HttpUtility.setAuthorization(new ApiTokenHeader());
 
 		}
 

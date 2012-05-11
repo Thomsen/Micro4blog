@@ -67,7 +67,7 @@ public class AccessTokenHeader extends HttpHeaderFactory {
         } catch (NoSuchAlgorithmException e) {
             throw new Micro4blogException(e);
         }
-        return String.valueOf(Utility.base64Encode(byteHMAC));
+        return String.valueOf(HttpUtility.base64Encode(byteHMAC));
 	}
 	
 	@Override

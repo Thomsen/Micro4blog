@@ -23,7 +23,7 @@ import com.micro4blog.data.UserInfo;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.Micro4blogParameters;
-import com.micro4blog.http.Utility;
+import com.micro4blog.http.HttpUtility;
 import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;
 import com.micro4blog.utils.Micro4blogException;
 
@@ -179,7 +179,7 @@ public class Micro4blogForSina extends Micro4blog {
 //			m4bInfo.setM4bId(m4bObject.getInt("id"));
 			m4bInfo.setM4bStrId(m4bObject.getString("idstr"));
 			m4bInfo.setM4bText(m4bObject.getString("text"));
-			m4bInfo.setM44Source(m4bObject.getString("source"));
+			m4bInfo.setM4bSource(m4bObject.getString("source"));
 			m4bInfo.setM4bFovorited(m4bObject.getBoolean("favorited"));
 			m4bInfo.setM4bTruncated(m4bObject.getBoolean("truncated"));
 //			m4bInfo.setM4bInReplyToStatusId(m4bObject.getInt("in_replay_to_status_id"));
@@ -240,7 +240,7 @@ public class Micro4blogForSina extends Micro4blog {
 		
 		apiUrl = getServerUrl() + "statuses/home_timeline.json";
 		apiParameters.add("count", "20");
-		apiResult = request(context, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
+		apiResult = request(context, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_GET, accessToken);
 		
 		return apiResult;
 	}
@@ -269,7 +269,7 @@ public class Micro4blogForSina extends Micro4blog {
 		
 //		apiResult = request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, accessToken);
 		
-		apiRunner.request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, new RequestListener() {
+		apiRunner.request(mContext, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_GET, new RequestListener() {
 
 			@Override
 			public void onComplete(String response) {
@@ -314,12 +314,13 @@ public class Micro4blogForSina extends Micro4blog {
         // 但是，这样没法解决发布后的跳转问题
         // 错了， 问题的核心不是这个问题，而是在timeline时出现的
         // 这样，是因为线程耗时超过了10秒，为了更好的操作新建一个线程
-        apiRunner.request(mContext, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
+        apiRunner.request(mContext, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_POST, new RequestListener() {
 
 			@Override
 			public void onComplete(String response) {
 				Toast.makeText(mContext, "send success", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(mContext, HomeTimelineActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				mContext.startActivity(intent);
 				
 			}
@@ -339,6 +340,18 @@ public class Micro4blogForSina extends Micro4blog {
         });
      
         return apiResult;
+	}
+
+	@Override
+	public boolean destroy(String strId) {
+
+		apiUrl = getServerUrl() + "statuses/destroy.json";
+		
+		apiParameters.add("id", strId);
+		
+		apiRunner.request(mContext, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_POST, null);
+		
+		return false;
 	}
 
 

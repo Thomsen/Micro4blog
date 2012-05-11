@@ -6,7 +6,7 @@ public class Micro4blogInfo {
 	private String m4bCreateAt;
 	private int m4bId;
 	private String m4bText;
-	private String m44Source;
+	private String m4bSource;
 	private boolean m4bFovorited;
 	private boolean m4bTruncated;
 	private int m4bInReplyToStatusId;
@@ -69,11 +69,11 @@ public class Micro4blogInfo {
 	public void setM4bText(String m4bText) {
 		this.m4bText = m4bText;
 	}
-	public String getM44Source() {
-		return m44Source;
+	public String getM4bSource() {
+		return m4bSource;
 	}
-	public void setM44Source(String m44Source) {
-		this.m44Source = m44Source;
+	public void setM4bSource(String m4bSource) {
+		this.m4bSource = m4bSource;
 	}
 	public boolean isM4bFovorited() {
 		return m4bFovorited;
