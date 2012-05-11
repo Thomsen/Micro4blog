@@ -17,7 +17,7 @@ public class TimelineActivity extends GlobalFramework {
 	RelativeLayout mLayoutContent;
 	ListView mListView;
 	
-	boolean ib = true;
+	boolean isMenuClosed = true;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -92,12 +92,12 @@ public class TimelineActivity extends GlobalFramework {
 	
 	public boolean onMenuOpened(int featureId, Menu menu) {
 	
-		if (ib) {
+		if (isMenuClosed) {
 			gFooterLayout.setVisibility(View.VISIBLE);
-			ib = false;
+			isMenuClosed = false;
 		} else {
 			gFooterLayout.setVisibility(View.GONE);
-			ib = true;
+			isMenuClosed = true;
 		}
 		
 		return false; // true open system menu
