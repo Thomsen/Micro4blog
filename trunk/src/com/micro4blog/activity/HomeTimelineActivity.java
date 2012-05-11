@@ -42,7 +42,7 @@ public class HomeTimelineActivity extends TimelineActivity
 	Micro4blog micro4blog; 
 	
 	Micro4blogInfo micro4blogInfo;
-	
+		
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 			
@@ -86,7 +86,10 @@ public class HomeTimelineActivity extends TimelineActivity
 			@Override
 			public void onCreateContextMenu(ContextMenu menu, View v,
 					ContextMenuInfo menuInfo) {
-						
+				
+				menu.setHeaderIcon(R.drawable.ic_launcher);
+				menu.setHeaderTitle("微博");  // TODO 可以做一个实体类，动态改变标题
+				
 				menu.add(0, 0, 0, "删除");
 				menu.add(0, 1, 0, "取消");
 				
