@@ -10,9 +10,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,26 +31,39 @@ import com.micro4blog.utils.Micro4blogBaseAdapter;
 import com.micro4blog.utils.Micro4blogException;
 
 public class HomeTimelineActivity extends TimelineActivity 
-		implements AsyncMicro4blogRunner.RequestListener, OnItemClickListener {
+		implements AsyncMicro4blogRunner.RequestListener {
 	
 	private Activity mActivity;
 	
 	ArrayList<Micro4blogInfo> m4bList;
 	
-	Micro4blogBaseAdapter mMicro4blogAdapter;
+	Micro4blogBaseAdapter micro4blogAdapter;
+	
+	Micro4blog micro4blog; 
+	
+	Micro4blogInfo micro4blogInfo;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 			
 		mActivity = this;
 		
-		Micro4blog m4b = Micro4blog.getInstance(mActivity, Micro4blog.getCurrentServer());
+		micro4blog = Micro4blog.getInstance(mActivity, Micro4blog.getCurrentServer());
 		
-		m4bList = m4b.parseHomeTimeline(m4b.getHomeTimeline(mActivity));
+		m4bList = micro4blog.parseHomeTimeline(micro4blog.getHomeTimeline(mActivity));
 	
 		setListUp();
 		
 		setHeaderUp();
+	}
+	
+	private void refresh() {
+		
+		m4bList = micro4blog.parseHomeTimeline(micro4blog.getHomeTimeline(mActivity));
+		
+		setListUp();
+		
+		
 	}
 	
 	protected void setListUp() {
@@ -55,15 +75,75 @@ public class HomeTimelineActivity extends TimelineActivity
 		// 防止滚动时，显示内容跟背景进行混合运算
 		mListView.setCacheColorHint(Color.TRANSPARENT);
 				
-		mMicro4blogAdapter = new Micro4blogBaseAdapter(mActivity, m4bList);
+		micro4blogAdapter = new Micro4blogBaseAdapter(mActivity, m4bList);
 		
-		mListView.setAdapter(mMicro4blogAdapter);
+		mListView.setAdapter(micro4blogAdapter);
 		
-		mListView.setOnItemClickListener(this);
+		// 由于activity也有onCreateContextMenu，若给ListView的Context Menu
+		// 需要的对象是mListView，这样就不会出现很多不知名的错误
+		mListView.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+
+			@Override
+			public void onCreateContextMenu(ContextMenu menu, View v,
+					ContextMenuInfo menuInfo) {
+						
+				menu.add(0, 0, 0, "删除");
+				menu.add(0, 1, 0, "取消");
+				
+			}
+			
+		});
+		
+		mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				
+				micro4blogInfo = (Micro4blogInfo) arg0.getAdapter().getItem(arg2);
+				
+				registerForContextMenu(arg1);
+				
+				// 返回true，不能相应context menu
+				return false;
+			}
+			
+		});
+		
+		mListView.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
+		mListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				micro4blogInfo = (Micro4blogInfo) arg0.getAdapter().getItem(arg2);
+				
+				Toast.makeText(mActivity, "item : " + micro4blogInfo.getM4bStrId(), Toast.LENGTH_SHORT).show();
+				
+			}
+			
+		});
 		
 		// 防止getCount返回0时，没有执行getView
 		// 重新加载适配器，执行getView
-//		mMicro4blogAdapter.notifyDataSetChanged();
+		// 例，在删除时刷新View
+		micro4blogAdapter.notifyDataSetChanged();
 		
 
 	}
@@ -122,12 +202,27 @@ public class HomeTimelineActivity extends TimelineActivity
 	}
 	
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		
-		Micro4blogInfo m4bInfo = (Micro4blogInfo) arg0.getAdapter().getItem(arg2);
-		
-		Toast.makeText(mActivity, "item : " + m4bInfo.getM4bStrId(), Toast.LENGTH_SHORT).show();
-		
+	public boolean onContextItemSelected(MenuItem item) {
+			
+		switch (item.getItemId()) {
+		case 0: {
+			Toast.makeText(mActivity, "delete", Toast.LENGTH_SHORT).show();
+			
+			micro4blog.destroy(micro4blogInfo.getM4bStrId());
+			
+			refresh();
+			
+			break;
+		}
+		}
+				
+		return super.onContextItemSelected(item);
+	}
+	
+	@Override
+	public void onContextMenuClosed(Menu menu) {
+		super.onContextMenuClosed(menu);
+
 	}
 
 	@Override
@@ -154,5 +249,9 @@ public class HomeTimelineActivity extends TimelineActivity
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
+
 
 }

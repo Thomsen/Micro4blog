@@ -80,7 +80,7 @@ import com.micro4blog.utils.Micro4blogException;
  * 进行网络通信，url参数encode，通信结果解析的工具类
  *
  */
-public class Utility {
+public class HttpUtility {
 	
 	private static final String TAG = "Utility";
 
@@ -179,12 +179,12 @@ public class Utility {
 				byte[] data = null;
 				bos = new ByteArrayOutputStream(1024 * 50);
 				if (!TextUtils.isEmpty(file)) {
-					Utility.paramToUpload(bos, params);
+					HttpUtility.paramToUpload(bos, params);
 					post.setHeader("Content-Type", MULTIPART_FORM_DATA
 							+ "; boundary=" + BOUNDARY);
 					Bitmap bf = BitmapFactory.decodeFile(file);
 
-					Utility.imageContentToUpload(bos, bf);
+					HttpUtility.imageContentToUpload(bos, bf);
 
 				} else {
 					post.setHeader("Content-Type",
@@ -200,6 +200,7 @@ public class Utility {
 				post.setEntity(formEntity);
 				request = post;
 			} else if (method.equals("DELETE")) {
+				url = url + "?" + encodeUrl(params);
 				request = new HttpDelete(url);
 			}
 			setHeader(micro4blog, method, request, params, url, token);
@@ -401,9 +402,9 @@ public class Utility {
 			// Set the default socket timeout (SO_TIMEOUT) // in
 			// milliseconds which is the timeout for waiting for data.
 			HttpConnectionParams.setConnectionTimeout(params,
-					Utility.SET_CONNECTION_TIMEOUT);
+					HttpUtility.SET_CONNECTION_TIMEOUT);
 			HttpConnectionParams.setSoTimeout(params,
-					Utility.SET_SOCKET_TIMEOUT);
+					HttpUtility.SET_SOCKET_TIMEOUT);
 			HttpClient client = new DefaultHttpClient(ccm, params);
 			WifiManager wifiManager = (WifiManager) context
 					.getSystemService(Context.WIFI_SERVICE);
@@ -479,9 +480,9 @@ public class Utility {
 		// Set the default socket timeout (SO_TIMEOUT) // in
 		// milliseconds which is the timeout for waiting for data.
 		HttpConnectionParams.setConnectionTimeout(httpParameters,
-				Utility.SET_CONNECTION_TIMEOUT);
+				HttpUtility.SET_CONNECTION_TIMEOUT);
 		HttpConnectionParams.setSoTimeout(httpParameters,
-				Utility.SET_SOCKET_TIMEOUT);
+				HttpUtility.SET_SOCKET_TIMEOUT);
 		HttpClient client = new DefaultHttpClient(httpParameters);
 		WifiManager wifiManager = (WifiManager) context
 				.getSystemService(Context.WIFI_SERVICE);
@@ -660,7 +661,7 @@ public class Utility {
 	 * @return
 	 */
 	public static String encodeParameters(Micro4blogParameters httpParams) {
-		if (null == httpParams || Utility.isBundleEmpty(httpParams)) {
+		if (null == httpParams || HttpUtility.isBundleEmpty(httpParams)) {
 			return "";
 		}
 		StringBuilder buf = new StringBuilder();

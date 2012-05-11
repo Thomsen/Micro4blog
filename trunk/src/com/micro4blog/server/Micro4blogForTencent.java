@@ -28,7 +28,7 @@ import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.ApiTokenHeader;
 import com.micro4blog.http.HttpHeaderFactory;
 import com.micro4blog.http.Micro4blogParameters;
-import com.micro4blog.http.Utility;
+import com.micro4blog.http.HttpUtility;
 import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;
 import com.micro4blog.utils.Micro4blogException;
 
@@ -171,7 +171,7 @@ public class Micro4blogForTencent extends Micro4blog {
 //			m4bInfo.setM4bId(m4bObject.getInt("id"));
 			m4bInfo.setM4bStrId(m4bObject.getString("id"));
 			m4bInfo.setM4bText(m4bObject.getString("text"));
-			m4bInfo.setM44Source(m4bObject.getString("from"));
+			m4bInfo.setM4bSource(m4bObject.getString("from"));
 			
 //			m4bInfo.setM4bFovorited(m4bObject.getBoolean("favorited"));
 //			m4bInfo.setM4bTruncated(m4bObject.getBoolean("truncated"));
@@ -245,7 +245,7 @@ public class Micro4blogForTencent extends Micro4blog {
 		apiParameters.add("pagetime", "0");
 		apiParameters.add("reqnum", "20");
   
-    	apiRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, new RequestListener() {
+    	apiRunner.request(apiHeader, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_GET, new RequestListener() {
 
 			@Override
 			public void onComplete(String response) {
@@ -288,7 +288,7 @@ public class Micro4blogForTencent extends Micro4blog {
 	public String update(String status, String lon, String lat) {
 
 		HttpHeaderFactory hhf = new ApiTokenHeader();
-		Utility.setAuthorization(hhf);
+		HttpUtility.setAuthorization(hhf);
 		
 		apiUrl = getServerUrl() + "t/add";
 		
@@ -300,12 +300,13 @@ public class Micro4blogForTencent extends Micro4blog {
 	    apiParameters.add("jing", lon);
 	    apiParameters.add("wei", lat);
 		
-		apiRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
+		apiRunner.request(apiHeader, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_POST, new RequestListener() {
 			
 			@Override
 			public void onComplete(String response) {
 				Toast.makeText(mContext, "send success", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(mContext, HomeTimelineActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				mContext.startActivity(intent);
 			}
 
@@ -324,6 +325,19 @@ public class Micro4blogForTencent extends Micro4blog {
 		});
 
 		return apiResult;
+	}
+
+	@Override
+	public boolean destroy(String strId) {
+
+		apiUrl = getServerUrl() + "t/del";
+		
+		apiParameters.add("format", "json");
+		apiParameters.add("id", strId);
+		
+		apiRunner.request(apiHeader, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_POST, null);
+		
+		return false;
 	}
 
 

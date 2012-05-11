@@ -21,7 +21,7 @@ import com.micro4blog.data.UserInfo;
 import com.micro4blog.dialog.DialogError;
 import com.micro4blog.dialog.Micro4blogDialogListener;
 import com.micro4blog.http.Micro4blogParameters;
-import com.micro4blog.http.Utility;
+import com.micro4blog.http.HttpUtility;
 import com.micro4blog.utils.AsyncMicro4blogRunner.RequestListener;
 import com.micro4blog.utils.Micro4blogException;
 
@@ -165,7 +165,7 @@ public class Micro4blogForNetease extends Micro4blog {
 //			m4bInfo.setM4bId(m4bObject.getInt("id"));
 			m4bInfo.setM4bStrId(m4bObject.getString("id"));
 			m4bInfo.setM4bText(m4bObject.getString("text"));
-			m4bInfo.setM44Source(m4bObject.getString("source"));
+			m4bInfo.setM4bSource(m4bObject.getString("source"));
 			m4bInfo.setM4bFovorited(m4bObject.getBoolean("favorited"));
 			m4bInfo.setM4bTruncated(m4bObject.getBoolean("truncated"));
 //			m4bInfo.setM4bInReplyToStatusId(m4bObject.getInt("in_replay_to_status_id"));
@@ -229,7 +229,7 @@ public class Micro4blogForNetease extends Micro4blog {
 		// 解决带参数的未授权问题
 		apiParameters.add("count", "16");
 
-		apiRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_GET, new RequestListener() {
+		apiRunner.request(apiHeader, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_GET, new RequestListener() {
 
 			@Override
 			public void onComplete(String response) {
@@ -274,12 +274,13 @@ public class Micro4blogForNetease extends Micro4blog {
 		
 		apiParameters.add("status", status);
 				
-		apiRunner.request(apiHeader, apiUrl, apiParameters, Utility.HTTPMETHOD_POST, new RequestListener() {
+		apiRunner.request(apiHeader, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_POST, new RequestListener() {
 
 			@Override
 			public void onComplete(String response) {
 				Toast.makeText(mContext, "send success", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(mContext, HomeTimelineActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				mContext.startActivity(intent);
 			}
 
@@ -298,6 +299,16 @@ public class Micro4blogForNetease extends Micro4blog {
 		});
 
 		return apiResult;
+	}
+
+	@Override
+	public boolean destroy(String strId) {
+		
+		apiUrl = getServerUrl() + "statuses/destroy/" + strId + ".json";
+		
+		apiRunner.request(apiHeader, apiUrl, apiParameters, HttpUtility.HTTPMETHOD_DELETE, null);
+		
+		return false;
 	}
 	
 

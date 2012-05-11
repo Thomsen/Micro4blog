@@ -28,7 +28,7 @@ import com.micro4blog.http.HttpHeaderFactory;
 import com.micro4blog.http.Micro4blogParameters;
 import com.micro4blog.http.Oauth2AccessTokenHeader;
 import com.micro4blog.http.RequestTokenHeader;
-import com.micro4blog.http.Utility;
+import com.micro4blog.http.HttpUtility;
 import com.micro4blog.oauth.AccessToken;
 import com.micro4blog.oauth.Oauth2AccessToken;
 import com.micro4blog.oauth.OauthToken;
@@ -88,8 +88,8 @@ public abstract class Micro4blog {
 	protected static Context mContext;
 
 	public Micro4blog() {
-		Utility.setRequestHeader("Accept-Encoding", "gzip");
-		Utility.setTokenObject(this.requestToken);
+		HttpUtility.setRequestHeader("Accept-Encoding", "gzip");
+		HttpUtility.setTokenObject(this.requestToken);
 	}
 
 	public static Micro4blog getInstance(Context context, int serverType) {
@@ -124,7 +124,7 @@ public abstract class Micro4blog {
 			Micro4blogParameters parameters) {
 		
 		RequestTokenHeader header = new RequestTokenHeader();		
-		Utility.setAuthorization(header);
+		HttpUtility.setAuthorization(header);
 
 		if (Micro4blog.getCurrentServer() != Micro4blog.SERVER_TENCENT) {
 			// netease sohu
@@ -132,7 +132,7 @@ public abstract class Micro4blog {
 				requestToken = new RequestToken();
 			}		
 			try {
-				requestToken = getRequestToken(context, Utility.HTTPMETHOD_GET,
+				requestToken = getRequestToken(context, HttpUtility.HTTPMETHOD_GET,
 						getAppKey(), getAppSecret(), getRedirectUrl());
 			} catch (Micro4blogException e) {
 				e.printStackTrace();
@@ -140,7 +140,7 @@ public abstract class Micro4blog {
 		} else {
 			// tencent
 			String result = request(header, getUrlRequestToken(),
-					parameters, Utility.HTTPMETHOD_GET, requestToken);
+					parameters, HttpUtility.HTTPMETHOD_GET, requestToken);
 			requestToken = new RequestToken(result);
 		}
 		
@@ -162,7 +162,7 @@ public abstract class Micro4blog {
 
 		if (Micro4blog.SERVER_SINA == Micro4blog.getCurrentServer()) {
 			// sina
-			Utility.setAuthorization(new Oauth2AccessTokenHeader());
+			HttpUtility.setAuthorization(new Oauth2AccessTokenHeader());
 			
 			if (isSessionValid()) {
 				parameters.add("access_token", accessToken.getOauthToken());
@@ -170,15 +170,15 @@ public abstract class Micro4blog {
 
 		} else {
 			// tencent netease sohu
-			Utility.setAuthorization(new AccessTokenHeader());
+			HttpUtility.setAuthorization(new AccessTokenHeader());
 		}
 		
 		String url = getUrlAccessAuthorize() + "?"
-		+ Utility.encodeUrl(parameters);
+		+ HttpUtility.encodeUrl(parameters);
 		
 		if (context
 				.checkCallingOrSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-			Utility.showAlert(context, "Error",
+			HttpUtility.showAlert(context, "Error",
 					"Application requires permission to access the Internet");
 		} else {
 
@@ -230,7 +230,7 @@ public abstract class Micro4blog {
 				// sohu netease
 				try {
 					accessToken = generateAccessToken(mContext,
-							Utility.HTTPMETHOD_GET, requestToken);
+							HttpUtility.HTTPMETHOD_GET, requestToken);
 				} catch (Micro4blogException e) {
 					e.printStackTrace();
 				}
@@ -244,7 +244,7 @@ public abstract class Micro4blog {
 			Micro4blogParameters parameters = new Micro4blogParameters();
 			parameters.add("oauth_verifier", requestToken.getOauthVerifier());
 			String result = request(header,  getUrlAccessToken(),
-					parameters, Utility.HTTPMETHOD_GET, requestToken);
+					parameters, HttpUtility.HTTPMETHOD_GET, requestToken);
 			accessToken = new OauthToken(result);
 			setAccessToken(accessToken);
 			mAuthDialogListener.onComplete(values);
@@ -273,7 +273,7 @@ public abstract class Micro4blog {
 						
 			params.sort();
 			
-			result = Utility.openUrl(micro4blogInstance, mContext, url,
+			result = HttpUtility.openUrl(micro4blogInstance, mContext, url,
 					httpMethod, params, token);
 
 		} catch (Micro4blogException e) {
@@ -295,7 +295,7 @@ public abstract class Micro4blog {
 			Micro4blogParameters params, String httpMethod, OauthToken token) {
 		String result = "";
 		try {
-			result = Utility.openUrl(micro4blogInstance, context, url,
+			result = HttpUtility.openUrl(micro4blogInstance, context, url,
 					httpMethod, params, token);
 		} catch (Micro4blogException e) {
 			e.printStackTrace();
@@ -316,11 +316,11 @@ public abstract class Micro4blog {
 	public RequestToken getRequestToken(Context context, String httpMethod,
 			String key, String secret, String callback_url)
 			throws Micro4blogException {
-		Utility.setAuthorization(new RequestTokenHeader());
+		HttpUtility.setAuthorization(new RequestTokenHeader());
 		Micro4blogParameters params = new Micro4blogParameters();
 		params.add("oauth_callback", callback_url);
 		String rlt;
-		rlt = Utility.openUrl(micro4blogInstance, context,
+		rlt = HttpUtility.openUrl(micro4blogInstance, context,
 				micro4blogInstance.getUrlRequestToken(), httpMethod, params,
 				null);
 		RequestToken request = new RequestToken(rlt);
@@ -338,7 +338,7 @@ public abstract class Micro4blog {
 	 */
 	public AccessToken generateAccessToken(Context context, String httpMethod,
 			RequestToken requestToken) throws Micro4blogException {
-		Utility.setAuthorization(new AccessTokenHeader());
+		HttpUtility.setAuthorization(new AccessTokenHeader());
 		Micro4blogParameters authParam = new Micro4blogParameters();
 
 		// 针对netease中没有获取oauth_verifier的处理
@@ -348,7 +348,7 @@ public abstract class Micro4blog {
 			authParam.add("oauth_token", requestToken.getOauthToken());
 		}
 
-		String result = Utility.openUrl(micro4blogInstance, context,
+		String result = HttpUtility.openUrl(micro4blogInstance, context,
 				micro4blogInstance.getUrlAccessToken(), httpMethod, authParam,
 				this.requestToken);
 		AccessToken accessToken = new AccessToken(result);
@@ -370,14 +370,14 @@ public abstract class Micro4blog {
 	public Oauth2AccessToken getOauth2AccessToken(Context context,
 			String httpMethod, String app_key, String app_secret,
 			String usrname, String password) throws Micro4blogException {
-		Utility.setAuthorization(new Oauth2AccessTokenHeader());
+		HttpUtility.setAuthorization(new Oauth2AccessTokenHeader());
 		Micro4blogParameters postParams = new Micro4blogParameters();
 		postParams.add("username", usrname);
 		postParams.add("password", password);
 		postParams.add("client_id", app_key);
 		postParams.add("client_secret", app_secret);
 		postParams.add("grant_type", "password");
-		String result = Utility.openUrl(micro4blogInstance, context,
+		String result = HttpUtility.openUrl(micro4blogInstance, context,
 				micro4blogInstance.getUrlAccessToken(), httpMethod, postParams,
 				null);
 		Oauth2AccessToken accessToken = new Oauth2AccessToken(result);
@@ -612,5 +612,11 @@ public abstract class Micro4blog {
 	public abstract String update(String status, String lon, String lat);
 	
 //	public abstract String upload(String file, String status, String lon, String lat);
+	
+	/**
+	 * 删除自己的微博
+	 * @param strId: 要删除的微博id
+	 */
+	public abstract boolean destroy(String strId);
 
 }

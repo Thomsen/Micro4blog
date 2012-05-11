@@ -29,7 +29,10 @@ public class AsyncMicro4blogRunner {
 		new Thread(){
 			@Override public void run() {
                 String resp = micro4blog.request(context, url, params, httpMethod, micro4blog.getAccessToken());
-				listener.onComplete(resp);
+				
+                if (listener != null) {
+                	listener.onComplete(resp);
+                }
             }
 		}.run();
 		
@@ -43,7 +46,10 @@ public class AsyncMicro4blogRunner {
 		new Thread(){
 			@Override public void run() {
                 String resp = micro4blog.request(header, url, params, httpMethod, micro4blog.getAccessToken());
-				listener.onComplete(resp);
+				
+                if (listener != null) {
+                	listener.onComplete(resp);
+                }
             }
 		}.run();
 		

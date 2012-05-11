@@ -28,7 +28,7 @@ import android.widget.RelativeLayout;
 import com.micro4blog.Micro4blog;
 import com.micro4blog.R;
 import com.micro4blog.android.SslError;
-import com.micro4blog.http.Utility;
+import com.micro4blog.http.HttpUtility;
 import com.micro4blog.utils.Micro4blogException;
 
 /**
@@ -202,7 +202,7 @@ public class Micro4blogDialog extends Dialog {
     }
 
     private void handleRedirectUrl(WebView view, String url) {
-        Bundle values = Utility.parseUrl(url);
+        Bundle values = HttpUtility.parseUrl(url);
 
         String error = values.getString("error");
         String error_code = values.getString("error_code");
